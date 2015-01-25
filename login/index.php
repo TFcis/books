@@ -2,31 +2,36 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
-$loginsuccess="login";
+$message="";
 if(isset($_POST['user'])){
 	$row = sql("SELECT * FROM `account` WHERE `user`='".$_POST['user']."' LIMIT 0,1");
 	if($row==""){
-		$loginsuccess="user";
+		$message="無此帳號";
 	}
 	else {
 		$id=$row[0];
 		$pwd=$row[2];
 		if(crypt($_POST['pwd'],$pwd)==$pwd){
-			$loginsuccess=true;
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400, "/");
 			sql("INSERT INTO `elms`.`session` (`id`, `time`, `cookie`) VALUES ('".$id."', DATE_ADD(UTC_TIMESTAMP(),INTERVAL 8 HOUR), '".$cookie."');",false);
 			header('Location: ../');
 		}
-		else $loginsuccess="pwd";
+		else $message="密碼錯誤";
 	}
 }
 else if(isset($_POST['suser'])){
-	$row = sql("SELECT * FROM `account` ORDER BY `account`.`id` DESC");
-	$id=$row[0]+1;
-	echo "<script>console.log('".$id."');</script>";
-	sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`, `power`) VALUES ('".$id."', '".$_POST["suser"]."', '".crypt($_POST["spwd"])."', '".$_POST["semail"]."', '".$_POST["sname"]."', '0');",false);
-	header('Location: ../');
+	$row = sql("SELECT * FROM `account` WHERE `user` = '".$_POST["suser"]."' LIMIT 0,1");
+	if($row==""){
+		$message="已經有人註冊此帳號";
+	}
+	else {
+		$row = sql("SELECT * FROM `account` ORDER BY `account`.`id` DESC");
+		$id=$row[0]+1;
+		echo "<script>console.log('".$id."');</script>";
+		sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`, `power`) VALUES ('".$id."', '".$_POST["suser"]."', '".crypt($_POST["spwd"])."', '".$_POST["semail"]."', '".$_POST["sname"]."', '0');",false);
+		header('Location: ../');
+	}
 }
 ?>
 <head>
@@ -36,17 +41,11 @@ else if(isset($_POST['suser'])){
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <iframe src="../header.php" width="100%" height="125px" frameborder="0" scrolling="no"></iframe>
 <?php
-	if($loginsuccess!="login"){
+	if($message!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="50%" height="50" align="center" valign="middle" bgcolor="#F00" style="color: #FFF; font-size: 24px;">
-		<?php
-			if($loginsuccess=="user")echo "無此帳號";
-			else if($loginsuccess=="pwd")echo "密碼錯誤";
-			else echo "不知名錯誤";
-		?>
-		</td>
+		<td width="50%" height="50" align="center" valign="middle" bgcolor="#F00" style="color: #FFF; font-size: 24px;"><?php echo $message;?></td>
 	</tr>
 </table>
 <?php
@@ -88,7 +87,7 @@ else if(isset($_POST['suser'])){
 									<td height="30" valign="top">密碼：<input name="pwd" type="password"></td>
 								</tr>
 								<tr>
-									<td align="center"><input name="登入" type="submit" value="登入"></td>
+									<td align="center"><input type="submit" value="登入"></td>
 								</tr>
 							</table>
 						</form>
@@ -125,7 +124,7 @@ else if(isset($_POST['suser'])){
 									<td height="30" valign="top">郵件：<input name="semail" type="text" id="semail"></td>
 								</tr>
 								<tr>
-									<td align="center"><input name="登入" type="submit" value="登入"></td>
+									<td align="center"><input type="submit" value="註冊"></td>
 								</tr>
 							</table>
 						</form>
