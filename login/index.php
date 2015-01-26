@@ -26,7 +26,7 @@ else if(isset($_POST['suser'])){
 		$message="已經有人註冊此帳號";
 	}else if($_POST["spwd"]==$_POST["spwd2"]){
 		$message="密碼不符";
-	}else {
+	}else{
 		$row = sql("SELECT * FROM `account` ORDER BY `account`.`id` DESC");
 		$id=$row[0]+1;
 		echo "<script>console.log('".$id."');</script>";
