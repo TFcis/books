@@ -24,8 +24,9 @@ else if(isset($_POST['suser'])){
 	$row = sql("SELECT * FROM `account` WHERE `user` = '".$_POST["suser"]."' LIMIT 0,1");
 	if($row==""){
 		$message="已經有人註冊此帳號";
-	}
-	else {
+	}else if($_POST["spwd"]==$_POST["spwd2"]){
+		$message="密碼不符";
+	}else {
 		$row = sql("SELECT * FROM `account` ORDER BY `account`.`id` DESC");
 		$id=$row[0]+1;
 		echo "<script>console.log('".$id."');</script>";
@@ -37,6 +38,8 @@ else if(isset($_POST['suser'])){
 <head>
 <meta charset="UTF-8">
 <title>登入-TFcisELMS</title>
+<link href="login.css" rel="stylesheet" type="text/css">
+<link href="../res/css.css" rel="stylesheet" type="text/css">
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <iframe src="../header.php" width="100%" height="125px" frameborder="0" scrolling="no"></iframe>
@@ -45,7 +48,7 @@ else if(isset($_POST['suser'])){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="50%" height="50" align="center" valign="middle" bgcolor="#F00" style="color: #FFF; font-size: 24px;"><?php echo $message;?></td>
+		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $message;?></td>
 	</tr>
 </table>
 <?php
@@ -54,7 +57,7 @@ else if(isset($_POST['suser'])){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="50%" height="50" align="center" valign="middle" bgcolor="#0A0" style="color: #FFF; font-size: 24px;">你已經登入了
+		<td align="center" valign="middle" bgcolor="#0A0" class="message">你已經登入了
 		</td>
 	</tr>
 </table>
@@ -81,13 +84,15 @@ else if(isset($_POST['suser'])){
 						<form method="post">
 							<table width="0" border="0" cellspacing="0" cellpadding="0">
 								<tr>
-									<td height="30" valign="top">帳號：<input name="user" type="text" value="<?php echo $_POST['user'];?>"></td>
+									<td valign="top" class="inputleft">帳號：</td>
+									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo $_POST['user'];?>"></td>
 								</tr>
 								<tr>
-									<td height="30" valign="top">密碼：<input name="pwd" type="password"></td>
+									<td valign="top" class="inputleft">密碼：</td>
+									<td valign="top" class="inputright"><input name="pwd" type="password"></td>
 								</tr>
 								<tr>
-									<td align="center"><input type="submit" value="登入"></td>
+									<td align="center" colspan="2"><input type="submit" value="登入"></td>
 								</tr>
 							</table>
 						</form>
@@ -112,19 +117,27 @@ else if(isset($_POST['suser'])){
 						<form method="post">
 							<table width="0" border="0" cellspacing="0" cellpadding="0">
 								<tr>
-									<td height="30" valign="top">帳號：<input name="suser" type="text" id="suser" value="<?php echo $_POST['suser'];?>"></td>
+									<td valign="top" class="inputleft">帳號：</td>
+									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" value="<?php echo $_POST['suser'];?>"></td>
 								</tr>
 								<tr>
-									<td height="30" valign="top">密碼：<input name="spwd" type="password" id="spwd"></td>
+									<td valign="top" class="inputleft">密碼：</td>
+									<td valign="top" class="inputright"><input name="spwd" type="password" id="spwd"></td>
 								</tr>
 								<tr>
-									<td height="30" valign="top">姓名：<input name="sname" type="text" id="sname"></td>
+									<td valign="top" class="inputleft">確認：</td>
+									<td valign="top" class="inputright"><input name="spwd2" type="password" id="spwd2"></td>
 								</tr>
 								<tr>
-									<td height="30" valign="top">郵件：<input name="semail" type="text" id="semail"></td>
+									<td valign="top" class="inputleft">姓名：</td>
+									<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo $_POST['sname'];?>"></td>
 								</tr>
 								<tr>
-									<td align="center"><input type="submit" value="註冊"></td>
+									<td valign="top" class="inputleft">郵件：</td>
+									<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>"></td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2"><input type="submit" value="註冊"></td>
 								</tr>
 							</table>
 						</form>
