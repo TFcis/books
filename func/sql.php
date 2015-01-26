@@ -1,7 +1,7 @@
 <?php
 function sql($query,$select=true){
 	$db=file_get_contents("../config/db.dat");
-	$db=explode($db);
+	$db=explode("\r\n",$db);
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
 	if(mysqli_connect_errno($link)){
 		echo "Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error())  ;
