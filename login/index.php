@@ -2,36 +2,46 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
+$error="";
 $message="";
+$refresh="";
 if(isset($_POST['user'])){
-	$row = sql("SELECT * FROM `account` WHERE `user`='".$_POST['user']."' LIMIT 0,1");
+	$row = sql("SELECT * FROM `account` WHERE `user`='".htmlspecialchars($_POST['user'])."' LIMIT 0,1");
 	if($row==""){
-		$message="無此帳號";
+		$error="無此帳號";
 	}
 	else {
 		$id=$row[0];
 		$pwd=$row[2];
-		if(crypt($_POST['pwd'],$pwd)==$pwd){
+		if(crypt(htmlspecialchars($_POST['pwd']),$pwd)==$pwd){
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400, "/");
 			sql("INSERT INTO `elms`.`session` (`id`, `time`, `cookie`) VALUES ('".$id."', DATE_ADD(UTC_TIMESTAMP(),INTERVAL 8 HOUR), '".$cookie."');",false);
 			header('Location: ../');
 		}
-		else $message="密碼錯誤";
+		else $error="密碼錯誤";
 	}
 }
 else if(isset($_POST['suser'])){
 	$row = sql("SELECT * FROM `account` WHERE `user` = '".$_POST["suser"]."' LIMIT 0,1");
-	if($row==""){
-		$message="已經有人註冊此帳號";
-	}else if($_POST["spwd"]==$_POST["spwd2"]){
-		$message="密碼不符";
+	if($row!=""){
+		$error="已經有人註冊此帳號";
+	}else if(!preg_match("/^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/", $_POST["suser"])){
+		$error="帳號不符合格式 /^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/<br>應該由英文字開頭，僅包含英數，至少3個字";
+	}else if($_POST["spwd"]!=$_POST["spwd2"]){
+		$error="密碼不相符";
+	}else if(preg_match("/\s/", $_POST["spwd"])){
+		$error="密碼不可有空白";
+	}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
+		$error="密碼至少4個字";
+	}else if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
+		$error="郵件位址不正確";
 	}else{
 		$row = sql("SELECT * FROM `account` ORDER BY `account`.`id` DESC");
 		$id=$row[0]+1;
 		echo "<script>console.log('".$id."');</script>";
-		sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`, `power`) VALUES ('".$id."', '".$_POST["suser"]."', '".crypt($_POST["spwd"])."', '".$_POST["semail"]."', '".$_POST["sname"]."', '0');",false);
-		header('Location: ../');
+		sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`) VALUES ('".$id."', '".htmlspecialchars($_POST["suser"])."', '".crypt(htmlspecialchars($_POST["spwd"]))."', '".$_POST["semail"]."', '".$_POST["sname"]."' );",false);
+		$message='註冊成功，請登入';
 	}
 }
 ?>
@@ -44,21 +54,29 @@ else if(isset($_POST['suser'])){
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
 	include_once("../header.php");
-	if($message!=""){
+	if($error!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $message;?></td>
+		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $error;?></td>
 	</tr>
 </table>
 <?php
 	}
-	if(checklogin()){
+	if($message!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message">你已經登入了
-		</td>
+		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
+	</tr>
+</table>
+<script>setTimeout(function(){location="./";},1000)</script>
+<?php
+	}else if(checklogin()){
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td align="center" valign="middle" bgcolor="#0A0" class="message">你已經登入了</td>
 	</tr>
 </table>
 <script>setTimeout(function(){location="../";},1000)</script>
@@ -121,15 +139,15 @@ else if(isset($_POST['suser'])){
 							<table width="0" border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
-									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" value="<?php echo $_POST['suser'];?>"></td>
+									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" value="<?php echo $_POST['suser'];?>" placeholder="英文字開頭/僅含英數/至少3字"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">密碼：</td>
-									<td valign="top" class="inputright"><input name="spwd" type="password" id="spwd"></td>
+									<td valign="top" class="inputright"><input name="spwd" type="password" id="spwd" placeholder="不含空白/至少4字"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">確認：</td>
-									<td valign="top" class="inputright"><input name="spwd2" type="password" id="spwd2"></td>
+									<td valign="top" class="inputright"><input name="spwd2" type="password" id="spwd2" placeholder="與密碼相符"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">姓名：</td>
