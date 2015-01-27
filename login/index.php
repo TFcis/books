@@ -5,7 +5,11 @@ include_once("../func/sql.php");
 $error="";
 $message="";
 $refresh="";
-if(isset($_POST['user'])){
+if(checklogin()){
+	$message="你已經登入了";
+	?><script>setTimeout(function(){location="../";},1000)</script><?php
+}
+else if(isset($_POST['user'])){
 	$row = sql("SELECT * FROM `account` WHERE `user`='".htmlspecialchars($_POST['user'])."' LIMIT 0,1");
 	if($row==""){
 		$error="無此帳號";
@@ -17,7 +21,8 @@ if(isset($_POST['user'])){
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400, "/");
 			sql("INSERT INTO `elms`.`session` (`id`, `time`, `cookie`) VALUES ('".$id."', DATE_ADD(UTC_TIMESTAMP(),INTERVAL 8 HOUR), '".$cookie."');",false);
-			header('Location: ../');
+			$message="登入成功";
+			?><script>setTimeout(function(){location="../";},1000)</script><?php
 		}
 		else $error="密碼錯誤";
 	}
@@ -42,6 +47,7 @@ else if(isset($_POST['suser'])){
 		echo "<script>console.log('".$id."');</script>";
 		sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`) VALUES ('".$id."', '".htmlspecialchars($_POST["suser"])."', '".crypt(htmlspecialchars($_POST["spwd"]))."', '".$_POST["semail"]."', '".$_POST["sname"]."' );",false);
 		$message='註冊成功，請登入';
+		?><script>setTimeout(function(){location="./";},1000)</script><?php
 	}
 }
 ?>
@@ -70,16 +76,6 @@ else if(isset($_POST['suser'])){
 		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
 	</tr>
 </table>
-<script>setTimeout(function(){location="./";},1000)</script>
-<?php
-	}else if(checklogin()){
-?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message">你已經登入了</td>
-	</tr>
-</table>
-<script>setTimeout(function(){location="../";},1000)</script>
 <?php
 	}else{
 ?>

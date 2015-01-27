@@ -15,7 +15,7 @@ setcookie("ELMScookie", "", time(), "/");
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message">登出中...
+		<td align="center" valign="middle" bgcolor="#0A0" class="message">已登出
 		</td>
 	</tr>
 </table>

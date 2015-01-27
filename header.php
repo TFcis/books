@@ -24,23 +24,8 @@ include_once("func/sql.php");
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="68%" height="25" valign="middle" bgcolor="#0000FF" style="color: #FFF">
-			<script>
-			function admin(){
-				if(document.all.admindiv.style.display=="none"){
-					$("#admindiv").show("slow");
-					arrow.innerHTML="&nbsp;&lt;&nbsp;";
-				}else{
-					$("#admindiv").hide("slow");
-					arrow.innerHTML="&nbsp;&gt;&nbsp;";
-				}
-			}
-			</script>
-			<div style="float:left">
-			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $url;?>" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>user" target="_parent" style="color:#FFF">讀者資料查詢</a>&nbsp;|&nbsp;<a name="manage" id="manage" style="color:#FFF" href="javascript:admin();">管理</a></div>
-			<div id="arrow" style="float:left">&nbsp;&gt;&nbsp;</div>
-			<div id="admindiv" style=" display:none; float:left;">
-			<a href="<?php echo $url;?>borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>manageuser" target="_parent" style="color:#FFF">使用者</a>
-			</div>
+			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $url;?>" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>user" target="_parent" style="color:#FFF">讀者資料查詢</a><?php if(checklogin()[5]>=1){ ?>&nbsp;|&nbsp;<a href="<?php echo $url;?>borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>manageuser" target="_parent" style="color:#FFF">使用者</a>
+			<?php } ?>
 		</td>
 		<td width="32%" height="25" valign="middle" bgcolor="#0000FF" style="text-align: right; color: #FFF;">
 			<?php 
