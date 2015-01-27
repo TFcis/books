@@ -2,14 +2,12 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
-$id=checklogin();
-if($id==false)header("Location: ../login");
-else {
-	$id=$id[0];
-}
+$data=checklogin();
+if($data==false)header("Location: ../login");
+$id=$data[0];
 $error="";
 $message="";
-if(isset($_POST['spwd'])){
+if($_POST['spwd']!=""){
 	if($_POST["spwd"]==$_POST["spwd2"]){
 		$error="密碼不符";
 	}else{
@@ -19,18 +17,21 @@ if(isset($_POST['spwd'])){
 		$message+="密碼";
 	}
 }
-if(isset($_POST['sname'])){
-	sql("UPDATE `account` SET `name` = '".crypt($_POST['sname'])."' WHERE `id` = ".$id.";",false);
+if($_POST['sname']!=""){
+	sql("UPDATE `account` SET `name` = '".$_POST['sname']."' WHERE `id` = ".$id.";",false);
 	if($message=="")$message="已更新以下資料:";
 	else $message+=" ";
 	$message+="姓名";
 }
-if(isset($_POST['semail'])){
-	sql("UPDATE `account` SET `email` = '".crypt($_POST['semail'])."' WHERE `id` = ".$id.";",false);
+if($_POST['semail']!=""){
+	sql("UPDATE `account` SET `email` = '".$_POST['semail']."' WHERE `id` = ".$id.";",false);
 	if($message=="")$message="已更新以下資料:";
 	else $message+=" ";
 	$message+="郵件";
 }
+$data=checklogin();
+$name=$data[3];
+$email=$data[4];
 ?>
 <head>
 <meta charset="UTF-8">
@@ -39,13 +40,13 @@ if(isset($_POST['semail'])){
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
-<iframe src="../header.php" width="100%" height="125px" frameborder="0" scrolling="no"></iframe>
 <?php
+	include_once("../header.php");
 	if($error!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $message;?></td>
+		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $error;?></td>
 	</tr>
 </table>
 <?php
@@ -85,14 +86,14 @@ if(isset($_POST['semail'])){
 					</tr>
 					<tr>
 						<td valign="top" class="inputleft">姓名：</td>
-						<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo $_POST['sname'];?>"></td>
+						<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo $name;?>"></td>
 					</tr>
 					<tr>
 						<td valign="top" class="inputleft">郵件：</td>
-						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>"></td>
+						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $email;?>"></td>
 					</tr>
 					<tr>
-						<td align="center" colspan="2"><input type="submit" value="註冊"></td>
+						<td align="center" colspan="2"><input type="submit" value="更新資料"></td>
 					</tr>
 				</table>
 			</form>
