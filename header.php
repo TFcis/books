@@ -1,7 +1,8 @@
 <html>
 <?php
-include_once("func/checklogin.php");
 include_once("func/url.php");
+include_once("func/checklogin.php");
+include_once("func/sql.php");
 ?>
 <head>
 <meta charset="UTF-8">
@@ -46,12 +47,12 @@ include_once("func/url.php");
 			$islogin=checklogin();
 			if($islogin==false){
 			?>
-			<a href="login" target="_parent" style="color:#FFF">登入</a>
+			<a href="<?php echo $url;?>login" target="_parent" style="color:#FFF">登入</a>
 			<?php
 			}
 			else{ echo "目前登入: ".$islogin[1]."(".$islogin[3].")";
 			?>
-			<a href="logout" target="_parent" style="color:#FFF">登出</a>
+			<a href="<?php echo $url;?>logout" target="_parent" style="color:#FFF">登出</a>
 			<?php
 			}
 			?>
