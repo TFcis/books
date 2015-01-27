@@ -5,29 +5,31 @@ include_once("../func/sql.php");
 $data=checklogin();
 if($data==false)header("Location: ../login");
 $id=$data[0];
+$name=$data[3];
+$email=$data[4];
 $error="";
 $message="";
 if($_POST['spwd']!=""){
-	if($_POST["spwd"]==$_POST["spwd2"]){
+	if($_POST["spwd"]!=$_POST["spwd2"]){
 		$error="密碼不符";
 	}else{
 		sql("UPDATE `account` SET `pwd` = '".crypt($_POST['spwd'])."' WHERE `id` = ".$id.";",false);
 		if($message=="")$message="已更新以下資料:";
-		else $message+=" ";
-		$message+="密碼";
+		else $message.=" ";
+		$message.="密碼";
 	}
 }
-if($_POST['sname']!=""){
+if($_POST['sname']!=""&&$_POST['sname']!=$name){
 	sql("UPDATE `account` SET `name` = '".$_POST['sname']."' WHERE `id` = ".$id.";",false);
 	if($message=="")$message="已更新以下資料:";
-	else $message+=" ";
-	$message+="姓名";
+	else $message.=" ";
+	$message.="姓名";
 }
-if($_POST['semail']!=""){
+if($_POST['semail']!=""&&$_POST['semail']!=$email){
 	sql("UPDATE `account` SET `email` = '".$_POST['semail']."' WHERE `id` = ".$id.";",false);
 	if($message=="")$message="已更新以下資料:";
-	else $message+=" ";
-	$message+="郵件";
+	else $message.=" ";
+	$message.="郵件";
 }
 $data=checklogin();
 $name=$data[3];

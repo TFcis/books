@@ -11,7 +11,7 @@ setcookie("ELMScookie", "", time(), "/");
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("header.php");
+	include_once("../header.php");
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>

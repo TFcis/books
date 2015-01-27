@@ -92,7 +92,10 @@ else if(isset($_POST['suser'])){
 									<td valign="top" class="inputright"><input name="pwd" type="password"></td>
 								</tr>
 								<tr>
-									<td align="center" colspan="2"><input type="submit" value="登入"></td>
+									<td height="45" colspan="2" align="center" valign="top"><input type="submit" value="登入"></td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2"><a href="../forgotpwd" target="_parent">忘記密碼</a></td>
 								</tr>
 							</table>
 						</form>

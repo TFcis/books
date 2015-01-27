@@ -2,52 +2,46 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
+$error="";
 $message="";
 if(isset($_POST['suser'])){
 	$row = sql("SELECT * FROM `account` WHERE `user`='".$_POST['suser']."' AND `email` = '".$_POST['semail']."' AND `name` = '".$_POST['sname']."' LIMIT 0,1");
 	if($row==""){
-		$message="資料錯誤";
-	}
-	else {
-		$id=$row[0];
-		$pwd=$row[2];
-		if(crypt($_POST['pwd'],$pwd)==$pwd){
-			$cookie=md5(uniqid(rand(),true));
-			setcookie("ELMScookie", $cookie, time()+86400, "/");
-			sql("INSERT INTO `elms`.`session` (`id`, `time`, `cookie`) VALUES ('".$id."', DATE_ADD(UTC_TIMESTAMP(),INTERVAL 8 HOUR), '".$cookie."');",false);
-			header('Location: ../');
-		}
-		else $message="密碼錯誤";
+		$error="資料錯誤";
+	}else if($_POST["spwd"]!=$_POST["spwd2"]){
+		$error="密碼不符";
+	}else{
+		$newpwd=substr(md5(uniqid(rand(),true)),0,6);
+		sql("UPDATE `account` SET `pwd` = '".crypt($newpwd)."' WHERE `user` = '".$_POST['suser']."';");
+		$message="你的密碼已更新為".$newpwd."，請登入以修改密碼";
 	}
 }
 ?>
 <head>
 <meta charset="UTF-8">
-<title>登入-TFcisELMS</title>
+<title>密碼救援-TFcisELMS</title>
 <link href="forgotpwd.css" rel="stylesheet" type="text/css">
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("header.php");
-	if($message!=""){
+	include_once("../header.php");
+	if($error!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $message;?></td>
+		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $error;?></td>
 	</tr>
 </table>
 <?php
 	}
-	if(checklogin()){
+	if($message!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message">你已經登入了
-		</td>
+		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
 	</tr>
 </table>
-<script>setTimeout(function(){location="../";},1000)</script>
 <?php
 	}else{
 ?>
@@ -76,14 +70,6 @@ if(isset($_POST['suser'])){
 					</tr>
 					<tr>
 						<td valign="top" class="inputleft">郵件：</td>
-						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>"></td>
-					</tr>
-					<tr>
-						<td valign="top" class="inputleft">新密碼：</td>
-						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>"></td>
-					</tr>
-					<tr>
-						<td valign="top" class="inputleft">確認：</td>
 						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>"></td>
 					</tr>
 					<tr>
