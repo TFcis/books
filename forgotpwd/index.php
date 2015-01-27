@@ -12,7 +12,7 @@ if(isset($_POST['suser'])){
 		$error="密碼不符";
 	}else{
 		$newpwd=substr(md5(uniqid(rand(),true)),0,6);
-		sql("UPDATE `account` SET `pwd` = '".crypt($newpwd)."' WHERE `user` = '".$_POST['suser']."';");
+		sql("UPDATE `account` SET `pwd` = '".crypt($newpwd)."' WHERE `user` = '".$_POST['suser']."';",false);
 		$message="你的密碼已更新為".$newpwd."，請登入以修改密碼";
 	}
 }
