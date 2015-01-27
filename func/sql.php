@@ -1,6 +1,6 @@
 <?php
 include_once("consolelog.php");
-function sql($query,$select=true){
+function sql($query,$oneline=true){
 	$db=file_get_contents("../config/db.dat");
 	$db=explode("\r\n",$db);
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
@@ -9,6 +9,13 @@ function sql($query,$select=true){
 	}
 	$result = mysqli_query($link, $query);
 	consolelog($query);
-	if($select)return mysqli_fetch_array($result, MYSQLI_NUM);
+	consolelog($result);
+	if(preg_match("/select/i",$query)){
+		if($oneline)return mysqli_fetch_array($result);
+		else return $result;
+	}
+}
+function mfa($result){
+	return mysqli_fetch_array($result);
 }
 ?>

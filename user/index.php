@@ -17,14 +17,14 @@ if($_POST['spwd']!=""){
 	}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
 		$error="密碼至少4個字";
 	}else{
-		sql("UPDATE `account` SET `pwd` = '".crypt($_POST['spwd'])."' WHERE `id` = ".$id.";",false);
+		sql("UPDATE `account` SET `pwd` = '".crypt($_POST['spwd'])."' WHERE `id` = ".$id.";");
 		if($message=="")$message="已更新以下資料:";
 		else $message.=" ";
 		$message.="密碼";
 	}
 }
 if($_POST['sname']!=""&&$_POST['sname']!=$name){
-	sql("UPDATE `account` SET `name` = '".$_POST['sname']."' WHERE `id` = ".$id.";",false);
+	sql("UPDATE `account` SET `name` = '".$_POST['sname']."' WHERE `id` = ".$id.";");
 	if($message=="")$message="已更新以下資料:";
 	else $message.=" ";
 	$message.="姓名";
@@ -33,7 +33,7 @@ if($_POST['semail']!=""&&$_POST['semail']!=$email){
 	if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
 		$error="郵件位址不正確";
 	}else{
-		sql("UPDATE `account` SET `email` = '".$_POST['semail']."' WHERE `id` = ".$id.";",false);
+		sql("UPDATE `account` SET `email` = '".$_POST['semail']."' WHERE `id` = ".$id.";");
 		if($message=="")$message="已更新以下資料:";
 		else $message.=" ";
 		$message.="郵件";
