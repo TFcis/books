@@ -7,6 +7,8 @@ include_once("../func/checklogin.php");
 <title>館藏查詢-TFcisELMS</title>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
-<iframe src="../header.php" width="100%" height="125px" frameborder="0" scrolling="no"></iframe>
+<?php
+	include_once("../header.php");
+?>
 </body>
 </html>
