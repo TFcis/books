@@ -14,13 +14,13 @@ else if(isset($_POST['user'])){
 	if($row==""){
 		$error="無此帳號";
 	}
-	else {
-		$id=$row[0];
-		$pwd=$row[2];
-		if(crypt(htmlspecialchars($_POST['pwd']),$pwd)==$pwd){
+	else if($row["power"]<=0){
+		$error="此帳戶已遭封禁，無法登入";
+	}else {
+		if(crypt(htmlspecialchars($_POST['pwd']),$row["pwd"])==$row["pwd"]){
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400, "/");
-			sql("INSERT INTO `elms`.`session` (`id`, `time`, `cookie`) VALUES ('".$id."', DATE_ADD(UTC_TIMESTAMP(),INTERVAL 8 HOUR), '".$cookie."');",false);
+			sql("INSERT INTO `elms`.`session` (`id`, `time`, `cookie`) VALUES ('".$row["id"]."', DATE_ADD(UTC_TIMESTAMP(),INTERVAL 8 HOUR), '".$cookie."');",false);
 			$message="登入成功";
 			?><script>setTimeout(function(){location="../";},1000)</script><?php
 		}
