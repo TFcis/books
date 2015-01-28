@@ -31,7 +31,7 @@ $power=$data["power"];
 			<a href="<?php echo $url;?>login" target="_parent" style="color:#FFF">登入</a>
 			<?php
 			}
-			else{ echo "目前登入: ".$islogin["user"]."(".htmlentities($islogin["name"]).")";
+			else{echo "目前登入: ".$islogin["user"]."(".htmlentities($islogin["name"],ENT_QUOTES).")";
 			?>
 			<a href="<?php echo $url;?>logout" target="_parent" style="color:#FFF">登出</a>
 			<?php

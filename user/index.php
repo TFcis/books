@@ -24,7 +24,7 @@ if($_POST['spwd']!=""){
 	}
 }
 if($_POST['sname']!=""&&$_POST['sname']!=$name){
-	sql("UPDATE `account` SET `name` = '".$_POST['sname']."' WHERE `id` = ".$id.";");
+	sql("UPDATE `account` SET `name` = '".str_replace("'","\'",$_POST['sname'])."' WHERE `id` = ".$id.";");
 	if($message=="")$message="已更新以下資料:";
 	else $message.=" ";
 	$message.="姓名";

@@ -42,10 +42,9 @@ else if(isset($_POST['suser'])){
 	}else if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
 		$error="郵件位址不正確";
 	}else{
-		$row = sql("SELECT * FROM `account` ORDER BY `account`.`id` DESC");
+		$row = sql("SELECT MAX(id) FROM `account`");
 		$id=$row[0]+1;
-		echo "<script>console.log('".$id."');</script>";
-		sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`) VALUES ('".$id."', '".htmlspecialchars($_POST["suser"])."', '".crypt(htmlspecialchars($_POST["spwd"]))."', '".$_POST["semail"]."', '".$_POST["sname"]."' );",false);
+		sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`) VALUES ('".$id."', '".htmlspecialchars($_POST["suser"])."', '".crypt(htmlspecialchars($_POST["spwd"]))."', '".$_POST["semail"]."', '".str_replace("'","\'",$_POST['sname'])."' );",false);
 		$message='註冊成功，請登入';
 		?><script>setTimeout(function(){location="./";},1000)</script><?php
 	}
