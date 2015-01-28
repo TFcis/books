@@ -4,9 +4,9 @@ include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 $data=checklogin();
 if($data==false)header("Location: ../login");
-$id=$data[0];
-$name=$data[3];
-$email=$data[4];
+$id=$data["id"];
+$name=$data["name"];
+$email=$data["email"];
 $error="";
 $message="";
 if($_POST['spwd']!=""){
@@ -40,8 +40,8 @@ if($_POST['semail']!=""&&$_POST['semail']!=$email){
 	}
 }
 $data=checklogin();
-$name=$data[3];
-$email=$data[4];
+$name=$data["name"];
+$email=$data["email"];
 ?>
 <head>
 <meta charset="UTF-8">

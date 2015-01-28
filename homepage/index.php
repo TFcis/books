@@ -18,8 +18,8 @@ include_once("../header.php");
 		<td height="50" colspan="3"></td>
 	</tr>
 	<tr>
-		<td width="420">
-		Develop
+		<td width="420" valign="top">
+		<strong>開發者</strong>
 		<hr>
 		<table width="0" border="0" cellspacing="0" cellpadding="0">
 			<tr>
@@ -39,7 +39,9 @@ include_once("../header.php");
 		</table>
 		</td>
 		<td width="100"></td>
-		<td width="320">
+		<td width="320" valign="top">
+		<strong>簡介</strong>
+		<hr>
 		<p>
 		<strong>E-LMS (E-Library Management System)</strong> is an open-source project
 		initiated and maintained by developers.
@@ -52,8 +54,36 @@ include_once("../header.php");
 		</p>
 		
 		<p>Those interested are welcome to follow our development or to contribute by forking the repository.</p>
-		</td>
-	</tr>
+		
+		<strong>更新日誌</strong>
+		<hr>
+		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td width="100" valign="top">2015.01.25</td>
+			<td>開始開發<br>
+				基本介面<br>
+				登入登出功能</td>
+		</tr>
+		<tr>
+			<td valign="top">2015.01.26</td>
+			<td>修改個人資料功能</td>
+		</tr>
+		<tr>
+			<td valign="top">2015.01.27</td>
+			<td>密碼救援<br>
+				資料驗證</td>
+		</tr>
+		<tr>
+			<td valign="top">&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td valign="top">&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		</table>
+	</td>
+</tr>
 </table>
 </center>
 </body>

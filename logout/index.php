@@ -1,7 +1,7 @@
 <html>
 <?php
 include_once("../func/sql.php");
-sql("DELETE FROM `elms`.`session` WHERE `session`.`cookie` = '".$_COOKIE["ELMScookie"]."'",false);
+sql("DELETE FROM `elms`.`session` WHERE `session`.`cookie` = '".$_COOKIE["ELMScookie"]."'");
 setcookie("ELMScookie", "", time(), "/");
 ?>
 <head>

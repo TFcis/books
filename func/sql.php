@@ -9,7 +9,6 @@ function sql($query,$oneline=true){
 	}
 	$result = mysqli_query($link, $query);
 	consolelog($query);
-	consolelog($result);
 	if(preg_match("/select/i",$query)){
 		if($oneline)return mysqli_fetch_array($result);
 		else return $result;
