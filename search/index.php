@@ -26,7 +26,6 @@ include_once("../func/consolelog.php");
 		if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
 		if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
 		if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
-		consolelog($temp);
 		$row=SELECT("*","booklist",$temp);
 		?>
 		<table width="0" border="0" cellspacing="10" cellpadding="0">

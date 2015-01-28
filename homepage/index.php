@@ -74,12 +74,11 @@ include_once("../header.php");
 				資料驗證</td>
 		</tr>
 		<tr>
-			<td valign="top">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td valign="top">&nbsp;</td>
-			<td>&nbsp;</td>
+			<td valign="top">2015.01.28</td>
+			<td>封禁功能<br>
+				帳戶、圖書管理<br>
+				安全性修正
+				</td>
 		</tr>
 		</table>
 	</td>
