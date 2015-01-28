@@ -4,15 +4,19 @@ include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 $error="";
 $message="";
+if(checklogin()){
+	$message="你已經登入了";
+	?><script>setTimeout(function(){location="../";},1000)</script><?php
+}
 if(isset($_POST['suser'])){
-	$row = sql("SELECT * FROM `account` WHERE `user`='".$_POST['suser']."' AND `email` = '".$_POST['semail']."' AND `name` = '".$_POST['sname']."' LIMIT 0,1");
+	$row=mfa(SELECT("*","account",[ ["user",repq($_POST['suser'])],["email",$_POST['semail']],["name",$_POST['sname']] ],null,[0,1]));
 	if($row==""){
 		$error="資料錯誤";
 	}else if($_POST["spwd"]!=$_POST["spwd2"]){
 		$error="密碼不符";
 	}else{
 		$newpwd=substr(md5(uniqid(rand(),true)),0,6);
-		sql("UPDATE `account` SET `pwd` = '".crypt($newpwd)."' WHERE `user` = '".$_POST['suser']."';");
+		UPDATE("account",[ ["pwd",crypt($newpwd)] ],[ ["user",$_POST['suser']] ]);
 		$message="你的密碼已更新為".$newpwd."，請登入以修改密碼";
 	}
 }

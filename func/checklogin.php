@@ -4,12 +4,12 @@ function checklogin(){
 	if($_COOKIE["ELMScookie"]==""){
 		return false;
 	}
-	$row = sql("SELECT * FROM `session` WHERE `cookie` = '".$_COOKIE["ELMScookie"]."' LIMIT 0,1");
+	$row = mfa(SELECT("*","session",[["cookie",$_COOKIE["ELMScookie"]]],[0,1]));
 	if($row==""){
 		return false;
 	}
 	$id=$row[0];
-	$row = sql("SELECT * FROM `account` WHERE `id` = '".$id."' LIMIT 0,1");
+	$row = mfa(SELECT("*","account",[["id",$id]],[0,1]));
 	return $row;
 }
 ?>

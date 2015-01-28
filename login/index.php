@@ -10,17 +10,17 @@ if(checklogin()){
 	?><script>setTimeout(function(){location="../";},1000)</script><?php
 }
 else if(isset($_POST['user'])){
-	$row = sql("SELECT * FROM `account` WHERE `user`='".htmlspecialchars($_POST['user'])."' LIMIT 0,1");
+	$row = mfa(SELECT("*","account",[["user",$_POST['user']]],[0,1]));
 	if($row==""){
 		$error="無此帳號";
 	}
 	else if($row["power"]<=0){
 		$error="此帳戶已遭封禁，無法登入";
 	}else {
-		if(crypt(htmlspecialchars($_POST['pwd']),$row["pwd"])==$row["pwd"]){
+		if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400, "/");
-			sql("INSERT INTO `elms`.`session` (`id`, `time`, `cookie`) VALUES ('".$row["id"]."', DATE_ADD(UTC_TIMESTAMP(),INTERVAL 8 HOUR), '".$cookie."');",false);
+			INSERT("session",[["id",$row["id"]],["cookie",$cookie]]);
 			$message="登入成功";
 			?><script>setTimeout(function(){location="../";},1000)</script><?php
 		}
@@ -28,7 +28,7 @@ else if(isset($_POST['user'])){
 	}
 }
 else if(isset($_POST['suser'])){
-	$row = sql("SELECT * FROM `account` WHERE `user` = '".$_POST["suser"]."' LIMIT 0,1");
+	$row = mfa(SELECT("*","account",[["user",$_POST['suser']]],[0,1]));
 	if($row!=""){
 		$error="已經有人註冊此帳號";
 	}else if(!preg_match("/^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/", $_POST["suser"])){
@@ -43,8 +43,9 @@ else if(isset($_POST['suser'])){
 		$error="郵件位址不正確";
 	}else{
 		$row = sql("SELECT MAX(id) FROM `account`");
+		$row = mfa(SELECT(["MAX(id)"],"account"));
 		$id=$row[0]+1;
-		sql("INSERT INTO `elms`.`account` (`id`, `user`, `pwd`, `email`, `name`) VALUES ('".$id."', '".htmlspecialchars($_POST["suser"])."', '".crypt(htmlspecialchars($_POST["spwd"]))."', '".$_POST["semail"]."', '".str_replace("'","\'",$_POST['sname'])."' );",false);
+	INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]]]);
 		$message='註冊成功，請登入';
 		?><script>setTimeout(function(){location="./";},1000)</script><?php
 	}
