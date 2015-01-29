@@ -2,46 +2,58 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
-$data=checklogin();
-if($data==false)header("Location: ../login");
-$id=$data["id"];
-$name=$data["name"];
-$email=$data["email"];
+$login=checklogin();
+if($login==false)header("Location: ../login");
+$editid=$login["id"];
+if(is_numeric($_GET["id"]))$editid=$_GET["id"];
 $error="";
 $message="";
-if($_POST['spwd']!=""){
-	if($_POST["spwd"]!=$_POST["spwd2"]){
-		$error="密碼不符";
-	}else if(preg_match("/\s/", $_POST["spwd"])){
-		$error="密碼不可有空白";
-	}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
-		$error="密碼至少4個字";
-	}else{
-		UPDATE("account",[ ["pwd",crypt($_POST['spwd'])] ],[ ["id",$id] ]);
-		if($message=="")$message="已更新以下資料:";
-		else $message.=" ";
-		$message.="密碼";
+$message2="";
+$showdata=true;
+$editdata=mfa(SELECT("*","account",[["id",$editid]]));
+if(isset($_POST["sid"])&&$editid!=$_POST["sid"]){
+	$error="有預設資料遭到修改，沒有任何修改動作被執行";
+	$showdata=false;
+}
+else{
+	if($login["power"]<=1){
+		$error="你沒有權限更改別人的資料";
+		$showdata=false;
+	}
+	else if($login["power"]<$editdata["power"]){
+		$error="無法更改較高權限的帳戶";
+		$showdata=false;
+	}
+	else if($editid!=$login["id"])$message="注意!你正在更改其他人的資料";
+	if($_POST['spwd']!=""){
+		if($_POST["spwd"]!=$_POST["spwd2"]){
+			$error="密碼不符";
+		}else if(preg_match("/\s/", $_POST["spwd"])){
+			$error="密碼不可有空白";
+		}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
+			$error="密碼至少4個字";
+		}else{
+			UPDATE("account",[ ["pwd",crypt($_POST['spwd'])] ],[ ["id",$editid] ]);
+			if($message2=="")$message2.="已更新以下資料";
+			$message2.=" 密碼";
+		}
+	}
+	if($_POST['sname']!=""&&$_POST['sname']!=$editdata["name"]){
+		UPDATE("account",[ ["name",$_POST['sname']] ],[ ["id",$editid] ]);
+		if($message2=="")$message2.="已更新以下資料";
+		$message2.=" 姓名";
+	}
+	if($_POST['semail']!=""&&$_POST['semail']!=$editdata["email"]){
+		if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
+			$error="郵件位址不正確";
+		}else{
+			UPDATE("account",[ ["email",$_POST['semail']] ],[ ["id",$editid] ]);
+			if($message2=="")$message2.="已更新以下資料";
+			$message2.=" 郵件";
+		}
 	}
 }
-if($_POST['sname']!=""&&$_POST['sname']!=$name){
-	UPDATE("account",[ ["name",$_POST['sname']] ],[ ["id",$id] ]);
-	if($message=="")$message="已更新以下資料:";
-	else $message.=" ";
-	$message.="姓名";
-}
-if($_POST['semail']!=""&&$_POST['semail']!=$email){
-	if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
-		$error="郵件位址不正確";
-	}else{
-		UPDATE("account",[ ["email",$_POST['semail']] ],[ ["id",$id] ]);
-		if($message=="")$message="已更新以下資料:";
-		else $message.=" ";
-		$message.="郵件";
-	}
-}
-$data=checklogin();
-$name=$data["name"];
-$email=$data["email"];
+$editdata=mfa(SELECT("*","account",[["id",$editid]]));
 ?>
 <head>
 <meta charset="UTF-8">
@@ -65,11 +77,12 @@ $email=$data["email"];
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
+		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?><br><?php echo $message2;?></td>
 	</tr>
 </table>
 <?php
 	}
+	if($showdata){
 ?>
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
@@ -77,7 +90,7 @@ $email=$data["email"];
 		<td height="29">&nbsp;</td>
 	</tr>
 	<tr>
-		<td><h1>更新資料</h1></td>
+		<td align="center"><h1>更新資料</h1></td>
 	</tr>
 	<tr>
 		<td height="0">&nbsp;</td>
@@ -85,6 +98,7 @@ $email=$data["email"];
 	<tr>
 		<td>
 			<form method="post">
+				<input name="sid" type="hidden" id="sid" value="<?php echo $editid;?>">
 				<table width="0" border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td valign="top" class="inputleft">密碼：</td>
@@ -96,11 +110,11 @@ $email=$data["email"];
 					</tr>
 					<tr>
 						<td valign="top" class="inputleft">姓名：</td>
-						<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo het($name);?>"></td>
+						<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo het($editdata["name"]);?>" maxlength="32"></td>
 					</tr>
 					<tr>
 						<td valign="top" class="inputleft">郵件：</td>
-						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $email;?>"></td>
+						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $editdata["email"];?>" maxlength="64"></td>
 					</tr>
 					<tr>
 						<td align="center" colspan="2"><input type="submit" value="更新資料"></td>
@@ -111,5 +125,8 @@ $email=$data["email"];
 	</tr>
 </table>
 </center>
+<?php 
+	}
+?>
 </body>
 </html>

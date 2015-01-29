@@ -4,13 +4,14 @@ include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 $error="";
 $message="";
-$refresh="";
-if(checklogin()){
+$login=checklogin();
+$nosignup=true;
+if($login){
 	$message="你已經登入了";
-	?><script>setTimeout(function(){history.back();},1000)</script><?php
+	?><script>setTimeout(function(){location="../home";},1000)</script><?php
 }
 else if(isset($_POST['user'])){
-	$row = mfa(SELECT("*","account",[["user",$_POST['user']]],null,[0,1]));
+	$row = mfa(SELECT("*","account",[["user",$_POST['user']]]));
 	if($row==""){
 		$error="無此帳號";
 	}
@@ -19,16 +20,17 @@ else if(isset($_POST['user'])){
 	}else {
 		if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
 			$cookie=md5(uniqid(rand(),true));
-			setcookie("ELMScookie", $cookie, time()+86400, "/");
+			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
 			INSERT("session",[["id",$row["id"]],["cookie",$cookie]]);
 			$message="登入成功";
-			?><script>setTimeout(function(){location="../";},1000)</script><?php
+			$login=true;
+			?><script>setTimeout(function(){location="../home";},3000)</script><?php
 		}
 		else $error="密碼錯誤";
 	}
 }
 else if(isset($_POST['suser'])){
-	$row = mfa(SELECT("*","account",[["user",$_POST['suser']]],[0,1]));
+	$row = mfa(SELECT("*","account",[["user",$_POST['suser']]]));
 	if($row!=""){
 		$error="已經有人註冊此帳號";
 	}else if(!preg_match("/^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/", $_POST["suser"])){
@@ -48,7 +50,7 @@ else if(isset($_POST['suser'])){
 		$id=$row[0]+1;
 		INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]]]);
 		$message='註冊成功，請登入';
-		?><script>setTimeout(function(){location="./";},1000)</script><?php
+		$nosignup=false;
 	}
 }
 ?>
@@ -78,7 +80,8 @@ else if(isset($_POST['suser'])){
 	</tr>
 </table>
 <?php
-	}else{
+	}
+	if(!$login){
 ?>
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
@@ -89,10 +92,7 @@ else if(isset($_POST['suser'])){
 					<td height="29">&nbsp;</td>
 				</tr>
 				<tr>
-					<td><h1>登入</h1></td>
-				</tr>
-				<tr>
-					<td height="0">&nbsp;</td>
+					<td align="center"><h1>登入</h1></td>
 				</tr>
 				<tr>
 					<td>
@@ -100,7 +100,7 @@ else if(isset($_POST['suser'])){
 							<table width="0" border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
-									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo $_POST['user'];?>"></td>
+									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo $_POST['user'];?>" maxlength="32"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">密碼：</td>
@@ -118,6 +118,9 @@ else if(isset($_POST['suser'])){
 				</tr>
 			</table>
 		</td>
+		<?php
+		if($nosignup){
+		?>
 		<td width="20"></td>
 		<td valign="top">
 			<table width="0" border="0" cellspacing="0" cellpadding="0">
@@ -125,10 +128,7 @@ else if(isset($_POST['suser'])){
 					<td height="29">&nbsp;</td>
 				</tr>
 				<tr>
-					<td><h1>註冊</h1></td>
-				</tr>
-				<tr>
-					<td height="0">&nbsp;</td>
+					<td align="center"><h1>註冊</h1></td>
 				</tr>
 				<tr>
 					<td>
@@ -136,7 +136,7 @@ else if(isset($_POST['suser'])){
 							<table width="0" border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
-									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" value="<?php echo $_POST['suser'];?>" placeholder="英文字開頭/僅含英數/至少3字"></td>
+									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" placeholder="英文字開頭/僅含英數/至少3字" value="<?php echo $_POST['suser'];?>" maxlength="32"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">密碼：</td>
@@ -148,11 +148,11 @@ else if(isset($_POST['suser'])){
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">姓名：</td>
-									<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo $_POST['sname'];?>"></td>
+									<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo $_POST['sname'];?>" maxlength="32" placeholder="最長32字"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">郵件：</td>
-									<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>"></td>
+									<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>" maxlength="64"></td>
 								</tr>
 								<tr>
 									<td align="center" colspan="2"><input type="submit" value="註冊"></td>
@@ -163,6 +163,9 @@ else if(isset($_POST['suser'])){
 				</tr>
 			</table>
 		</td>
+		<?php
+		}
+		?>
 	</tr>
 </table>
 </center>

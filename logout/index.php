@@ -19,6 +19,6 @@ setcookie("ELMScookie", "", time(), "/");
 		</td>
 	</tr>
 </table>
-<script>setTimeout(function(){location="../";},1000)</script>
+<script>setTimeout(function(){location="../home";},1000)</script>
 </body>
 </html>

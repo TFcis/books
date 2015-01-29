@@ -13,10 +13,16 @@ function keyFunction(){
 			case 49: location="<?php echo $url;?>home";break;
 			case 50: location="<?php echo $url;?>search";break;
 			case 51: location="<?php echo $url;?>user";break;
+			<?php
+			if($power>=2){
+			?>
 			case 52: location="<?php echo $url;?>borrow";break;
 			case 53: location="<?php echo $url;?>return";break;
 			case 54: location="<?php echo $url;?>managebook";break;
 			case 55: location="<?php echo $url;?>manageuser";break;
+			<?php
+			}
+			?>
 			case 48: location="<?php echo $url.($data?"logout":"login");?>";break;
 		}
 	}

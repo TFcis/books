@@ -11,7 +11,7 @@ else if($data[5]<=1){
 	$error="你沒有權限";
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
-if(isset($_POST["bookid"])){
+else if(isset($_POST["bookid"])){
 	if($_POST["bookid"]==""){
 		$error="圖書ID為空";
 	}
@@ -26,6 +26,9 @@ if(isset($_POST["bookid"])){
 		}
 		else if($acct==""){
 			$error="無此使用者";
+		}
+		else if($book["lend"]!=$acct["id"]){
+			$error="使用者 ".$acct["user"]."(".$acct["name"].") 沒有借閱圖書 ".$book["id"]." ".$book["name"];
 		}
 		else {
 			UPDATE( "booklist",[["lend",0] ],[["id",$_POST["bookid"]]]);

@@ -9,7 +9,6 @@ function checklogin(){
 		return false;
 	}
 	$id=$row[0];
-	$row = mfa(SELECT("*","account",[["id",$id]],null,[0,1]));
-	return $row;
+	return mfa(SELECT("*","account",[["id",$id]],null,[0,1]));
 }
 ?>

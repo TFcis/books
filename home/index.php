@@ -58,14 +58,18 @@ include_once("../header.php");
 		<hr>
 		<table width="0" border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td width="100" valign="top">2015.01.25</td>
-			<td>開始開發<br>
-				基本介面<br>
-				登入登出功能</td>
+			<td valign="top">2015.01.29</td>
+			<td>快捷鍵:Alt+數字<br>
+				圖書資訊<br>
+				借還書功能
+				</td>
 		</tr>
 		<tr>
-			<td valign="top">2015.01.26</td>
-			<td>修改個人資料功能</td>
+			<td valign="top">2015.01.28</td>
+			<td>封禁功能<br>
+				帳戶、圖書管理<br>
+				SQL安全性修正
+				</td>
 		</tr>
 		<tr>
 			<td valign="top">2015.01.27</td>
@@ -73,17 +77,14 @@ include_once("../header.php");
 				資料驗證</td>
 		</tr>
 		<tr>
-			<td valign="top">2015.01.28</td>
-			<td>封禁功能<br>
-				帳戶、圖書管理<br>
-				安全性修正
-				</td>
+			<td valign="top">2015.01.26</td>
+			<td>修改個人資料功能</td>
 		</tr>
 		<tr>
-			<td valign="top">2015.01.29</td>
-			<td>圖書資訊<br>
-				借還書功能
-				</td>
+			<td width="100" valign="top">2015.01.25</td>
+			<td>開始開發<br>
+				基本介面<br>
+				登入登出功能</td>
 		</tr>
 		</table>
 	</td>

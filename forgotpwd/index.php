@@ -9,7 +9,7 @@ if(checklogin()){
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
 if(isset($_POST['suser'])){
-	$row=mfa(SELECT("*","account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ],null,[0,1]));
+	$row=mfa(SELECT("*","account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ]));
 	if($row==""){
 		$error="資料錯誤";
 	}else if($_POST["spwd"]!=$_POST["spwd2"]){
@@ -55,7 +55,7 @@ if(isset($_POST['suser'])){
 		<td height="29">&nbsp;</td>
 	</tr>
 	<tr>
-		<td><h1>密碼救援</h1></td>
+		<td align="center"><h1>密碼救援</h1></td>
 	</tr>
 	<tr>
 		<td height="0">&nbsp;</td>

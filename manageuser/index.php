@@ -12,12 +12,12 @@ else if($data["power"]<=1){
 	$error="你沒有權限";
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
-if(isset($_POST["editid"])){
+else if(isset($_POST["editid"])){
 	if($data["id"]==$_POST["editid"]){
 		$error="無法更改自己的權限";
 	}
 	else{
-		$row=mfa(SELECT( "*","account",[ ["id",$_POST["editid"]] ],null,[0,1] ));
+		$row=mfa(SELECT( "*","account",[ ["id",$_POST["editid"]] ]));
 		if($row["power"]>$data["power"]){
 			$error="無法更改比自己權限高的帳戶";
 		}
@@ -88,7 +88,7 @@ if(isset($_POST["editid"])){
 			<td colspan="4">更改</td>
 		</tr>
 		<?php
-		$row=SELECT("*","account",null,[ ["id","ASC"] ]);
+		$row=SELECT("*","account",null,[ ["id","ASC"] ],"all");
 		while($acct=mfa($row)){
 			?>
 			<tr>
@@ -110,8 +110,7 @@ if(isset($_POST["editid"])){
 			<?php
 		}
 		?>
-	</table>
-
+		</table>
 	</td>
 </tr>
 </table>

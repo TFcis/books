@@ -33,7 +33,7 @@ include_once("../func/consolelog.php");
 		if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
 		if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
 		if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
-		$row=SELECT("*","booklist",$temp);
+		$row=SELECT("*","booklist",$temp,null,"all");
 		while($book=mfa($row)){
 		?>
 		<tr>

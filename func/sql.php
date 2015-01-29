@@ -1,6 +1,6 @@
 <?php
 include_once("consolelog.php");
-function SELECT($return,$table,$where=null,$order=null,$limit=null){
+function SELECT($return,$table,$where=null,$order=null,$limit=[0,1]){
 	$db=file_get_contents("../config/db.dat");
 	$db=explode("\r\n",$db);
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
@@ -32,7 +32,7 @@ function SELECT($return,$table,$where=null,$order=null,$limit=null){
 			$query.="`$value[0]` $value[1] ";
 		}
 	}
-	if($limit){
+	if($limit!="all"){
 		$query.="LIMIT $limit[0],$limit[1]";
 	}
 	consolelog($query);
