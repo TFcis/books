@@ -43,8 +43,7 @@ include_once("../header.php");
 		<strong>簡介</strong>
 		<hr>
 		<p>
-		<strong>E-LMS (E-Library Management System)</strong> is an open-source project
-		initiated and maintained by developers.
+		<strong>E-LMS (E-Library Management System)</strong>是一個開放 is an open-source project	initiated and maintained by developers.
 		</p>
 		
 		<p>
@@ -78,6 +77,12 @@ include_once("../header.php");
 			<td>封禁功能<br>
 				帳戶、圖書管理<br>
 				安全性修正
+				</td>
+		</tr>
+		<tr>
+			<td valign="top">2015.01.29</td>
+			<td>圖書資訊<br>
+				借還書功能
 				</td>
 		</tr>
 		</table>
