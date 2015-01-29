@@ -6,10 +6,10 @@ $error="";
 $message="";
 if(checklogin()){
 	$message="你已經登入了";
-	?><script>setTimeout(function(){location="../";},1000)</script><?php
+	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
 if(isset($_POST['suser'])){
-	$row=mfa(SELECT("*","account",[ ["user",repq($_POST['suser'])],["email",$_POST['semail']],["name",$_POST['sname']] ],null,[0,1]));
+	$row=mfa(SELECT("*","account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ],null,[0,1]));
 	if($row==""){
 		$error="資料錯誤";
 	}else if($_POST["spwd"]!=$_POST["spwd2"]){

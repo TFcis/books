@@ -7,10 +7,10 @@ $message="";
 $refresh="";
 if(checklogin()){
 	$message="你已經登入了";
-	?><script>setTimeout(function(){location="../";},1000)</script><?php
+	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
 else if(isset($_POST['user'])){
-	$row = mfa(SELECT("*","account",[["user",$_POST['user']]],[0,1]));
+	$row = mfa(SELECT("*","account",[["user",$_POST['user']]],null,[0,1]));
 	if($row==""){
 		$error="無此帳號";
 	}
@@ -39,13 +39,14 @@ else if(isset($_POST['suser'])){
 		$error="密碼不可有空白";
 	}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
 		$error="密碼至少4個字";
+	}else if($_POST["sname"]==""){
+		$error="姓名為空";
 	}else if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
 		$error="郵件位址不正確";
 	}else{
-		$row = sql("SELECT MAX(id) FROM `account`");
 		$row = mfa(SELECT(["MAX(id)"],"account"));
 		$id=$row[0]+1;
-	INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]]]);
+		INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]]]);
 		$message='註冊成功，請登入';
 		?><script>setTimeout(function(){location="./";},1000)</script><?php
 	}
