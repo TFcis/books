@@ -20,37 +20,33 @@ include_once("../func/consolelog.php");
 <tr>
 	<td colspan="3" style="text-align: center"><h1>館藏查詢</h1></td>
 	<td rowspan="4" valign="top" style="text-align: center">
-	<?php
-	if($_GET["bookname"]!=""||$_GET["bookcat"]!=""||$_GET["bookid"]!=""){
-		$temp=[["aval","0","!="]];
-		if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
-		if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
-		if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
-		$row=SELECT("*","booklist",$temp);
-		?>
 		<table width="0" border="0" cellspacing="10" cellpadding="0">
 		<tr>
 			<td>分類</td>
 			<td>ID</td>
 			<td>書名</td>
+			<td>來源</td>
 			<td>借出</td>
 		</tr>
 		<?php
+		$temp=[["aval","0","!="]];
+		if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
+		if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
+		if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
+		$row=SELECT("*","booklist",$temp);
 		while($book=mfa($row)){
-			?>
-			<tr>
-				<td><?php echo $book["cat"]; ?></td>
-				<td><?php echo $book["id"]; ?></td>
-				<td><?php echo ($book["name"]); ?></td>
-				<td><?php echo $book["lend"]; ?></td>
-			</tr>
-			<?php
+		?>
+		<tr>
+			<td><?php echo $book["cat"]; ?></td>
+			<td><a href="<?php echo $url?>bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
+			<td><?php echo ($book["name"]); ?></td>
+			<td><?php echo $book["source"]; ?></td>
+			<td><?php echo $book["lend"]; ?></td>
+		</tr>
+		<?php
 		}
 		?>
 		</table>
-		<?php
-	}
-	?>
 	</td>
 </tr>
 <tr>
@@ -77,15 +73,15 @@ include_once("../func/consolelog.php");
 		<table width="0" border="0" cellspacing="3" cellpadding="0">
 		<tr>
 			<td>書名</td>
-			<td><input name="bookname" type="text" id="bookname"></td>
+			<td><input name="bookname" type="text" id="bookname" value="<?php echo $_GET["bookname"];?>"></td>
 		</tr>
 		<tr>
 			<td>分類</td>
-			<td><input name="bookcat" type="text" id="bookcat"></td>
+			<td><input name="bookcat" type="text" id="bookcat" value="<?php echo $_GET["bookcat"];?>"></td>
 		</tr>
 		<tr>
 			<td>編號</td>
-			<td><input name="bookid" type="text" id="bookid"></td>
+			<td><input name="bookid" type="text" id="bookid" value="<?php echo $_GET["bookid"];?>"></td>
 		</tr>
 		<tr>
 			<td colspan="2" align="center"><input type="submit" value="搜尋"></td>

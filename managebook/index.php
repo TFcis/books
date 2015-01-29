@@ -9,7 +9,7 @@ $data=checklogin();
 if($data==false)header("Location: ../login");
 else if($data["power"]<=1){
 	$error="你沒有權限";
-	?><script>setTimeout(function(){location="../"},1000);</script><?php
+	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
 if(isset($_POST["catdelid"])){
 	DELETE("category",[ ["id",$_POST["catdelid"]] ]);
@@ -54,8 +54,8 @@ if(isset($_POST["addbook"])){
 	else{
 		$row=mfa(SELECT(["MAX(id)"],"booklist"));
 		$newid=$row[0]+1;
-		INSERT( "booklist",[ [ "id",$newid ],[ "name",$_POST["name"]],[ "cat",$_POST["cat"] ] ] );
-		$message="已增加圖書 ID=".$newid." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]];
+		INSERT( "booklist",[ [ "id",$newid ],[ "name",$_POST["name"]],[ "cat",$_POST["cat"],["source",$_POST["source"]] ] ] );
+		$message="已增加圖書 ID=".$newid." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
 	}
 }
 if(isset($_POST["editbook"])){
@@ -63,8 +63,8 @@ if(isset($_POST["editbook"])){
 	else if($_POST["name"]=="")$error="書名為空";
 	else if($_POST["cat"]=="")$error="分類為空";
 	else{
-		UPDATE( "booklist",[ ["name",(1-$_POST["name"]) ],["cat",$_POST["cat"] ] ],[ ["id",$_POST["id"]] ] );
-		$message="已修改圖書 ID=".$_POST["id"]." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]];
+		UPDATE( "booklist",[ ["name",(1-$_POST["name"]) ],["cat",$_POST["cat"] ],["source",$_POST["source"]] ],[ ["id",$_POST["id"]] ] );
+		$message="已修改圖書 ID=".$_POST["id"]." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
 	}
 }
 ?>
@@ -219,6 +219,7 @@ if(isset($_POST["editbook"])){
 			<td>ID</td>
 			<td>書名</td>
 			<td>借出</td>
+			<td>來源</td>
 			<td>資訊</td>
 			<td>管理</td>
 		</tr>
@@ -231,7 +232,8 @@ if(isset($_POST["editbook"])){
 				<td><?php echo $book["id"]; ?></td>
 				<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
 				<td><?php echo $book["lend"]; ?></td>
-				<td><?php echo($book["aval"]==0?"隱藏":""); ?></td>
+				<td><?php echo $book["source"]; ?></td>
+				<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>
 				<td>
 				<input type="button" value="<?php echo $bookavaltext[1-$book["aval"]];?>" onClick="avalid.value=<?php echo $book["id"]; ?>;aval.value=<?php echo $book["aval"]; ?>;bookaval.submit();">
 				<input type="button" value="刪除" onClick="if(!confirm('確認刪除?'))return false;bookdelid.value=<?php echo $book["id"]; ?>;bookdel.submit();">
@@ -263,6 +265,10 @@ if(isset($_POST["editbook"])){
 			<td><input name="cat" type="text" id="cat"></td>
 		</tr>
 		<tr>
+			<td>來源</td>
+			<td><input name="source" type="text" id="source" value="不明"></td>
+		</tr>
+		<tr>
 			<td colspan="2" align="center"><input type="submit" value="新增"></td>
 		</tr>
 		</table>
@@ -291,6 +297,10 @@ if(isset($_POST["editbook"])){
 		<tr>
 			<td>分類</td>
 			<td><input name="cat" type="text" id="cat"></td>
+		</tr>
+		<tr>
+			<td>來源</td>
+			<td><input name="source" type="text" id="source" value="不明"></td>
 		</tr>
 		<tr>
 			<td colspan="2" align="center"><input type="submit" value="修改"></td>
