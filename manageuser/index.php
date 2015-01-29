@@ -6,11 +6,11 @@ include_once("../func/consolelog.php");
 $error="";
 $message="";
 $data=checklogin();
-$powername=array("封禁","使用者","管理員","行政員");
+$powername=array("封禁","使用者","管理員","系統管理員");
 if($data==false)header("Location: ../login");
 else if($data["power"]<=1){
 	$error="你沒有權限";
-	?><script>setTimeout(function(){location="../"},1000);</script><?php
+	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
 if(isset($_POST["editid"])){
 	if($data["id"]==$_POST["editid"]){
@@ -37,7 +37,6 @@ if(isset($_POST["editid"])){
 <head>
 <meta charset="UTF-8">
 <title>使用者管理-TFcisELMS</title>
-<link href="login.css" rel="stylesheet" type="text/css">
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">

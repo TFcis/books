@@ -20,10 +20,11 @@ function SELECT($return,$table,$where=null,$order=null,$limit=null){
 		$query.="WHERE ";
 		foreach($where as $index => $value){
 			if($index!=0)$query.="AND ";
-			$query.="`$value[0]`".($value[2]==null?"=":$value[2])."'".mysqli_real_escape_string($link,$value[1])."' ";
+			if($value[2]=="REGEXP")$query.="`$value[0]` REGEXP '[".mysqli_real_escape_string($link,$value[1])."]' ";
+			else if($value[2]==null)$query.="`$value[0]` = '".mysqli_real_escape_string($link,$value[1])."' ";
+			else $query.="`$value[0]` $value[2] '".mysqli_real_escape_string($link,$value[1])."' ";
 		}
 	}
-	else 
 	if($order){
 		$query.="ORDER BY ";
 		foreach($order as $index => $value){
@@ -54,7 +55,7 @@ function INSERT($table,$value){
 	$query.=")VALUES(";
 	foreach($value as $index => $temp){
 		if($index!=0)$query.=",";
-		$query.="'$temp[1]' ";
+		$query.="'".mysqli_real_escape_string($link,$temp[1])."' ";
 	}
 	$query.=")";
 	consolelog($query);
