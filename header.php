@@ -6,6 +6,24 @@ $data=checklogin();
 $power=$data["power"];
 ?>
 <script src="<?php echo $url;?>res/jquery.min.js"></script>
+<script>
+function keyFunction(){
+	if ((event.altKey) && (event.keyCode!=18)){
+		switch(event.keyCode){
+			case 49: location="<?php echo $url;?>home";break;
+			case 50: location="<?php echo $url;?>search";break;
+			case 51: location="<?php echo $url;?>user";break;
+			case 52: location="<?php echo $url;?>borrow";break;
+			case 53: location="<?php echo $url;?>return";break;
+			case 54: location="<?php echo $url;?>managebook";break;
+			case 55: location="<?php echo $url;?>manageuser";break;
+			case 48: location="<?php echo $url.($data?"logout":"login");?>";break;
+		}
+	}
+}
+window.onkeydown=keyFunction;
+document.onkeydown=keyFunction;
+</script>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60%" height="100" align="center" valign="middle" bgcolor="#F0F0F0" style="font-weight: bold;">
@@ -20,7 +38,7 @@ $power=$data["power"];
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="68%" height="25" valign="middle" bgcolor="#0000FF" style="color: #FFF">
-			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $url;?>" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>user" target="_parent" style="color:#FFF">讀者資料查詢</a><?php if($power>=2){ ?>&nbsp;|&nbsp;<a href="<?php echo $url;?>borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>manageuser" target="_parent" style="color:#FFF">使用者</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $url;?>home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>user" target="_parent" style="color:#FFF">讀者資料查詢</a><?php if($power>=2){ ?>&nbsp;|&nbsp;<a href="<?php echo $url;?>borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>manageuser" target="_parent" style="color:#FFF">使用者</a>
 			<?php } ?>
 		</td>
 		<td width="32%" height="25" valign="middle" bgcolor="#0000FF" style="text-align: right; color: #FFF;">
