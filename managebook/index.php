@@ -6,7 +6,7 @@ include_once("../func/consolelog.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false)header("Location: ../login");
+if($data==false)header("Location: ../login/?from=managebook");
 else if($data["power"]<=1){
 	$error="你沒有權限";
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
@@ -226,7 +226,7 @@ else if(isset($_POST["editbook"])){
 				?>
 				<tr>
 					<td><?php echo $cate[$book["cat"]]; ?></td>
-					<td><?php echo $book["id"]; ?></td>
+					<td><a href="<?php echo $url?>bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
 					<td><?php echo $book["lend"]; ?></td>
 					<td><?php echo $book["source"]; ?></td>

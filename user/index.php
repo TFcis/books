@@ -3,7 +3,7 @@
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 $login=checklogin();
-if($login==false)header("Location: ../login");
+if($login==false)header("Location: ../login/?from=user");
 $editid=$login["id"];
 if(is_numeric($_GET["id"]))$editid=$_GET["id"];
 $error="";
@@ -13,6 +13,10 @@ $showdata=true;
 $editdata=mfa(SELECT("*","account",[["id",$editid]]));
 if(isset($_POST["sid"])&&$editid!=$_POST["sid"]){
 	$error="有預設資料遭到修改，沒有任何修改動作被執行";
+	$showdata=false;
+}
+else if($editdata==""){
+	$error="無此ID";
 	$showdata=false;
 }
 else{

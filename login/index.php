@@ -8,7 +8,7 @@ $login=checklogin();
 $nosignup=true;
 if($login){
 	$message="你已經登入了";
-	?><script>setTimeout(function(){location="../home";},1000)</script><?php
+	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
 else if(isset($_POST['user'])){
 	$row = mfa(SELECT("*","account",[["user",$_POST['user']]]));
@@ -24,7 +24,7 @@ else if(isset($_POST['user'])){
 			INSERT("session",[["id",$row["id"]],["cookie",$cookie]]);
 			$message="登入成功";
 			$login=true;
-			?><script>setTimeout(function(){location="../home";},3000)</script><?php
+			?><script>setTimeout(function(){location="../<?php echo ($_GET["from"]==""?"home":$_GET["from"]);?>";},3000)</script><?php
 		}
 		else $error="密碼錯誤";
 	}

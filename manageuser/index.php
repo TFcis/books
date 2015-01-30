@@ -7,7 +7,7 @@ $error="";
 $message="";
 $data=checklogin();
 $powername=array("封禁","使用者","管理員","系統管理員");
-if($data==false)header("Location: ../login");
+if($data==false)header("Location: ../login/?from=manageuser");
 else if($data["power"]<=1){
 	$error="你沒有權限";
 	?><script>setTimeout(function(){history.back();},1000);</script><?php

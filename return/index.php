@@ -6,7 +6,7 @@ include_once("../func/consolelog.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false)header("Location: ../login");
+if($data==false)header("Location: ../login/?from=return");
 else if($data[5]<=1){
 	$error="你沒有權限";
 	?><script>setTimeout(function(){history.back();},1000)</script><?php

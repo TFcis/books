@@ -56,7 +56,7 @@ include_once("../func/consolelog.php");
 			<td colspan="2">分類代碼</td>
 		</tr>
 		<?php
-			$row=SELECT("*","category");
+			$row=SELECT("*","category",null,null,"all");
 			while($cate=mfa($row)){
 		?>
 		<tr>
