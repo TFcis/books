@@ -28,32 +28,34 @@ else{
 		$error="無法更改較高權限的帳戶";
 		$showdata=false;
 	}
-	else if($editid!=$login["id"])$message="注意!你正在更改其他人的資料";
-	if($_POST['spwd']!=""){
-		if($_POST["spwd"]!=$_POST["spwd2"]){
-			$error="密碼不符";
-		}else if(preg_match("/\s/", $_POST["spwd"])){
-			$error="密碼不可有空白";
-		}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
-			$error="密碼至少4個字";
-		}else{
-			UPDATE("account",[ ["pwd",crypt($_POST['spwd'])] ],[ ["id",$editid] ]);
-			if($message2=="")$message2.="已更新以下資料";
-			$message2.=" 密碼";
+	else{
+		if($editid!=$login["id"])$message="注意!你正在更改其他人的資料";
+		if($_POST['spwd']!=""){
+			if($_POST["spwd"]!=$_POST["spwd2"]){
+				$error="密碼不符";
+			}else if(preg_match("/\s/", $_POST["spwd"])){
+				$error="密碼不可有空白";
+			}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
+				$error="密碼至少4個字";
+			}else{
+				UPDATE("account",[ ["pwd",crypt($_POST['spwd'])] ],[ ["id",$editid] ]);
+				if($message2=="")$message2.="已更新以下資料";
+				$message2.=" 密碼";
+			}
 		}
-	}
-	if($_POST['sname']!=""&&$_POST['sname']!=$editdata["name"]){
-		UPDATE("account",[ ["name",$_POST['sname']] ],[ ["id",$editid] ]);
-		if($message2=="")$message2.="已更新以下資料";
-		$message2.=" 姓名";
-	}
-	if($_POST['semail']!=""&&$_POST['semail']!=$editdata["email"]){
-		if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
-			$error="郵件位址不正確";
-		}else{
-			UPDATE("account",[ ["email",$_POST['semail']] ],[ ["id",$editid] ]);
+		if($_POST['sname']!=""&&$_POST['sname']!=$editdata["name"]){
+			UPDATE("account",[ ["name",$_POST['sname']] ],[ ["id",$editid] ]);
 			if($message2=="")$message2.="已更新以下資料";
-			$message2.=" 郵件";
+			$message2.=" 姓名";
+		}
+		if($_POST['semail']!=""&&$_POST['semail']!=$editdata["email"]){
+			if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
+				$error="郵件位址不正確";
+			}else{
+				UPDATE("account",[ ["email",$_POST['semail']] ],[ ["id",$editid] ]);
+				if($message2=="")$message2.="已更新以下資料";
+				$message2.=" 郵件";
+			}
 		}
 	}
 }
