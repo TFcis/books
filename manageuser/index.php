@@ -17,7 +17,7 @@ else if(isset($_POST["editid"])){
 		$error="無法更改自己的權限";
 	}
 	else{
-		$row=mfa(SELECT( "*","account",[ ["id",$_POST["editid"]] ]));
+		$row=mfa(SELECT( ["user","name","power"],"account",[ ["id",$_POST["editid"]] ]));
 		if($row["power"]>$data["power"]){
 			$error="無法更改比自己權限高的帳戶";
 		}

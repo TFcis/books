@@ -12,7 +12,7 @@ include_once("../func/url.php");
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
 	include_once("../header.php");
-	$bookinfo=mfa(SELECT("*","booklist",[["id",$_GET["id"]]]));
+	$bookinfo=mfa(SELECT(["id","name","cat","source"],"booklist",[["id",$_GET["id"]]]));
 ?>
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
@@ -35,7 +35,7 @@ include_once("../func/url.php");
 		</tr>
 		<tr>
 			<td>分類</td>
-			<td><?php echo mfa(SELECT("*","category",[["id",$bookinfo["cat"]]]))["name"]; ?></td>
+			<td><?php echo mfa(SELECT(["name"],"category",[["id",$bookinfo["cat"]]]))["name"]; ?></td>
 		</tr>
 		<tr>
 			<td>來源</td>
@@ -44,6 +44,9 @@ include_once("../func/url.php");
 		</table>
 	</td>
 </tr>
+<?php
+	if(checklogin()["power"]>=2){
+?>
 <tr>
 	<td height="20"></td>
 </tr>
@@ -55,6 +58,9 @@ include_once("../func/url.php");
 	<td align="center"><a href="<?php echo $url;?>return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
 	</td>
 </tr>
+<?php
+	}
+?>
 </table>
 </center>
 </body>

@@ -4,12 +4,14 @@ include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 $error="";
 $message="";
+$noshow=true;
 if(checklogin()){
 	$message="你已經登入了";
+	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
 if(isset($_POST['suser'])){
-	$row=mfa(SELECT("*","account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ]));
+	$row=mfa(SELECT(["id"],"account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ]));
 	if($row==""){
 		$error="資料錯誤";
 	}else if($_POST["spwd"]!=$_POST["spwd2"]){
@@ -47,7 +49,8 @@ if(isset($_POST['suser'])){
 	</tr>
 </table>
 <?php
-	}else{
+	}
+	if($noshow){
 ?>
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">

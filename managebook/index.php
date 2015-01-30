@@ -16,7 +16,7 @@ else if(isset($_POST["catdelid"])){
 	$message="已刪除分類 ID=".$_POST["catdelid"]." 名稱=".$_POST["catdelname"];
 }
 else if(isset($_POST["addcat"])){
-	$row=mfa(SELECT( "*","category",[ [ "id",$_POST["id"] ] ] ,null,"all"));
+	$row=mfa(SELECT( ["id"],"category",[ [ "id",$_POST["id"] ] ] ,null,"all"));
 	if($_POST["id"]=="")$error="ID為空";
 	else if($_POST["name"]=="")$error="名稱為空";
 	else if($row)$error="已有此ID";
@@ -26,7 +26,7 @@ else if(isset($_POST["addcat"])){
 	}
 }
 else if(isset($_POST["editcat"])){
-	$row=mfa(SELECT( "*","category",[ [ "id",$_POST["id"] ] ] ));
+	$row=mfa(SELECT( ["id"],"category",[ [ "id",$_POST["id"] ] ] ));
 	if($_POST["id"]=="")$error="ID為空";
 	else if(!$row)$error="無此ID";
 	else if($_POST["name"]=="")$error="名稱為空";
@@ -53,7 +53,7 @@ else if(isset($_POST["addbook"])){
 	else if($_POST["cat"]=="")$error="分類為空";
 	else{
 		$row=mfa(SELECT(["MAX(id)"],"booklist"));
-		$newid=$row[0]+1;
+		$newid=$row["MAX(id)"]+1;
 		INSERT( "booklist",[ [ "id",$newid ],[ "name",$_POST["name"]],[ "cat",$_POST["cat"],["source",$_POST["source"]] ] ] );
 		$message="已增加圖書 ID=".$newid." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
 	}

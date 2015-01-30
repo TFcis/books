@@ -10,7 +10,7 @@ $error="";
 $message="";
 $message2="";
 $showdata=true;
-$editdata=mfa(SELECT("*","account",[["id",$editid]]));
+$editdata=mfa(SELECT(["name","email","power"],"account",[["id",$editid]]));
 if(isset($_POST["sid"])&&$editid!=$_POST["sid"]){
 	$error="有預設資料遭到修改，沒有任何修改動作被執行";
 	$showdata=false;
@@ -20,7 +20,7 @@ else if($editdata==""){
 	$showdata=false;
 }
 else{
-	if($login["power"]<=1){
+	if($editid!=$login["id"]&&$login["power"]<=1){
 		$error="你沒有權限更改別人的資料";
 		$showdata=false;
 	}
@@ -61,7 +61,7 @@ else{
 }
 if($message!=""&&$message2!="")$message.="<br>";
 $message.=$message2;
-$editdata=mfa(SELECT("*","account",[["id",$editid]]));
+$editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 ?>
 <head>
 <meta charset="UTF-8">

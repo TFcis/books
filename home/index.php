@@ -27,12 +27,17 @@ include_once("../header.php");
 				<td>
 				<p>
 				<strong>Xiplus</strong><br>
-				Is obsessed with various APIs and has produced many useful code snippets, including one that alerts you via Facebook to order your lunch.
-				</p><p>
-				If seen with wireless keyboard at one end of the computer lab and his laptop at the other he's probably just trying to find out across how far a distance would bluetooth still work.
-				</p><p>
+				迷戀於各種API，並且已經產生了許多有用的代碼片段，其中一個包括透過Facebook來提醒你記得訂午餐（譯者注：這個沒有使用API）。
+				</p>
+				<p>
+				如果看到拿著藍牙鍵盤在電腦教室的一端，而筆電在教室另一端，那麼很可能只是在測試無線鍵盤距離多遠還能夠收得到訊號。
+				</p>
+				<p style="text-align: right">
 				<a title = "facebook" href = "http://www.facebook.com/profile.php?id=100005870494945" class = 'icon' style = "margin: 0 4px" target="_blank">Facebook</a>
 				<a title = "github" href = "http://github.com/xi-plus" class = 'icon' style = "margin: 0 4px" target="_blank">GitHub</a>
+				</p>
+				<p style="text-align: right">
+				撰寫：John / 翻譯：Xiplus & Google
 				</p>
 				</td>
 			</tr>
@@ -42,21 +47,19 @@ include_once("../header.php");
 		<td width="320" valign="top">
 		<strong>簡介</strong>
 		<hr>
-		<p>
-		<strong>E-LMS (E-Library Management System)</strong>是一個開放 is an open-source project	initiated and maintained by developers.
-		</p>
-		
-		<p>
-		The source code of the entire project (including website & backend),
-		as well as instructions to setting up the system on your own machine,
-		can be found on the <a href = "https://github.com/TFcis/ELMS" target="_blank">GitHub</a>.
-		</p>
-		
-		<p>Those interested are welcome to follow our development or to contribute by forking the repository.</p>
+		<p><strong>E-LMS (E-Library Management System)</strong>是一個由開發者發起並維護的開放原始碼專案，</p>
+		<p>如果要安裝此系統至自己的伺服器上，整個網站及後端的原始碼及說明文件，皆可在<a href = "https://github.com/TFcis/ELMS" target="_blank">GitHub</a>上找到。</p>
+		<p>如果有興趣的話，你可以關注我們的發展或是對於此專案建立一個分支來做出貢獻。</p>
 		
 		<strong>更新日誌</strong>
 		<hr>
 		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td valign="top">2015.01.30</td>
+			<td>權限檢查<br>
+				登入後返回上一頁
+				</td>
+		</tr>
 		<tr>
 			<td valign="top">2015.01.29</td>
 			<td>快捷鍵:Alt+數字<br>

@@ -4,32 +4,31 @@ include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 $error="";
 $message="";
-$login=checklogin();
+$noshow=true;
 $nosignup=true;
-if($login){
+if(checklogin()){
 	$message="你已經登入了";
+	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
-}
-else if(isset($_POST['user'])){
-	$row = mfa(SELECT("*","account",[["user",$_POST['user']]]));
+}else if(isset($_POST['user'])){
+	$row = mfa(SELECT(["id","pwd","power"],"account",[["user",$_POST['user']]]));
 	if($row==""){
 		$error="無此帳號";
-	}
-	else if($row["power"]<=0){
-		$error="此帳戶已遭封禁，無法登入";
-	}else {
-		if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
+	}else if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
+		if($row["power"]<=0){
+			$error="此帳戶已遭封禁，無法登入";
+		}else{
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
 			INSERT("session",[["id",$row["id"]],["cookie",$cookie]]);
 			$message="登入成功";
-			$login=true;
+			$noshow=false;
 			?><script>setTimeout(function(){location="../<?php echo ($_GET["from"]==""?"home":$_GET["from"]);?>";},3000)</script><?php
 		}
-		else $error="密碼錯誤";
+	}else{
+		$error="密碼錯誤";
 	}
-}
-else if(isset($_POST['suser'])){
+}else if(isset($_POST['suser'])){
 	$row = mfa(SELECT("*","account",[["user",$_POST['suser']]]));
 	if($row!=""){
 		$error="已經有人註冊此帳號";
@@ -47,7 +46,7 @@ else if(isset($_POST['suser'])){
 		$error="郵件位址不正確";
 	}else{
 		$row = mfa(SELECT(["MAX(id)"],"account"));
-		$id=$row[0]+1;
+		$id=$row["MAX(id)"]+1;
 		INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]]]);
 		$message='註冊成功，請登入';
 		$nosignup=false;
@@ -81,7 +80,7 @@ else if(isset($_POST['suser'])){
 </table>
 <?php
 	}
-	if(!$login){
+	if($noshow){
 ?>
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">

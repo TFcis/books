@@ -6,28 +6,26 @@ include_once("../func/consolelog.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false)header("Location: ../login/?from=borrow");
-else if($data[5]<=1){
+if($data==false){
+	header("Location: ../login/?from=borrow");
+}else if($data["power"]<=1){
 	$error="你沒有權限";
-	?><script>setTimeout(function(){history.back();},1000)</script><?php
-}
-if(isset($_POST["bookid"])){
+	?><script>setTimeout(function(){location="../";},1000)</script><?php
+}else if(isset($_POST["bookid"])){
 	if($_POST["bookid"]==""){
 		$error="圖書ID為空";
-	}
-	else if($_POST["borrowuser"]==""){
+	}else if($_POST["borrowuser"]==""){
 		$error="借閱使用者為空";
-	}
-	else{
-		$book=mfa(SELECT("*","booklist",[ ["id",$_POST["bookid"] ] ] ));
-		$acct=mfa(SELECT("*","account",[ ["user",$_POST["borrowuser"] ] ] ));
+	}else{
+		$book=mfa(SELECT(["name","lend"],"booklist",[ ["id",$_POST["bookid"] ] ] ));
+		$acct=mfa(SELECT(["id","user","name"],"account",[ ["user",$_POST["borrowuser"] ] ] ));
 		if($book==""){
 			$error="無此圖書ID";
-		}
-		else if($acct==""){
+		}else if($acct==""){
 			$error="無此使用者";
-		}
-		else {
+		}else if($book["lend"]!="0"){
+			$error="此本書已經被其他人借閱";
+		}else{
 			UPDATE( "booklist",[["lend",$acct["id"]] ],[["id",$_POST["bookid"]]]);
 			$message="已將圖書 ".$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["user"]."(".$acct["name"].")";
 		}
