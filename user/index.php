@@ -94,44 +94,97 @@ $editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 ?>
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td height="29">&nbsp;</td>
-	</tr>
-	<tr>
-		<td align="center"><h1>更新資料</h1></td>
-	</tr>
-	<tr>
-		<td height="0">&nbsp;</td>
-	</tr>
-	<tr>
-		<td>
-			<form method="post">
-				<input name="sid" type="hidden" id="sid" value="<?php echo $editid;?>">
-				<table width="0" border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td valign="top" class="inputleft">密碼：</td>
-						<td valign="top" class="inputright"><input name="spwd" type="password" id="spwd"></td>
-					</tr>
-					<tr>
-						<td valign="top" class="inputleft">確認：</td>
-						<td valign="top" class="inputright"><input name="spwd2" type="password" id="spwd2"></td>
-					</tr>
-					<tr>
-						<td valign="top" class="inputleft">姓名：</td>
-						<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo het($editdata["name"]);?>" maxlength="32"></td>
-					</tr>
-					<tr>
-						<td valign="top" class="inputleft">郵件：</td>
-						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $editdata["email"];?>" maxlength="64"></td>
-					</tr>
-					<tr>
-						<td align="center" colspan="2"><input type="submit" value="更新資料"></td>
-					</tr>
+<tr>
+	<td valign="top">
+		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td height="29">&nbsp;</td>
+		</tr>
+		<tr>
+			<td align="center"><h1>目前借閱</h1></td>
+		</tr>
+		<tr>
+			<td>
+				<table width="0" border="0" cellspacing="10" cellpadding="0">
+				<tr>
+					<td>分類</td>
+					<td>ID</td>
+					<td>書名</td>
+					<td>來源</td>
+				</tr>
+				<?php
+				$row=SELECT("*","category",null,null,"all");
+				while($temp=mfa($row)){
+					$cate[$temp["id"]]=$temp["name"];
+				}
+				$row=SELECT(["id","name","cat","lend","source"],"booklist",[["lend",$login["id"]]],null,"all");
+				$noborrow=true;
+				while($book=mfa($row)){
+					$noborrow=false;
+				?>
+				<tr>
+					<td><?php echo $cate[$book["cat"]]; ?></td>
+					<td><a href="<?php echo $url?>bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
+					<td><?php echo ($book["name"]); ?></td>
+					<td><?php echo $book["source"]; ?></td>
+				</tr>
+				<?php
+				}
+				if($noborrow){
+				?>
+				<tr>
+					<td colspan="4" align="center">無任何借閱</td>
+				</tr>
+				<?php
+				}
+				?>
 				</table>
-			</form>
-		</td>
-	</tr>
+			</td>
+		</tr>
+		</table>
+	</td>
+	<td width="40"></td>
+	<td valign="top">
+		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td height="29">&nbsp;</td>
+		</tr>
+		<tr>
+			<td align="center"><h1>更新資料</h1></td>
+		</tr>
+		<tr>
+			<td>
+				<form method="post">
+					<input name="sid" type="hidden" id="sid" value="<?php echo $editid;?>">
+					<table width="0" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td valign="top" class="inputleft">密碼：</td>
+							<td valign="top" class="inputright"><input name="spwd" type="password" id="spwd"></td>
+						</tr>
+						<tr>
+							<td valign="top" class="inputleft">確認：</td>
+							<td valign="top" class="inputright"><input name="spwd2" type="password" id="spwd2"></td>
+						</tr>
+						<tr>
+							<td valign="top" class="inputleft">姓名：</td>
+							<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo het($editdata["name"]);?>" maxlength="32"></td>
+						</tr>
+						<tr>
+							<td valign="top" class="inputleft">郵件：</td>
+							<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $editdata["email"];?>" maxlength="64"></td>
+						</tr>
+						<tr>
+							<td align="center" colspan="2"><input type="submit" value="更新資料"></td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
 </table>
+
 </center>
 <?php 
 	}
