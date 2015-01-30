@@ -59,6 +59,8 @@ else{
 		}
 	}
 }
+if($message!=""&&$message2!="")$message.="<br>";
+$message.=$message2;
 $editdata=mfa(SELECT("*","account",[["id",$editid]]));
 ?>
 <head>
@@ -83,7 +85,7 @@ $editdata=mfa(SELECT("*","account",[["id",$editid]]));
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?><br><?php echo $message2;?></td>
+		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
 	</tr>
 </table>
 <?php
