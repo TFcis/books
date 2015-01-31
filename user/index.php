@@ -124,7 +124,7 @@ $editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 				?>
 				<tr>
 					<td><?php echo $cate[$book["cat"]]; ?></td>
-					<td><a href="<?php echo $url?>bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
+					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 					<td><?php echo ($book["name"]); ?></td>
 					<td><?php echo $book["source"]; ?></td>
 				</tr>

@@ -4,21 +4,21 @@ include_once("func/checklogin.php");
 include_once("func/sql.php");
 $login=checklogin();
 ?>
-<script src="<?php echo $url;?>res/jquery.min.js"></script>
+<script src="../res/jquery.min.js"></script>
 <script>
 function keyFunction(){
 	if ((event.altKey) && (event.keyCode!=18)){
 		switch(event.keyCode){
-			case 49: location="<?php echo $url;?>home";break;
-			case 50: location="<?php echo $url;?>search";break;
-			case 51: location="<?php echo $url;?>user";break;
+			case 49: location="../home";break;
+			case 50: location="../search";break;
+			case 51: location="../user";break;
 			<?php
 			if($login["power"]>=2){
 			?>
-			case 52: location="<?php echo $url;?>borrow";break;
-			case 53: location="<?php echo $url;?>return";break;
-			case 54: location="<?php echo $url;?>managebook";break;
-			case 55: location="<?php echo $url;?>manageuser";break;
+			case 52: location="../borrow";break;
+			case 53: location="../return";break;
+			case 54: location="../managebook";break;
+			case 55: location="../manageuser";break;
 			<?php
 			}
 			?>
@@ -43,19 +43,19 @@ document.onkeydown=keyFunction;
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="68%" height="25" valign="middle" bgcolor="#0000FF" style="color: #FFF">
-			&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $url;?>home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>user" target="_parent" style="color:#FFF">讀者資料查詢</a><?php if($login["power"]>=2){ ?>&nbsp;|&nbsp;<a href="<?php echo $url;?>borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="<?php echo $url;?>manageuser" target="_parent" style="color:#FFF">使用者</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;<a href="../home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="../search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="../user" target="_parent" style="color:#FFF">讀者資料查詢</a><?php if($login["power"]>=2){ ?>&nbsp;|&nbsp;<a href="../borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="../return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="../managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="../manageuser" target="_parent" style="color:#FFF">使用者</a>
 			<?php } ?>
 		</td>
 		<td width="32%" height="25" valign="middle" bgcolor="#0000FF" style="text-align: right; color: #FFF;">
 			<?php 
 			if($login==false){
 			?>
-			<a href="<?php echo $url;?>login" target="_parent" style="color:#FFF">登入</a>
+			<a href="../login" target="_parent" style="color:#FFF">登入</a>
 			<?php
 			}
 			else{echo "目前登入: ".$login["user"]."(".het($login["name"]).")";
 			?>
-			<a href="<?php echo $url;?>logout" target="_parent" style="color:#FFF">登出</a>
+			<a href="../logout" target="_parent" style="color:#FFF">登出</a>
 			<?php
 			}
 			?>

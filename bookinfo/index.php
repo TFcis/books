@@ -3,7 +3,6 @@
 include_once("../func/sql.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
-include_once("../func/url.php");
 ?>
 <head>
 <meta charset="UTF-8">
@@ -51,11 +50,11 @@ include_once("../func/url.php");
 	<td height="20"></td>
 </tr>
 <tr>
-	<td align="center"><a href="<?php echo $url;?>borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
+	<td align="center"><a href="borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
 	</td>
 </tr>
 <tr>
-	<td align="center"><a href="<?php echo $url;?>return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
+	<td align="center"><a href="return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
 	</td>
 </tr>
 <?php

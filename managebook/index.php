@@ -254,7 +254,7 @@ else if(isset($_POST["editbook"])){
 				?>
 				<tr>
 					<td><?php echo $cate[$book["cat"]]; ?></td>
-					<td><a href="<?php echo $url?>bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
+					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
 					<td><?php echo $book["lend"]; ?></td>
 					<td><?php echo $book["source"]; ?></td>
