@@ -50,11 +50,11 @@ include_once("../func/consolelog.php");
 	<td height="20"></td>
 </tr>
 <tr>
-	<td align="center"><a href="borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
+	<td align="center"><a href="../borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
 	</td>
 </tr>
 <tr>
-	<td align="center"><a href="return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
+	<td align="center"><a href="../return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
 	</td>
 </tr>
 <?php

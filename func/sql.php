@@ -5,7 +5,7 @@ function WHERE($link,$where){
 		$query="WHERE ";
 		foreach($where as $index => $value){
 			if($index!=0)$query.="AND ";
-			if($value[2]=="REGEXP")$query.="`$value[0]` REGEXP '[".mysqli_real_escape_string($link,$value[1])."]' ";
+			if($value[2]=="REGEXP")$query.="`$value[0]` REGEXP '".mysqli_real_escape_string($link,str_replace("+","[+]",$value[1]))."' ";
 			else if($value[2]==null)$query.="`$value[0]` = '".mysqli_real_escape_string($link,$value[1])."' ";
 			else $query.="`$value[0]` $value[2] '".mysqli_real_escape_string($link,$value[1])."' ";
 		}
