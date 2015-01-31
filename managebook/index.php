@@ -54,18 +54,42 @@ else if(isset($_POST["addbook"])){
 	else{
 		$row=mfa(SELECT(["MAX(id)"],"booklist"));
 		$newid=$row["MAX(id)"]+1;
-		INSERT( "booklist",[ [ "id",$newid ],[ "name",$_POST["name"]],[ "cat",$_POST["cat"],["source",$_POST["source"]] ] ] );
-		$message="已增加圖書 ID=".$newid." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
+		$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
+		for($i=0;$i<$_POST["number"];$i++){
+			if($isbn["totalItems"]==1){
+				INSERT( "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["source",$_POST["source"]],["ISBN",$_POST["name"]]  ] );
+				$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$_POST["name"];
+			}
+			else {
+				INSERT( "booklist",[ [ "id",$newid ],[ "name",$_POST["name"]],[ "cat",$_POST["cat"]],["source",$_POST["source"]] ]  );
+				$message="已增加圖書 ID=".$newid." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
+			}
+			$newid++;
+		}
 	}
 }
 else if(isset($_POST["editbook"])){
-	if($_POST["id"]=="")$error="ID為空";
-	else if($_POST["name"]=="")$error="書名為空";
-	else if($_POST["cat"]=="")$error="分類為空";
-	else{
-		UPDATE( "booklist",[ ["name",(1-$_POST["name"]) ],["cat",$_POST["cat"] ],["source",$_POST["source"]] ],[ ["id",$_POST["id"]] ] );
-		$message="已修改圖書 ID=".$_POST["id"]." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
+	$editid=explode(",",$_POST["id"]);
+	consolelog($editid);
+	foreach($editid as $id){
+		if($_POST["name"]!=""){
+			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
+			if($isbn["totalItems"]==1){
+				UPDATE( "booklist",[ ["name",$isbn["items"][0]["volumeInfo"]["title"] ],["ISBN",$_POST["name"] ] ],[ ["id",$id] ] );
+			}
+			else {
+				UPDATE( "booklist",[ ["name",$_POST["name"] ] ],[ ["id",$id] ] );
+			}
+		}
+		if($_POST["cat"]!=""){
+			UPDATE( "booklist",[ ["cat",$_POST["cat"] ] ],[ ["id",$id] ] );
+		}
+		if($_POST["source"]!=""){
+			UPDATE( "booklist",[ ["source",$_POST["source"] ] ],[ ["id",$id] ] );
+		}
 	}
+	$row=mfa(SELECT("*","booklist",[ ["id",$_POST["id"]] ]));
+	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
 ?>
 <head>
@@ -217,6 +241,7 @@ else if(isset($_POST["editbook"])){
 				<td>書名</td>
 				<td>借出</td>
 				<td>來源</td>
+				<td>ISBN</td>
 				<td>資訊</td>
 				<td>管理</td>
 			</tr>
@@ -230,6 +255,7 @@ else if(isset($_POST["editbook"])){
 					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
 					<td><?php echo $book["lend"]; ?></td>
 					<td><?php echo $book["source"]; ?></td>
+					<td><?php echo $book["ISBN"]; ?></td>
 					<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>
 					<td>
 					<input type="button" value="<?php echo $bookavaltext[1-$book["aval"]];?>" onClick="avalid.value=<?php echo $book["id"]; ?>;aval.value=<?php echo $book["aval"]; ?>;bookaval.submit();">
@@ -254,7 +280,7 @@ else if(isset($_POST["editbook"])){
 				<td align="center" colspan="2"><h2>新增</h2></td>
 			</tr>
 			<tr>
-				<td>書名</td>
+				<td>書名/ISBN</td>
 				<td><input name="name" type="text" id="name"></td>
 			</tr>
 			<tr>
@@ -264,6 +290,10 @@ else if(isset($_POST["editbook"])){
 			<tr>
 				<td>來源</td>
 				<td><input name="source" type="text" id="source" value="不明"></td>
+			</tr>
+			<tr>
+				<td>數量</td>
+				<td><input name="number" type="text" id="number" value="1"></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input type="submit" value="新增"></td>
@@ -288,7 +318,7 @@ else if(isset($_POST["editbook"])){
 				<td><input name="id" type="text" id="id"></td>
 			</tr>
 			<tr>
-				<td>書名</td>
+				<td>書名/ISBN</td>
 				<td><input name="name" type="text" id="name"></td>
 			</tr>
 			<tr>

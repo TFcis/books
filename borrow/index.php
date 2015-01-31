@@ -27,6 +27,7 @@ if($data==false){
 			$error="此本書已經被其他人借閱";
 		}else{
 			UPDATE( "booklist",[["lend",$acct["id"]] ],[["id",$_POST["bookid"]]]);
+			INSERT("log",[["operate",$data["id"]],["affect",$acct["id"]],["type","borrow"],["action","borrow book id=".$_POST["bookid"]]]);
 			$message="已將圖書 ".$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["user"]."(".$acct["name"].")";
 		}
 	}
