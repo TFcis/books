@@ -29,7 +29,7 @@ $row=SELECT("*","booklist",null,null,"all");
 	while($bookinfo=mfa($row)){
 	?>
 	<td>
-	<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http://www.tfcis.org/ELMS/bookinfo/?id=<?php echo $bookinfo["id"];?>"><br>
+	<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http://books.tfcis.org/bookinfo/?id=<?php echo $bookinfo["id"];?>"><br>
 	ＩＤ：<?php echo $bookinfo["id"]; ?><br>
 	書名：<?php echo $bookinfo["name"]; ?><br>
 	分類：<?php echo $cate[$bookinfo["cat"]]; ?><br>

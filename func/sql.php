@@ -23,8 +23,7 @@ function LIMIT($limit){
 		return "LIMIT ".$limit." ";
 }
 function SELECT($return,$table,$where=null,$order=null,$limit=[0,1]){
-	$db=file_get_contents("../config/db.dat");
-	$db=explode("\r\n",$db);
+	include("../config/db.php");
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
@@ -50,8 +49,7 @@ function SELECT($return,$table,$where=null,$order=null,$limit=[0,1]){
 	return mysqli_query($link, $query);
 }
 function INSERT($table,$value){
-	$db=file_get_contents("../config/db.dat");
-	$db=explode("\r\n",$db);
+	include("../config/db.php");
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
@@ -70,8 +68,7 @@ function INSERT($table,$value){
 	return mysqli_query($link, $query);
 }
 function UPDATE($table,$value,$where=null,$limit=1){
-	$db=file_get_contents("../config/db.dat");
-	$db=explode("\r\n",$db);
+	include("../config/db.php");
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
@@ -85,8 +82,7 @@ function UPDATE($table,$value,$where=null,$limit=1){
 	return mysqli_query($link, $query);
 }
 function DELETE($table,$where=null,$limit=1){
-	$db=file_get_contents("../config/db.dat");
-	$db=explode("\r\n",$db);
+	include("../config/db.php");
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
