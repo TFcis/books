@@ -37,7 +37,7 @@ include_once("../header.php");
 				<a title = "github" href = "http://github.com/xi-plus" class = 'icon' style = "margin: 0 4px" target="_blank">GitHub</a>
 				</p>
 				<p style="text-align: right">
-				撰寫：John / 翻譯：Xiplus & Google
+				撰寫：John / 翻譯：Xiplus &amp; Google
 				</p>
 				</td>
 			</tr>
@@ -47,8 +47,8 @@ include_once("../header.php");
 		<td width="320" valign="top">
 		<strong>簡介</strong>
 		<hr>
-		<p><strong>E-LMS (E-Library Management System)</strong>是一個由開發者發起並維護的開放原始碼專案，</p>
-		<p>如果要安裝此系統至自己的伺服器上，整個網站及後端的原始碼及說明文件，皆可在<a href = "https://github.com/TFcis/ELMS" target="_blank">GitHub</a>上找到。</p>
+		<p><strong>E-LMS (E-Library Management System)</strong>是一個開放原始碼專案，原始碼皆可在<a href = "https://github.com/TFcis/ELMS" target="_blank">GitHub</a>上找到。</p>
+		<p>目前此系統用來管理南一中資訊社TFcis社部內的圖書，若要借書請和社團幹部詢問，所有圖書資訊和出借狀態都可透過本系統查詢。</p>
 		<p>如果有興趣的話，你可以關注我們的發展或是對於此專案建立一個分支來做出貢獻。</p>
 		
 		<strong>更新日誌</strong>
