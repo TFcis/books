@@ -52,19 +52,22 @@ else if(isset($_POST["addbook"])){
 	if($_POST["name"]=="")$error="書名為空";
 	else if($_POST["cat"]=="")$error="分類為空";
 	else{
-		$row=mfa(SELECT(["MAX(id)"],"booklist"));
-		$newid=$row["MAX(id)"]+1;
-		$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
-		for($i=0;$i<$_POST["number"];$i++){
-			if($isbn["totalItems"]==1){
-				INSERT( "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["source",$_POST["source"]],["ISBN",$_POST["name"]]  ] );
-				$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$_POST["name"];
+		$booknames = explode(",",$_POST["name"]);
+		foreach($booknames as $name){
+			$row=mfa(SELECT(["MAX(id)"],"booklist"));
+			$newid=$row["MAX(id)"]+1;
+			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$name),true);
+			for($i=0;$i<$_POST["number"];$i++){
+				if($isbn["totalItems"]==1){
+					INSERT( "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["source",$_POST["source"]],["ISBN",$name]  ] );
+					$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$name;
+				}
+				else {
+					INSERT( "booklist",[ [ "id",$newid ],[ "name",$name],[ "cat",$_POST["cat"]],["source",$_POST["source"]] ]  );
+					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
+				}
+				$newid++;
 			}
-			else {
-				INSERT( "booklist",[ [ "id",$newid ],[ "name",$_POST["name"]],[ "cat",$_POST["cat"]],["source",$_POST["source"]] ]  );
-				$message="已增加圖書 ID=".$newid." 書名=".$_POST["name"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
-			}
-			$newid++;
 		}
 	}
 }
@@ -299,6 +302,7 @@ else if(isset($_POST["editbook"])){
 				<td colspan="2" align="center"><input type="submit" value="新增"></td>
 			</tr>
 			</table>
+            在書名/ISBN中使用逗點一次新增多本書
 		</form>
 		</td>
 	</tr>
@@ -333,6 +337,7 @@ else if(isset($_POST["editbook"])){
 				<td colspan="2" align="center"><input type="submit" value="修改"></td>
 			</tr>
 			</table>
+        	在ID中使用逗點一次修改多本書
 		</form>
 		</td>
 	</tr>
