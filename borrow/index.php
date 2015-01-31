@@ -1,6 +1,7 @@
 <html>
 <?php
 include_once("../func/sql.php");
+include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
 $error="";
@@ -35,8 +36,12 @@ if($data==false){
 ?>
 <head>
 <meta charset="UTF-8">
-<title>借書-TFcisELMS</title>
+<title>借書-TFcisBooks</title>
 <link href="../res/css.css" rel="stylesheet" type="text/css">
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
+?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
@@ -62,10 +67,9 @@ if($data==false){
 	if($data["power"]>=2){
 ?>
 <center>
-
 <table width="0" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td height="50" colspan="1">&nbsp;</td>
+	<td class="dfromh">&nbsp;</td>
 </tr>
 <tr>
 	<td colspan="1" style="text-align: center"><h1>借書</h1></td>

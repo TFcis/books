@@ -2,6 +2,7 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
+include_once("../func/url.php");
 $error="";
 $message="";
 $noshow=true;
@@ -25,9 +26,12 @@ if(isset($_POST['suser'])){
 ?>
 <head>
 <meta charset="UTF-8">
-<title>密碼救援-TFcisELMS</title>
+<title>密碼救援-TFcisBooks</title>
 <link href="forgotpwd.css" rel="stylesheet" type="text/css">
 <link href="../res/css.css" rel="stylesheet" type="text/css">
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
@@ -55,13 +59,10 @@ if(isset($_POST['suser'])){
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td height="29">&nbsp;</td>
+		<td class="dfromh">&nbsp;</td>
 	</tr>
 	<tr>
 		<td align="center"><h1>密碼救援</h1></td>
-	</tr>
-	<tr>
-		<td height="0">&nbsp;</td>
 	</tr>
 	<tr>
 		<td>

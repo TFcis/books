@@ -1,6 +1,7 @@
 <html>
 <?php
 include_once("../func/sql.php");
+include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
 $error="";
@@ -73,7 +74,6 @@ else if(isset($_POST["addbook"])){
 }
 else if(isset($_POST["editbook"])){
 	$editid=explode(",",$_POST["id"]);
-	consolelog($editid);
 	foreach($editid as $id){
 		if($_POST["name"]!=""){
 			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
@@ -97,8 +97,12 @@ else if(isset($_POST["editbook"])){
 ?>
 <head>
 <meta charset="UTF-8">
-<title>圖書管理-TFcisELMS</title>
+<title>圖書管理-TFcisBooks</title>
 <link href="../res/css.css" rel="stylesheet" type="text/css">
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
+?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
@@ -126,11 +130,11 @@ else if(isset($_POST["editbook"])){
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
 <tr>
+	<td class="dfromh" colspan="3">&nbsp;</td>
+</tr>
+<tr>
 <td valign="top">
 	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td height="50" colspan="2">&nbsp;</td>
-	</tr>
 	<tr>
 		<td colspan="2" align="center"><h1>分類管理</h1></td>
 	</tr>
@@ -154,7 +158,7 @@ else if(isset($_POST["editbook"])){
 				<tr>
 				<td><?php echo $i; ?></td>
 				<td><?php echo $temp; ?></td>
-				<td><input type="button" value="刪除" onClick="catdelid.value='<?php echo $i; ?>';catdelname.value='<?php echo $temp; ?>';catdel.submit();" ></td>
+				<td><input type="button" value="刪除" onClick="if(!confirm('確認刪除?'))return false;catdelid.value='<?php echo $i; ?>';catdelname.value='<?php echo $temp; ?>';catdel.submit();" ></td>
 				</tr>
 			<?php
 				}
@@ -202,7 +206,17 @@ else if(isset($_POST["editbook"])){
 			</tr>
 			<tr>
 				<td>ID</td>
-				<td><input name="id" type="text" id="id"></td>
+				<td>
+				<select name="id">
+				<?php
+					foreach($cate as $i => $name){
+				?>
+					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+				<?php
+					}
+				?>
+				</select>
+				</td>
 			</tr>
 			<tr>
 				<td>名稱</td>
@@ -217,12 +231,9 @@ else if(isset($_POST["editbook"])){
 	</tr>
 	</table>
 </td>
-<td width="50"></td>
+<td width="20"></td>
 <td valign="top">
 	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td height="50">&nbsp;</td>
-	</tr>
 	<tr>
 		<td align="center" ><h1>圖書管理</h1></td>
 	</tr>
@@ -284,11 +295,21 @@ else if(isset($_POST["editbook"])){
 			</tr>
 			<tr>
 				<td>書名/ISBN</td>
-				<td><input name="name" type="text" id="name"></td>
+				<td><input name="name" type="text" id="name" placeholder="逗點分隔新增多本"></td>
 			</tr>
 			<tr>
 				<td>分類</td>
-				<td><input name="cat" type="text" id="cat"></td>
+				<td>
+				<select name="cat">
+				<?php
+					foreach($cate as $i => $name){
+				?>
+					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+				<?php
+					}
+				?>
+				</select>
+				</td>
 			</tr>
 			<tr>
 				<td>來源</td>
@@ -302,7 +323,6 @@ else if(isset($_POST["editbook"])){
 				<td colspan="2" align="center"><input type="submit" value="新增"></td>
 			</tr>
 			</table>
-            在書名/ISBN中使用逗點一次新增多本書
 		</form>
 		</td>
 	</tr>
@@ -319,7 +339,7 @@ else if(isset($_POST["editbook"])){
 			</tr>
 			<tr>
 				<td>ID</td>
-				<td><input name="id" type="text" id="id"></td>
+				<td><input name="id" type="text" id="id" placeholder="逗點分隔修改多本"></td>
 			</tr>
 			<tr>
 				<td>書名/ISBN</td>
@@ -327,7 +347,17 @@ else if(isset($_POST["editbook"])){
 			</tr>
 			<tr>
 				<td>分類</td>
-				<td><input name="cat" type="text" id="cat"></td>
+				<td>
+				<select name="cat">
+				<?php
+					foreach($cate as $i => $name){
+				?>
+					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+				<?php
+					}
+				?>
+				</select>
+				</td>
 			</tr>
 			<tr>
 				<td>來源</td>
@@ -337,7 +367,6 @@ else if(isset($_POST["editbook"])){
 				<td colspan="2" align="center"><input type="submit" value="修改"></td>
 			</tr>
 			</table>
-        	在ID中使用逗點一次修改多本書
 		</form>
 		</td>
 	</tr>

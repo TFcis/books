@@ -1,12 +1,17 @@
 <html>
 <?php
 include_once("../func/sql.php");
+include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
 ?>
 <head>
 <meta charset="UTF-8">
-<title>PRINT-TFcisELMS</title>
+<title>PRINT-TFcisBooks</title>
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
+?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php

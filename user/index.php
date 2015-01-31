@@ -2,6 +2,7 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
+include_once("../func/url.php");
 $login=checklogin();
 if($login==false)header("Location: ../login/?from=user");
 $editid=$login["id"];
@@ -65,9 +66,13 @@ $editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 ?>
 <head>
 <meta charset="UTF-8">
-<title>讀者資料查詢-TFcisELMS</title>
+<title>讀者資料查詢-TFcisBooks</title>
 <link href="user.css" rel="stylesheet" type="text/css">
 <link href="../res/css.css" rel="stylesheet" type="text/css">
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
+?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
@@ -95,11 +100,11 @@ $editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
 <tr>
+	<td class="dfromh" colspan="3">&nbsp;</td>
+</tr>
+<tr>
 	<td valign="top">
 		<table width="0" border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<td height="29">&nbsp;</td>
-		</tr>
 		<tr>
 			<td align="center"><h1>目前借閱</h1></td>
 		</tr>
@@ -146,9 +151,6 @@ $editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 	<td width="40"></td>
 	<td valign="top">
 		<table width="0" border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<td height="29">&nbsp;</td>
-		</tr>
 		<tr>
 			<td align="center"><h1>更新資料</h1></td>
 		</tr>

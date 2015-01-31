@@ -1,13 +1,18 @@
 <html>
 <?php
 include_once("../func/sql.php");
+include_once("../func/url.php");
 DELETE("session",[ ["cookie",$_COOKIE["ELMScookie"]] ]);
 setcookie("ELMScookie", "", time(), "/");
 ?>
 <head>
 <meta charset="UTF-8">
-<title>登出-TFcisELMS</title>
+<title>登出-TFcisBooks</title>
 <link href="../res/css.css" rel="stylesheet" type="text/css">
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
+?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php

@@ -2,6 +2,7 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
+include_once("../func/url.php");
 $error="";
 $message="";
 $noshow=true;
@@ -55,9 +56,13 @@ if(checklogin()){
 ?>
 <head>
 <meta charset="UTF-8">
-<title>登入-TFcisELMS</title>
+<title>登入-TFcisBooks</title>
 <link href="login.css" rel="stylesheet" type="text/css">
 <link href="../res/css.css" rel="stylesheet" type="text/css">
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
+?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
@@ -85,11 +90,11 @@ if(checklogin()){
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
 	<tr>
+		<td class="dfromh" colspan="3"></td>
+	</tr>
+	<tr>
 		<td valign="top">
-			<table width="0" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td height="29">&nbsp;</td>
-				</tr>
+			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td align="center"><h1>登入</h1></td>
 				</tr>
@@ -109,7 +114,7 @@ if(checklogin()){
 									<td height="45" colspan="2" align="center" valign="top"><input type="submit" value="登入"></td>
 								</tr>
 								<tr>
-									<td align="center" colspan="2"><a href="../forgotpwd" target="_parent">忘記密碼</a></td>
+									<td align="center" colspan="2"><a href="javascript:alert('請向管理員要求重置密碼');" target="_parent">忘記密碼</a></td>
 								</tr>
 							</table>
 						</form>
@@ -123,9 +128,6 @@ if(checklogin()){
 		<td width="20"></td>
 		<td valign="top">
 			<table width="0" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td height="29">&nbsp;</td>
-				</tr>
 				<tr>
 					<td align="center"><h1>註冊</h1></td>
 				</tr>

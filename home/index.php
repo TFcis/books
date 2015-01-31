@@ -2,10 +2,18 @@
 <?php
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
+include_once("../func/url.php");
+include_once("../func/url.php");
 ?>
 <head>
 <meta charset="UTF-8">
-<title>首頁-TFcisELMS</title>
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<link rel="icon" href="../res/icon.ico" type="image/x-icon">
+<?php
+include_once("../fbmeta.php");
+?>
+<title>TFcis Books</title>
+<link href="../res/css.css" rel="stylesheet" type="text/css">
 </head>
 <body topmargin="0" leftmargin="0" bottommargin="0">
 <?php
@@ -14,7 +22,7 @@ include_once("../header.php");
 <center>
 <table width="0" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td height="50" colspan="3"></td>
+		<td colspan="3" class="dfromh">&nbsp;</td>
 	</tr>
 	<tr>
 		<td width="420" valign="top">
