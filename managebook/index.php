@@ -180,7 +180,7 @@ include_once("../fbmeta.php");
 			</tr>
 			<tr>
 				<td>ID</td>
-				<td><input name="id" type="text" id="id"></td>
+				<td><input name="id" type="number" min="1" id="id"></td>
 			</tr>
 			<tr>
 				<td>名稱</td>
@@ -317,7 +317,7 @@ include_once("../fbmeta.php");
 			</tr>
 			<tr>
 				<td>數量</td>
-				<td><input name="number" type="text" id="number" value="1"></td>
+				<td><input name="number" type="number" min="1" id="number" value="1"></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input type="submit" value="新增"></td>

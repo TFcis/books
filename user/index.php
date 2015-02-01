@@ -173,7 +173,7 @@ include_once("../fbmeta.php");
 						</tr>
 						<tr>
 							<td valign="top" class="inputleft">郵件：</td>
-							<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $editdata["email"];?>" maxlength="64"></td>
+							<td valign="top" class="inputright"><input name="semail" type="email" id="semail" value="<?php echo $editdata["email"];?>" maxlength="64"></td>
 						</tr>
 						<tr>
 							<td align="center" colspan="2"><input type="submit" value="更新資料"></td>

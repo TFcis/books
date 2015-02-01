@@ -55,14 +55,15 @@ include_once("../fbmeta.php");
 			<td>
 			<?php
 			if($bookinfo["ISBN"]!=""){
-				$link=file("http://search.books.com.tw/exep/prod_search.php?key=".$bookinfo["ISBN"])[178];
+				$link=file_get_contents("http://search.books.com.tw/exep/prod_search.php?key=".$bookinfo["ISBN"]);
+				if($link==false)echo "連接http://search.books.com.tw/exep/prod_search.php?key=".$bookinfo["ISBN"]."失敗";
 				$start=strpos($link,"data-original")+15;
-				$end=strpos($link,"width")-3;
+				$end=strpos($link,'width="85" height="120"')-3;
 				$link=substr($link,$start,$end-$start);
 				if(strpos($link,"www.books.com.tw/img/")){
 					?><img src="<?php echo $link;?>"><?php
 				}
-				else echo "沒有圖片";
+				else echo "沒有提供圖片";
 			}
 			else echo "沒有圖片";
 			?>

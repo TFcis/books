@@ -79,7 +79,7 @@ include_once("../fbmeta.php");
 		<table border="0" cellspacing="5" cellpadding="0">
 		<tr>
 			<td>書本ID</td>
-			<td><input name="bookid" type="text" id="bookid" value="<?php echo $_GET["id"];?>"></td>
+			<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo $_GET["id"];?>"></td>
 		</tr>
 		<tr>
 			<td>歸還使用者</td>
