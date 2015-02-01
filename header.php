@@ -22,7 +22,7 @@ function keyFunction(){
 			<?php
 			}
 			?>
-			case 48: location="<?php echo $url.($login?"logout":"login");?>";break;
+			case 48: location="../<?php echo ($login?"logout":"login");?>";break;
 		}
 	}
 }
