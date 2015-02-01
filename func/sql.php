@@ -46,7 +46,9 @@ function SELECT($return,$table,$where=null,$order=null,$limit=[0,1]){
 	}
 	$query.=LIMIT($limit);
 	consolelog($query);
-	return mysqli_query($link, $query);
+	$result=mysqli_query($link, $query);
+	mysqli_close($link);
+	return $result;
 }
 function INSERT($table,$value){
 	include("../config/db.php");
@@ -65,7 +67,9 @@ function INSERT($table,$value){
 	}
 	$query.=")";
 	consolelog($query);
-	return mysqli_query($link, $query);
+	$result=mysqli_query($link, $query);
+	mysqli_close($link);
+	return $result;
 }
 function UPDATE($table,$value,$where=null,$limit=1){
 	include("../config/db.php");
@@ -79,7 +83,9 @@ function UPDATE($table,$value,$where=null,$limit=1){
 	}
 	$query.=WHERE($link,$where).LIMIT($limit);
 	consolelog($query);
-	return mysqli_query($link, $query);
+	$result=mysqli_query($link, $query);
+	mysqli_close($link);
+	return $result;
 }
 function DELETE($table,$where=null,$limit=1){
 	include("../config/db.php");
@@ -88,7 +94,9 @@ function DELETE($table,$where=null,$limit=1){
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
 	$query="DELETE FROM `$table` ".WHERE($link,$where).LIMIT($limit);
 	consolelog($query);
-	return mysqli_query($link, $query);
+	$result=mysqli_query($link, $query);
+	mysqli_close($link);
+	return $result;
 }
 function mfa($result){
 	return mysqli_fetch_array($result);
