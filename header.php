@@ -50,7 +50,7 @@ document.onkeydown=keyFunction;
 			<?php 
 			if($login==false){
 			?>
-			<a href="../login" target="_parent" style="color:#FFF">登入</a>
+			<a href="../login" target="_parent" style="color:#FFF">登入/註冊</a>
 			<?php
 			}
 			else{echo "目前登入: ".$login["user"]."(".het($login["name"]).")";
