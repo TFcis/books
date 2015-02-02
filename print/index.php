@@ -27,7 +27,7 @@ while($temp=mfa($row)){
 }
 $row=SELECT("*","booklist",null,null,"all");
 ?>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="5">
 <tr>
 	<?php
 	$count=0;
@@ -42,7 +42,7 @@ $row=SELECT("*","booklist",null,null,"all");
 	</td>
 	<?php
 	$count++;
-	if($count%2==0)echo "</tr><tr>";
+	if($count%4==0)echo "</tr><tr>";
 	}
 	?>
 </tr>

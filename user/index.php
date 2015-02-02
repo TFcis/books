@@ -98,19 +98,19 @@ include_once("../fbmeta.php");
 	if($showdata){
 ?>
 <center>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="dfromh" colspan="3">&nbsp;</td>
 </tr>
 <tr>
 	<td valign="top">
-		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td align="center"><h1>目前借閱</h1></td>
 		</tr>
 		<tr>
 			<td>
-				<table width="0" border="0" cellspacing="10" cellpadding="0">
+				<table border="0" cellspacing="10" cellpadding="0">
 				<tr>
 					<td>分類</td>
 					<td>ID</td>
@@ -150,7 +150,7 @@ include_once("../fbmeta.php");
 	</td>
 	<td width="40"></td>
 	<td valign="top">
-		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td align="center"><h1>更新資料</h1></td>
 		</tr>
@@ -158,7 +158,7 @@ include_once("../fbmeta.php");
 			<td>
 				<form method="post">
 					<input name="sid" type="hidden" id="sid" value="<?php echo $editid;?>">
-					<table width="0" border="0" cellspacing="0" cellpadding="0">
+					<table border="0" cellspacing="0" cellpadding="0">
 						<tr>
 							<td valign="top" class="inputleft">密碼：</td>
 							<td valign="top" class="inputright"><input name="spwd" type="password" id="spwd"></td>

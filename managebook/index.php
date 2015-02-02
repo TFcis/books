@@ -60,12 +60,12 @@ else if(isset($_POST["addbook"])){
 			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$name),true);
 			for($i=0;$i<$_POST["number"];$i++){
 				if($isbn["totalItems"]==1){
-					INSERT( "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["source",$_POST["source"]],["ISBN",$name]  ] );
+					INSERT( "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["year",$isbn["items"][0]["volumeInfo"]["publishedDate"]],["source",$_POST["source"]],["ISBN",$name]  ] );
 					$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$name;
 				}
 				else {
-					INSERT( "booklist",[ [ "id",$newid ],[ "name",$name],[ "cat",$_POST["cat"]],["source",$_POST["source"]] ]  );
-					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"];
+					INSERT( "booklist",[ [ "id",$newid ],[ "name",$name],[ "cat",$_POST["cat"]],["year",$_POST["year"]],["source",$_POST["source"]] ]  );
+					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$row["year"]." 來源=".$_POST["source"];
 				}
 				$newid++;
 			}
@@ -79,9 +79,11 @@ else if(isset($_POST["editbook"])){
 			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
 			if($isbn["totalItems"]==1){
 				UPDATE( "booklist",[ ["name",$isbn["items"][0]["volumeInfo"]["title"] ],["ISBN",$_POST["name"] ] ],[ ["id",$id] ] );
+				UPDATE( "booklist",[ ["year",$isbn["items"][0]["volumeInfo"]["publishedDate"] ] ],[ ["id",$id] ] );
 			}
 			else {
 				UPDATE( "booklist",[ ["name",$_POST["name"] ] ],[ ["id",$id] ] );
+				if($_POST["year"]!="")UPDATE( "booklist",[ ["year",$_POST["year"] ] ],[ ["id",$id] ] );
 			}
 		}
 		if($_POST["cat"]!=""){
@@ -92,7 +94,7 @@ else if(isset($_POST["editbook"])){
 		}
 	}
 	$row=mfa(SELECT("*","booklist",[ ["id",$_POST["id"]] ]));
-	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
+	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
 ?>
 <head>
@@ -128,7 +130,7 @@ include_once("../fbmeta.php");
 	if($data["power"]>=2){
 ?>
 <center>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="dfromh" colspan="3">&nbsp;</td>
 </tr>
@@ -137,6 +139,66 @@ include_once("../fbmeta.php");
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td colspan="2" align="center"><h1>分類管理</h1></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top">
+		<form method="post">
+			
+			<input name="addcat" type="hidden" value="">
+			<table border="0" cellspacing="3" cellpadding="0">
+			<tr>
+				<td colspan="2" align="center"><h2>新增</h2></td>
+			</tr>
+			<tr>
+				<td>ID</td>
+				<td><input name="id" type="number" min="1" id="id"></td>
+			</tr>
+			<tr>
+				<td>名稱</td>
+				<td><input name="name" type="text" id="name"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="submit" value="新增"></td>
+			</tr>
+			</table>
+		</form>
+		</td>
+	</tr>
+	<tr>
+		<td height="20" colspan="2"></td>
+	</tr>
+	<tr>
+		<td valign="top">
+		<form method="post">
+			<input name="editcat" type="hidden" value="">
+			<table border="0" cellspacing="3" cellpadding="0">
+			<tr>
+				<td colspan="2" align="center"><h2>修改</h2></td>
+			</tr>
+			<tr>
+				<td>ID</td>
+				<td>
+				<select name="id">
+				<?php
+					foreach($cate as $i => $name){
+				?>
+					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+				<?php
+					}
+				?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td>名稱</td>
+				<td><input name="name" type="text" id="name"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="submit" value="修改"></td>
+			</tr>
+			</table>
+		</form>
+		</td>
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
@@ -166,25 +228,51 @@ include_once("../fbmeta.php");
 		</table>
 		</td>
 	</tr>
+	</table>
+</td>
+<td width="20"></td>
+<td valign="top">
+	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td height="20" colspan="2"></td>
+		<td align="center" ><h1>圖書管理</h1></td>
 	</tr>
 	<tr>
 		<td align="center" valign="top">
 		<form method="post">
-			
-			<input name="addcat" type="hidden" value="">
-			<table width="0" border="0" cellspacing="3" cellpadding="0">
+			<input name="addbook" type="hidden" value="true">
+			<table border="0" cellspacing="3" cellpadding="0">
 			<tr>
-				<td colspan="2" align="center"><h2>新增</h2></td>
+				<td align="center" colspan="2"><h2>新增</h2></td>
 			</tr>
 			<tr>
-				<td>ID</td>
-				<td><input name="id" type="number" min="1" id="id"></td>
+				<td>書名/ISBN</td>
+				<td><input name="name" type="text" id="name" placeholder="逗點分隔新增多本"></td>
 			</tr>
 			<tr>
-				<td>名稱</td>
-				<td><input name="name" type="text" id="name"></td>
+				<td>分類</td>
+				<td>
+				<select name="cat">
+				<?php
+					foreach($cate as $i => $name){
+				?>
+					<option value="<?php echo $i; ?>"<?php echo(isset($_POST["addbook"])&&$i==$_POST["cat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+				<?php
+					}
+				?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td>年份</td>
+				<td><input name="year" type="text" id="year" value="0"></td>
+			</tr>
+			<tr>
+				<td>來源</td>
+				<td><input name="source" type="text" id="source" value="不明"></td>
+			</tr>
+			<tr>
+				<td>數量</td>
+				<td><input name="number" type="number" min="1" id="number" value="1"></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input type="submit" value="新增"></td>
@@ -194,20 +282,25 @@ include_once("../fbmeta.php");
 		</td>
 	</tr>
 	<tr>
-		<td height="20" colspan="2"></td>
-	</tr>
-	<tr>
-		<td valign="top">
+		<td align="center" valign="top">
 		<form method="post">
-			<input name="editcat" type="hidden" value="">
-			<table width="0" border="0" cellspacing="3" cellpadding="0">
+			<input name="editbook" type="hidden" value="true">
+			<table border="0" cellspacing="3" cellpadding="0">
 			<tr>
-				<td colspan="2" align="center"><h2>修改</h2></td>
+				<td align="center" colspan="2"><h2>修改</h2></td>
 			</tr>
 			<tr>
 				<td>ID</td>
+				<td><input name="id" type="text" id="id" placeholder="逗點分隔修改多本"></td>
+			</tr>
+			<tr>
+				<td>書名/ISBN</td>
+				<td><input name="name" type="text" id="name"></td>
+			</tr>
+			<tr>
+				<td>分類</td>
 				<td>
-				<select name="id">
+				<select name="cat">
 				<?php
 					foreach($cate as $i => $name){
 				?>
@@ -219,8 +312,12 @@ include_once("../fbmeta.php");
 				</td>
 			</tr>
 			<tr>
-				<td>名稱</td>
-				<td><input name="name" type="text" id="name"></td>
+				<td>年份</td>
+				<td><input name="year" type="text" id="year" value="0"></td>
+			</tr>
+			<tr>
+				<td>來源</td>
+				<td><input name="source" type="text" id="source" value="不明"></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input type="submit" value="修改"></td>
@@ -228,14 +325,6 @@ include_once("../fbmeta.php");
 			</table>
 		</form>
 		</td>
-	</tr>
-	</table>
-</td>
-<td width="20"></td>
-<td valign="top">
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" ><h1>圖書管理</h1></td>
 	</tr>
 	<tr>
 		<td valign="top">
@@ -280,94 +369,6 @@ include_once("../fbmeta.php");
 			}
 			?>
 		</table>
-		</td>
-	</tr>
-	<tr>
-		<td height="20"></td>
-	</tr>
-	<tr>
-		<td align="center" valign="top">
-		<form method="post">
-			<input name="addbook" type="hidden" value="true">
-			<table width="0" border="0" cellspacing="3" cellpadding="0">
-			<tr>
-				<td align="center" colspan="2"><h2>新增</h2></td>
-			</tr>
-			<tr>
-				<td>書名/ISBN</td>
-				<td><input name="name" type="text" id="name" placeholder="逗點分隔新增多本"></td>
-			</tr>
-			<tr>
-				<td>分類</td>
-				<td>
-				<select name="cat">
-				<?php
-					foreach($cate as $i => $name){
-				?>
-					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
-				<?php
-					}
-				?>
-				</select>
-				</td>
-			</tr>
-			<tr>
-				<td>來源</td>
-				<td><input name="source" type="text" id="source" value="不明"></td>
-			</tr>
-			<tr>
-				<td>數量</td>
-				<td><input name="number" type="number" min="1" id="number" value="1"></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="submit" value="新增"></td>
-			</tr>
-			</table>
-		</form>
-		</td>
-	</tr>
-	<tr>
-		<td height="20"></td>
-	</tr>
-	<tr>
-		<td align="center" valign="top">
-		<form method="post">
-			<input name="editbook" type="hidden" value="true">
-			<table width="0" border="0" cellspacing="3" cellpadding="0">
-			<tr>
-				<td align="center" colspan="2"><h2>修改</h2></td>
-			</tr>
-			<tr>
-				<td>ID</td>
-				<td><input name="id" type="text" id="id" placeholder="逗點分隔修改多本"></td>
-			</tr>
-			<tr>
-				<td>書名/ISBN</td>
-				<td><input name="name" type="text" id="name"></td>
-			</tr>
-			<tr>
-				<td>分類</td>
-				<td>
-				<select name="cat">
-				<?php
-					foreach($cate as $i => $name){
-				?>
-					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
-				<?php
-					}
-				?>
-				</select>
-				</td>
-			</tr>
-			<tr>
-				<td>來源</td>
-				<td><input name="source" type="text" id="source" value="不明"></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="submit" value="修改"></td>
-			</tr>
-			</table>
-		</form>
 		</td>
 	</tr>
 	</table>

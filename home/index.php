@@ -20,7 +20,7 @@ include_once("../fbmeta.php");
 include_once("../header.php");
 ?>
 <center>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td colspan="3" class="dfromh">&nbsp;</td>
 	</tr>
@@ -28,7 +28,7 @@ include_once("../header.php");
 		<td width="420" valign="top">
 		<strong>開發者</strong>
 		<hr>
-		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td valign="top"><img src = 'https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-xpf1/v/t1.0-9/1619090_288040611401620_7201738893173011477_n.jpg?oh=6104f5511cf012c7e6a486d95f7d0760&oe=5552D150&__gda__=1432210833_ffaa247f6cabe37a277a98f32a1cb670' width="100" height="100"></img></td>
 				<td>
@@ -60,7 +60,7 @@ include_once("../header.php");
 		
 		<strong>更新日誌</strong>
 		<hr>
-		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td valign="top">2015.01.30</td>
 			<td>權限檢查<br>

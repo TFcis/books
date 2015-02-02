@@ -88,7 +88,7 @@ include_once("../fbmeta.php");
 	if($noshow){
 ?>
 <center>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="dfromh" colspan="3"></td>
 	</tr>
@@ -101,7 +101,7 @@ include_once("../fbmeta.php");
 				<tr>
 					<td>
 						<form method="post">
-							<table width="0" border="0" cellspacing="0" cellpadding="0">
+							<table border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
 									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo $_POST['user'];?>" maxlength="32"></td>
@@ -127,14 +127,14 @@ include_once("../fbmeta.php");
 		?>
 		<td width="20"></td>
 		<td valign="top">
-			<table width="0" border="0" cellspacing="0" cellpadding="0">
+			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td align="center"><h1>註冊</h1></td>
 				</tr>
 				<tr>
 					<td>
 						<form method="post">
-							<table width="0" border="0" cellspacing="0" cellpadding="0">
+							<table border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
 									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" placeholder="英文字開頭/僅含英數/至少3字" value="<?php echo $_POST['suser'];?>" maxlength="32"></td>

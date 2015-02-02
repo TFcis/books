@@ -20,7 +20,7 @@ include_once("../fbmeta.php");
 	$bookinfo=mfa(SELECT(["id","name","cat","source","ISBN"],"booklist",[["id",$_GET["id"]]]));
 ?>
 <center>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="dfromh" colspan="2">&nbsp;</td>
 </tr>
@@ -29,7 +29,7 @@ include_once("../fbmeta.php");
 </tr>
 <tr>
 	<td>
-		<table width="0" border="0" cellspacing="5" cellpadding="0">
+		<table border="0" cellspacing="5" cellpadding="0">
 		<tr>
 			<td>ID</td>
 			<td><?php echo $bookinfo["id"]; ?></td>

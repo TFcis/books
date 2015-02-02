@@ -57,7 +57,7 @@ include_once("../fbmeta.php");
 	if($noshow){
 ?>
 <center>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="dfromh">&nbsp;</td>
 	</tr>
@@ -67,7 +67,7 @@ include_once("../fbmeta.php");
 	<tr>
 		<td>
 			<form method="post">
-				<table width="0" border="0" cellspacing="0" cellpadding="0">
+				<table border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td valign="top" class="inputleft">帳號：</td>
 						<td valign="top" class="inputright"><input name="suser" type="text" id="suser" value="<?php echo $_POST['suser'];?>"></td>

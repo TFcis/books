@@ -29,14 +29,14 @@ include_once("../fbmeta.php");
 </tr>
 <tr>
 	<td colspan="3" align="center" valign="top">
-		<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td colspan="2" align="center"><h2>篩選器</h2></td>
 		</tr>
 		<tr>
 			<td valign="top">
 			<form method="get">
-				<table width="0" border="0" cellspacing="3" cellpadding="0">
+				<table border="0" cellspacing="3" cellpadding="0">
 				<tr>
 					<td>書名</td>
 					<td><input name="bookname" type="text" id="bookname" value="<?php echo $_GET["bookname"];?>"></td>
@@ -70,7 +70,7 @@ include_once("../fbmeta.php");
 		</table>
 	</td>
 	<td rowspan="4" valign="top" style="text-align: center">
-		<table width="0" border="0" cellspacing="10" cellpadding="0">
+		<table border="0" cellspacing="10" cellpadding="0">
 		<tr>
 			<td>分類</td>
 			<td>ID</td>

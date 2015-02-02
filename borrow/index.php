@@ -67,7 +67,7 @@ include_once("../fbmeta.php");
 	if($data["power"]>=2){
 ?>
 <center>
-<table width="0" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="dfromh">&nbsp;</td>
 </tr>
