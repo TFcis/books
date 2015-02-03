@@ -4,6 +4,7 @@ include_once("../func/sql.php");
 include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
+if(checklogin()==false)header("Location: ../login/?from=search");
 ?>
 <head>
 <meta charset="UTF-8">
@@ -76,7 +77,6 @@ include_once("../fbmeta.php");
 			<td>ID</td>
 			<td>書名</td>
 			<td>借出</td>
-			<td>來源</td>
 			<td>ISBN</td>
 		</tr>
 		<?php
@@ -84,7 +84,7 @@ include_once("../fbmeta.php");
 		if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
 		if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
 		if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
-		$row=SELECT(["id","name","cat","lend","source","ISBN"],"booklist",$temp,null,"all");
+		$row=SELECT(["id","name","cat","lend","ISBN"],"booklist",$temp,[["cat"],["name"]],"all");
 		while($book=mfa($row)){
 		?>
 		<tr>
@@ -92,7 +92,6 @@ include_once("../fbmeta.php");
 			<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 			<td><?php echo ($book["name"]); ?></td>
 			<td><?php echo ($book["lend"]==0?"在館內":"借閱中"); ?></td>
-			<td><?php echo $book["source"]; ?></td>
 			<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
 		</tr>
 		<?php

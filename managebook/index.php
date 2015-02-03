@@ -86,8 +86,11 @@ else if(isset($_POST["editbook"])){
 				if($_POST["year"]!="")UPDATE( "booklist",[ ["year",$_POST["year"] ] ],[ ["id",$id] ] );
 			}
 		}
-		if($_POST["cat"]!=""){
+		if($_POST["cat"]!=0){
 			UPDATE( "booklist",[ ["cat",$_POST["cat"] ] ],[ ["id",$id] ] );
+		}
+		if($_POST["year"]!=""){
+			UPDATE( "booklist",[ ["source",$_POST["source"] ] ],[ ["id",$id] ] );
 		}
 		if($_POST["source"]!=""){
 			UPDATE( "booklist",[ ["source",$_POST["source"] ] ],[ ["id",$id] ] );
@@ -163,11 +166,6 @@ include_once("../fbmeta.php");
 			</table>
 		</form>
 		</td>
-	</tr>
-	<tr>
-		<td height="20" colspan="2"></td>
-	</tr>
-	<tr>
 		<td valign="top">
 		<form method="post">
 			<input name="editcat" type="hidden" value="">
@@ -234,7 +232,7 @@ include_once("../fbmeta.php");
 <td valign="top">
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td align="center" ><h1>圖書管理</h1></td>
+		<td align="center" colspan="2"><h1>圖書管理</h1></td>
 	</tr>
 	<tr>
 		<td align="center" valign="top">
@@ -280,8 +278,6 @@ include_once("../fbmeta.php");
 			</table>
 		</form>
 		</td>
-	</tr>
-	<tr>
 		<td align="center" valign="top">
 		<form method="post">
 			<input name="editbook" type="hidden" value="true">
@@ -301,10 +297,11 @@ include_once("../fbmeta.php");
 				<td>分類</td>
 				<td>
 				<select name="cat">
+					<option value="0">不更改</option>
 				<?php
 					foreach($cate as $i => $name){
 				?>
-					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+					<option value="<?php echo $i; ?>"><?php echo $name; ?></option>
 				<?php
 					}
 				?>
@@ -313,11 +310,11 @@ include_once("../fbmeta.php");
 			</tr>
 			<tr>
 				<td>年份</td>
-				<td><input name="year" type="text" id="year" value="0"></td>
+				<td><input name="year" type="text" id="year"></td>
 			</tr>
 			<tr>
 				<td>來源</td>
-				<td><input name="source" type="text" id="source" value="不明"></td>
+				<td><input name="source" type="text" id="source"></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input type="submit" value="修改"></td>
@@ -327,7 +324,7 @@ include_once("../fbmeta.php");
 		</td>
 	</tr>
 	<tr>
-		<td valign="top">
+		<td valign="top" colspan="2">
 			<div style="display:none">
 				<form method="post" id="bookaval">
 					<input name="avalid" type="hidden" id="avalid">

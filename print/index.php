@@ -33,12 +33,17 @@ $row=SELECT("*","booklist",null,null,"all");
 	$count=0;
 	while($bookinfo=mfa($row)){
 	?>
-	<td>
-	<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http://books.tfcis.org/bookinfo/?id=<?php echo $bookinfo["id"];?>"><br>
-	ＩＤ：<?php echo $bookinfo["id"]; ?><br>
-	書名：<?php echo $bookinfo["name"]; ?><br>
-	分類：<?php echo $cate[$bookinfo["cat"]]; ?><br>
-	來源：<?php echo $bookinfo["source"]; ?><br>
+	<td align="center">
+	<?php
+	/*$im = imagecreatefrompng("https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http://books.tfcis.org/b?".$bookinfo["id"]);
+	$im2 = ImageCreateTrueColor(100,100);
+	imagecopyresized($im2,$im,0,0,20,20,100,100,110,110);
+	imagepng($im2,"./".$bookinfo["id"].".png");
+	imagedestroy($im);
+	imagedestroy($im2); */
+	?>
+	<img src="<?php echo $bookinfo["id"];?>.png"><br>
+	ID:<?php echo $bookinfo["id"]; ?>,Cat:<?php echo $cate[$bookinfo["cat"]]; ?>
 	</td>
 	<?php
 	$count++;
