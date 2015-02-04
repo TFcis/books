@@ -30,16 +30,22 @@ else{
 		$showdata=false;
 	}
 	else{
-		if($editid!=$login["id"])$message="注意!你正在更改其他人的資料";
-		if($_POST['spwd']!=""){
-			if($_POST["spwd"]!=$_POST["spwd2"]){
+		if($editid!=$login["id"]){
+			$message="注意!你正在更改其他人的資料";
+		}
+		$oldpwd=mfa(SELECT(["pwd"],"account",[["id",$login["id"]]]))["pwd"];
+
+		if($_POST['spwd1']!=""){
+			if(crypt($_POST['spwd0'],$oldpwd)!=$oldpwd){
+				$error="舊密碼錯誤";
+			}else if($_POST["spwd1"]!=$_POST["spwd2"]){
 				$error="密碼不符";
-			}else if(preg_match("/\s/", $_POST["spwd"])){
+			}else if(preg_match("/\s/", $_POST["spwd1"])){
 				$error="密碼不可有空白";
-			}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
+			}else if(!preg_match("/^.{4,}$/", $_POST["spwd1"])){
 				$error="密碼至少4個字";
 			}else{
-				UPDATE("account",[ ["pwd",crypt($_POST['spwd'])] ],[ ["id",$editid] ]);
+				UPDATE("account",[ ["pwd",crypt($_POST['spwd1'])] ],[ ["id",$editid] ]);
 				if($message2=="")$message2.="已更新以下資料";
 				$message2.=" 密碼";
 			}
@@ -71,12 +77,13 @@ $editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
-include_once("../fbmeta.php");
+include_once("../res/meta.php");
+meta();
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../header.php");
+	include_once("../res/header.php");
 	if($error!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -160,11 +167,15 @@ include_once("../fbmeta.php");
 					<input name="sid" type="hidden" id="sid" value="<?php echo $editid;?>">
 					<table border="0" cellspacing="0" cellpadding="0">
 						<tr>
-							<td valign="top" class="inputleft">密碼：</td>
-							<td valign="top" class="inputright"><input name="spwd" type="password" id="spwd"></td>
+							<td valign="top" class="inputleft">舊密碼：</td>
+							<td valign="top" class="inputright"><input name="spwd0" type="password" id="spwd0"></td>
 						</tr>
 						<tr>
-							<td valign="top" class="inputleft">確認：</td>
+							<td valign="top" class="inputleft">新密碼：</td>
+							<td valign="top" class="inputright"><input name="spwd1" type="password" id="spwd1"></td>
+						</tr>
+						<tr>
+							<td valign="top" class="inputleft">再確認：</td>
 							<td valign="top" class="inputright"><input name="spwd2" type="password" id="spwd2"></td>
 						</tr>
 						<tr>
