@@ -34,7 +34,7 @@ if($data==false){
 }
 ?>
 <head>
-<meta charset="UTF-8">
+<meta http-equiv="Content-Type" charset="UTF-8" name="viewport" content="width=device-width,user-scalable=yes">
 <title>還書-TFcisBooks</title>
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">

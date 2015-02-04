@@ -37,13 +37,14 @@ document.onkeydown=keyFunction;
 			<span style="color: #999">E-Library Management System</span><br>
 			<span style="color: #999">電子化圖書管理系統</span>
 		</td>
-		<td bgcolor="#F0F0F0" style="text-align: right" colspan="2"><img src="http://www.tfcis.org/images/TFcisweb3_03.gif"height="100px"></td>
+		<td bgcolor="#F0F0F0" style="text-align: right" colspan="2"><div id="headerimg" style="display:none;"><img src="http://www.tfcis.org/images/TFcisweb3_03.gif" height="100px"></div></td>
+		<script>if(document.body.clientWidth>=700)headerimg.style.display="";</script>
 	</tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td height="25" valign="middle" bgcolor="#0000FF" style="color: #FFF">
-			&nbsp;&nbsp;&nbsp;&nbsp;<a href="../home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="../search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="../user" target="_parent" style="color:#FFF">讀者資料查詢</a><?php if($login["power"]>=2){ ?>&nbsp;|&nbsp;<a href="../borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="../return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="../managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="../manageuser" target="_parent" style="color:#FFF">使用者</a>
+			<div style="float:left;">&nbsp;&nbsp;&nbsp;&nbsp;<a href="../home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="../search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="../user" target="_parent" style="color:#FFF">讀者資料查詢</a></div><?php if($login["power"]>=2){ ?><div style="float:left;">&nbsp;|&nbsp;<a href="../borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="../return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="../managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="../manageuser" target="_parent" style="color:#FFF">使用者</a></div>
 			<?php } ?>
 		</td>
 		<td height="25" valign="middle" bgcolor="#0000FF" style="text-align: right; color: #FFF;">
