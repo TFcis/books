@@ -1,7 +1,7 @@
 <?php
-include_once("func/url.php");
-include_once("func/checklogin.php");
-include_once("func/sql.php");
+include_once("../func/url.php");
+include_once("../func/checklogin.php");
+include_once("../func/sql.php");
 $login=checklogin();
 ?>
 <script src="../res/jquery.min.js"></script>

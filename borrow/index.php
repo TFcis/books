@@ -40,12 +40,13 @@ if($data==false){
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
-include_once("../fbmeta.php");
+include_once("../res/meta.php");
+meta();
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../header.php");
+	include_once("../res/header.php");
 	if($error!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">

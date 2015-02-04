@@ -10,12 +10,13 @@ include_once("../func/consolelog.php");
 <title>PRINT-TFcisBooks</title>
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
-include_once("../fbmeta.php");
+include_once("../res/meta.php");
+meta();
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../header.php");
+	include_once("../res/header.php");
 ?>
 <center>
 <h1>PRINT</h1>

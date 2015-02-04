@@ -11,13 +11,15 @@ include_once("../func/consolelog.php");
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
-include_once("../fbmeta.php");
+	include_once("../res/meta.php");
+	$bookinfo=mfa(SELECT(["id","name","cat","year","source","ISBN"],"booklist",[["id",$_GET["id"]]]));
+	$cate=mfa(SELECT(["name"],"category",[["id",$bookinfo["cat"]]]))["name"];
+	meta([["description","TFcisBooks圖書資訊 ID=".$bookinfo["id"].",書名=".$bookinfo["name"].",分類=".$cate.",年份=".$bookinfo["year"].",來源=".$bookinfo["source"].",ISBN=".$bookinfo["ISBN"]]]);
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../header.php");
-	$bookinfo=mfa(SELECT(["id","name","cat","year","source","ISBN"],"booklist",[["id",$_GET["id"]]]));
+	include_once("../res/header.php");
 ?>
 <center>
 <table border="0" cellspacing="0" cellpadding="0">
@@ -40,7 +42,7 @@ include_once("../fbmeta.php");
 		</tr>
 		<tr>
 			<td>分類</td>
-			<td><?php echo mfa(SELECT(["name"],"category",[["id",$bookinfo["cat"]]]))["name"]; ?></td>
+			<td><?php echo $cate; ?></td>
 		</tr>
 		<tr>
 			<td>年份</td>
