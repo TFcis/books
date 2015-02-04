@@ -12,12 +12,14 @@ if(checklogin()){
 	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }else if(isset($_POST['user'])){
-	$row = mfa(SELECT(["id","pwd","power"],"account",[["user",$_POST['user']]]));
+	$row = mfa(SELECT(["id","pwd","power","verify"],"account",[["user",$_POST['user']]]));
 	if($row==""){
 		$error="無此帳號";
 	}else if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
 		if($row["power"]<=0){
 			$error="此帳戶已遭封禁，無法登入";
+		}else if($row["verify"]!="OK"){
+			$error="你尚未驗證帳號，請至信箱點選驗證連結，或是到<a href='../verify'>這裡</a>重發驗證信";
 		}else{
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
@@ -48,8 +50,10 @@ if(checklogin()){
 	}else{
 		$row = mfa(SELECT(["MAX(id)"],"account"));
 		$id=$row["MAX(id)"]+1;
-		INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]]]);
-		$message='註冊成功，請登入';
+		$verifycode=md5(uniqid(rand(),true));
+		INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]],["verify",$verifycode]]);
+		mail($_POST["semail"], "ELMS 帳戶驗證", "你剛剛註冊了ELMS ( http://books.tfcis.org/ ) 的帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
+		$message='註冊成功，請先至信箱點選驗證帳戶連結後，始可登入';
 		$nosignup=false;
 	}
 }
@@ -61,12 +65,13 @@ if(checklogin()){
 <link href="../res/css.css" rel="stylesheet" type="text/css">
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
-include_once("../fbmeta.php");
+include_once("../res/meta.php");
+meta();
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../header.php");
+	include_once("../res/header.php");
 	if($error!=""){
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
