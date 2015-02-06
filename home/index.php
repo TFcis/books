@@ -63,6 +63,11 @@ include_once("../res/header.php");
 		<hr>
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
+			<td valign="top">2015.02.04</td>
+			<td>信箱驗證帳戶
+				</td>
+		</tr>
+		<tr>
 			<td valign="top">2015.01.30</td>
 			<td>權限檢查<br>
 				登入後返回上一頁

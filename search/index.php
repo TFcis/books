@@ -63,6 +63,16 @@ meta();
 					<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo $_GET["bookid"];?>"></td>
 				</tr>
 				<tr>
+					<td>借閱狀態</td>
+					<td>
+					<select name="lend">
+						<option value="all"<?php echo($_GET["lend"]=="all"?" selected='selected'":""); ?>>所有</option>
+						<option value="0"<?php echo($_GET["lend"]=="0"?" selected='selected'":""); ?>>在館內</option>
+						<option value="1"<?php echo($_GET["lend"]=="1"?" selected='selected'":""); ?>>借閱中</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center"><input type="submit" value="搜尋"></td>
 				</tr>
 				</table>
@@ -85,6 +95,8 @@ meta();
 		if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
 		if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
 		if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
+		if($_GET["lend"]=="0")array_push($temp,["lend","0"]);
+		else if($_GET["lend"]=="1")array_push($temp,["lend","0","!="]);
 		$row=SELECT(["id","name","cat","lend","ISBN"],"booklist",$temp,[["cat"],["name"]],"all");
 		while($book=mfa($row)){
 		?>
