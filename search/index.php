@@ -24,7 +24,11 @@ meta();
 	while($temp=mfa($row)){
 		$cate[$temp["id"]]=$temp["name"];
 	}
-	$row=SELECT("*","booklist",[["aval","0","!="]],[["cat","ASC"]],"all");
+	$temp=[["aval","0","!="]];
+	if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
+	if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
+	if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
+	$row=SELECT("*","booklist",$temp,[["cat"],["name"]],"all");
 	while($temp=mfa($row)){
 		if($booklist[$temp["name"]]["id"]!="")$booklist[$temp["name"]]["id"].=",";
 		$booklist[$temp["name"]]["id"].=$temp["id"];
@@ -102,31 +106,39 @@ meta();
 			<td>ISBN</td>
 		</tr>
 		<?php
-		foreach($booklist as $index => $book){
-		?>
-		<tr>
-			<td><?php echo $cate[$book["cat"]]; ?></td>
-			<td><?php
-				$bookidlist=explode(",",$book["id"]);
-				foreach($bookidlist as $temp){
+		if(is_array($booklist)){
+			foreach($booklist as $index => $book){
+				if($_GET["lend"]=="0"&&$book["aval"]==0)continue;
+				if($_GET["lend"]=="1"&&$book["count"]==$book["aval"])continue;
 			?>
-				<a href="../bookinfo/?id=<?php echo $temp; ?>"><?php echo $temp; ?></a>
-			<?php } ?>
-			</td>
-			<td><?php echo $index; ?></td>
-			<td><?php echo $book["count"]; ?></td>
-			<td><?php
-			if($book["count"]==1){
-				if($book["aval"]==0)echo "已借出";
-				else echo "在館內";
-			}else {
-				if($book["aval"]==0)echo "已全部借出";
-				else echo $book["aval"]."本在館內";
+			<tr>
+				<td><?php echo $cate[$book["cat"]]; ?></td>
+				<td><?php
+					$bookidlist=explode(",",$book["id"]);
+					foreach($bookidlist as $temp){
+				?>
+					<a href="../bookinfo/?id=<?php echo $temp; ?>"><?php echo $temp; ?></a>
+				<?php } ?>
+				</td>
+				<td><?php echo $index; ?></td>
+				<td><?php echo $book["count"]; ?></td>
+				<td><?php
+				if($book["count"]==1){
+					if($book["aval"]==0)echo "已借出";
+					else echo "在館內";
+				}else {
+					if($book["aval"]==0)echo "已全部借出";
+					else echo $book["aval"]."本在館內";
+				}
+				?></td>
+				<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
+			</tr>
+			<?php
 			}
-			?></td>
-			<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
-		</tr>
-		<?php
+		}else {
+			?>
+			<tr><td colspan="5" align="center">查無任何結果</td></tr>
+			<?php
 		}
 		?>
 		</table>
