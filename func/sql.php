@@ -22,7 +22,7 @@ function LIMIT($limit){
 	else
 		return "LIMIT ".$limit." ";
 }
-function SELECT($return,$table,$where=null,$order=null,$limit=[0,1]){
+function SELECT($return,$table,$where=null,$order=null,$limit=[0,1],$group=null){
 	include("../config/db.php");
 	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
 	if(mysqli_connect_errno($link))
@@ -37,6 +37,9 @@ function SELECT($return,$table,$where=null,$order=null,$limit=[0,1]){
 		}
 	}
 	$query.="FROM `$table` ".WHERE($link,$where);
+	if($group){
+		$query.="GROUP BY `$group` ";
+	}
 	if($order){
 		$query.="ORDER BY ";
 		foreach($order as $index => $value){

@@ -99,6 +99,10 @@ else if(isset($_POST["editbook"])){
 	$row=mfa(SELECT("*","booklist",[ ["id",$_POST["id"]] ]));
 	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
+$row=SELECT(["id","name"],"account",null,null,"all");
+while($temp=mfa($row)){
+	$acct[$temp["id"]]=$temp["name"];
+}
 ?>
 <head>
 <meta charset="UTF-8">
@@ -354,7 +358,7 @@ meta();
 					<td><?php echo $cate[$book["cat"]]; ?></td>
 					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
-					<td><?php echo $book["lend"]; ?></td>
+					<td><?php echo substr($acct[$book["lend"]],0,9); ?></td>
 					<td><?php echo $book["source"]; ?></td>
 					<td><?php echo $book["ISBN"]; ?></td>
 					<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>

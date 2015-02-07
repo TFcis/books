@@ -19,9 +19,19 @@ meta();
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
 	include_once("../res/header.php");
+	if($_GET["bookid"]!="")header("Location: ../bookinfo/?id=".$_GET["bookid"]);
 	$row=SELECT("*","category",null,null,"all");
 	while($temp=mfa($row)){
 		$cate[$temp["id"]]=$temp["name"];
+	}
+	$row=SELECT("*","booklist",[["aval","0","!="]],[["cat","ASC"]],"all");
+	while($temp=mfa($row)){
+		if($booklist[$temp["name"]]["id"]!="")$booklist[$temp["name"]]["id"].=",";
+		$booklist[$temp["name"]]["id"].=$temp["id"];
+		$booklist[$temp["name"]]["count"]++;
+		$booklist[$temp["name"]]["ISBN"]=$temp["ISBN"];
+		$booklist[$temp["name"]]["cat"]=$temp["cat"];
+		if($temp["lend"]==0)$booklist[$temp["name"]]["aval"]++;
 	}
 ?>
 <center>
@@ -59,10 +69,6 @@ meta();
 					</td>
 				</tr>
 				<tr>
-					<td>編號</td>
-					<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo $_GET["bookid"];?>"></td>
-				</tr>
-				<tr>
 					<td>借閱狀態</td>
 					<td>
 					<select name="lend">
@@ -71,6 +77,10 @@ meta();
 						<option value="1"<?php echo($_GET["lend"]=="1"?" selected='selected'":""); ?>>借閱中</option>
 					</select>
 					</td>
+				</tr>
+				<tr>
+					<td>編號</td>
+					<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo $_GET["bookid"];?>"></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><input type="submit" value="搜尋"></td>
@@ -87,24 +97,33 @@ meta();
 			<td>分類</td>
 			<td>ID</td>
 			<td>書名</td>
-			<td>借出</td>
+			<td>數量</td>
+			<td>借用</td>
 			<td>ISBN</td>
 		</tr>
 		<?php
-		$temp=[["aval","0","!="]];
-		if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
-		if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
-		if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
-		if($_GET["lend"]=="0")array_push($temp,["lend","0"]);
-		else if($_GET["lend"]=="1")array_push($temp,["lend","0","!="]);
-		$row=SELECT(["id","name","cat","lend","ISBN"],"booklist",$temp,[["cat"],["name"]],"all");
-		while($book=mfa($row)){
+		foreach($booklist as $index => $book){
 		?>
 		<tr>
 			<td><?php echo $cate[$book["cat"]]; ?></td>
-			<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
-			<td><?php echo ($book["name"]); ?></td>
-			<td><?php echo ($book["lend"]==0?"在館內":"借閱中"); ?></td>
+			<td><?php
+				$bookidlist=explode(",",$book["id"]);
+				foreach($bookidlist as $temp){
+			?>
+				<a href="../bookinfo/?id=<?php echo $temp; ?>"><?php echo $temp; ?></a>
+			<?php } ?>
+			</td>
+			<td><?php echo $index; ?></td>
+			<td><?php echo $book["count"]; ?></td>
+			<td><?php
+			if($book["count"]==1){
+				if($book["aval"]==0)echo "已借出";
+				else echo "在館內";
+			}else {
+				if($book["aval"]==0)echo "已全部借出";
+				else echo $book["aval"]."本在館內";
+			}
+			?></td>
 			<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
 		</tr>
 		<?php
