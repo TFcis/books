@@ -12,7 +12,7 @@ include_once("../func/consolelog.php");
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
 	include_once("../res/meta.php");
-	$bookinfo=mfa(SELECT(["id","name","cat","year","source","ISBN"],"booklist",[["id",$_GET["id"]]]));
+	$bookinfo=mfa(SELECT(["id","name","cat","year","source","ISBN","lend"],"booklist",[["id",$_GET["id"]]]));
 	$cate=mfa(SELECT(["name"],"category",[["id",$bookinfo["cat"]]]))["name"];
 	meta([["description","TFcisBooks圖書資訊 ID=".$bookinfo["id"].",書名=".$bookinfo["name"].",分類=".$cate.",年份=".$bookinfo["year"].",來源=".$bookinfo["source"].",ISBN=".$bookinfo["ISBN"]]]);
 ?>
@@ -55,6 +55,10 @@ include_once("../func/consolelog.php");
 		<tr>
 			<td>ISBN</td>
 			<td><a href="https://books.google.com.tw/books?vid=<?php echo $bookinfo["ISBN"]; ?>" target="_blank"><?php echo $bookinfo["ISBN"]; ?></a></td>
+		</tr>
+		<tr>
+			<td>借出</td>
+			<td><?php echo ($bookinfo["lend"]==0?"在館內":"已借出"); ?></td>
 		</tr>
 		<tr>
 			<td>圖片</td>
