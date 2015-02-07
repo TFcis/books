@@ -35,7 +35,7 @@ if(checklogin()){
 			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
 			$verifycode=md5(uniqid(rand(),true));
 			UPDATE("account",[["verify",$verifycode]],[["user",$_POST['user']]]);
-			mail($row["email"], "ELMS 帳戶驗證", "你剛剛註冊了ELMS ( http://books.tfcis.org/ ) 的帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
+			mail($row["email"], "ELMS 帳戶驗證", "你剛剛重新發送ELMS ( http://books.tfcis.org/ ) 的驗證信\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!\n舊的驗證碼將失效", "From: t16@tfcis.org");
 			$message='已重新發送驗證信，請先至信箱點選驗證帳戶連結後，始可登入；舊的驗證碼將失效';
 			?><script>setTimeout(function(){location="../login";},10000)</script><?php
 			$noshow=false;

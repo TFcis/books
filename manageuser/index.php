@@ -29,7 +29,7 @@ else if(isset($_POST["editid"])){
 			UPDATE( "account",[ ["power",$_POST["editpower"]] ],[ ["id",$_POST["editid"]] ] );
 			$message="已將 ".$row["user"]."(".$row["name"].") 的權限更改為 ".$powername[$_POST["editpower"]];
 			if($_POST["editpower"]<=0){
-				DELETE("session",[ ["id",$_POST["editid"] ] ]);
+				DELETE("session",[ ["id",$_POST["editid"] ] ],"all");
 			}
 		}
 	}

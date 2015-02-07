@@ -61,7 +61,13 @@ else{
 			}else{
 				UPDATE("account",[ ["email",$_POST['semail']] ],[ ["id",$editid] ]);
 				if($message2=="")$message2.="已更新以下資料";
-				$message2.=" 郵件";
+				$message2.=" 郵件 注意!你需要重新驗證郵件";
+				$verifycode=md5(uniqid(rand(),true));
+				UPDATE("account",[["verify",$verifycode]],[["id",$editid]]);
+				mail($row["email"], "ELMS 帳戶驗證", "你剛剛更改了ELMS ( http://books.tfcis.org/ ) 的郵件\n需要重新驗證帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
+				DELETE("session",[ ["id",$editid] ],"all");
+				$showdata=false;
+				?><script>setTimeout(function(){location="../login"},5000);</script><?php
 			}
 		}
 	}
