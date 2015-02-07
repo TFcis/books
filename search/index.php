@@ -84,7 +84,7 @@ meta();
 				</tr>
 				<tr>
 					<td>編號</td>
-					<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo $_GET["bookid"];?>"></td>
+					<td><input name="bookid" type="number" min="1" id="bookid"></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><input type="submit" value="搜尋"></td>
