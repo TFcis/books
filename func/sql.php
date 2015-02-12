@@ -48,7 +48,6 @@ function SELECT($return,$table,$where=null,$order=null,$limit=[0,1],$group=null)
 		}
 	}
 	$query.=LIMIT($limit);
-	consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
@@ -69,7 +68,6 @@ function INSERT($table,$value){
 		$query.="'".mysqli_real_escape_string($link,$temp[1])."' ";
 	}
 	$query.=")";
-	consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
@@ -85,7 +83,6 @@ function UPDATE($table,$value,$where=null,$limit=1){
 		$query.="`$temp[0]`='".mysqli_real_escape_string($link,$temp[1])."' ";
 	}
 	$query.=WHERE($link,$where).LIMIT($limit);
-	consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
@@ -96,7 +93,6 @@ function DELETE($table,$where=null,$limit=1){
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
 	$query="DELETE FROM `$table` ".WHERE($link,$where).LIMIT($limit);
-	consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
