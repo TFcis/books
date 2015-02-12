@@ -2,6 +2,7 @@
 <?php
 include_once("../func/sql.php");
 include_once("../func/url.php");
+include_once("../func/log.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
 $error="";

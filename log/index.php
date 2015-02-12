@@ -56,28 +56,25 @@ meta();
 	<td colspan="2" align="center"><h1>log</h1></td>
 </tr>
 <tr>
-	<td align="right" width="50%">
-	<?php
-		if($_GET["page"]!=0){
-	?>
-	<form action="" method="get"><input name="page" type="hidden" value="<?php echo ($_GET["page"]-1); ?>"><input name="" type="submit" value="上一頁"></form>
-	<?php
-		}
-	?>
-	</td>
-	<td align="left" width="50%">
-	<form action="" method="get"><input name="page" type="hidden" value="<?php echo ($_GET["page"]+1); ?>"><input name="" type="submit" value="下一頁"></form>
+	<td align="center">
+		<table border="0" cellspacing="3" cellpadding="0">
+		<tr>
+			<td>
+			<form action="" method="get">
+				<input name="page" type="hidden" value="<?php echo ($_GET["page"]-1); ?>">
+				<input name="" type="submit" value="上一頁" <?php echo ($_GET["page"]==0?"style='display:none;'":""); ?>>
+			</form>
+			</td>
+			<td>
+			<form action="" method="get"><input name="page" type="hidden" value="<?php echo ($_GET["page"]+1); ?>"><input name="" type="submit" value="下一頁"></form>
+			</td>
+		</tr>
+		</table>
 	</td>
 </tr>
 <tr>
 	<td colspan="2" align="center">
 		<table border="1" cellspacing="0" cellpadding="2">
-		<div style="display:none">
-			<form method="post" id="catdel">
-				<input name="catdelid" type="hidden" id="catdelid">
-				<input name="catdelname" type="hidden" id="catdelname">
-			</form>
-		</div>
 		<tr>
 			<td>operate</td>
 			<td>affect</td>

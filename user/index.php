@@ -3,6 +3,7 @@
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 include_once("../func/url.php");
+include_once("../func/log.php");
 $login=checklogin();
 if($login==false)header("Location: ../login/?from=user");
 $editid=$login["id"];

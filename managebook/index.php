@@ -2,6 +2,7 @@
 <?php
 include_once("../func/sql.php");
 include_once("../func/url.php");
+include_once("../func/log.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
 $error="";
@@ -105,7 +106,7 @@ else if(isset($_POST["editbook"])){
 		}
 	}
 	$row=mfa(SELECT("*","booklist",[ ["id",$_POST["id"]] ]));
-	insertlog($data["id"],0,"managebook",true,"edit book:".$_POST["id"];
+	insertlog($data["id"],0,"managebook",true,"edit book:".$_POST["id"]);
 	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
 $row=SELECT(["id","name"],"account",null,null,"all");
