@@ -10,10 +10,12 @@ $data=checklogin();
 if($data==false)header("Location: ../login/?from=managebook");
 else if($data["power"]<=1){
 	$error="你沒有權限";
+	insertlog($data["id"],0,"managebook",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
 else if(isset($_POST["catdelid"])){
 	DELETE("category",[ ["id",$_POST["catdelid"]] ]);
+	insertlog($data["id"],0,"managebook",true,"del cat:".$_POST["catdelid"]." ".$_POST["catdelname"] );
 	$message="已刪除分類 ID=".$_POST["catdelid"]." 名稱=".$_POST["catdelname"];
 }
 else if(isset($_POST["addcat"])){
@@ -23,6 +25,7 @@ else if(isset($_POST["addcat"])){
 	else if($row)$error="已有此ID";
 	else{
 		INSERT( "category",[ [ "id",$_POST["id"] ],[ "name",$_POST["name"] ] ] );
+		insertlog($data["id"],0,"managebook",true,"add cat:".$_POST["id"]." ".$_POST["name"] );
 		$message="已增加分類 ID=".$_POST["id"]." 名稱=".$_POST["name"];
 	}
 }
@@ -33,6 +36,7 @@ else if(isset($_POST["editcat"])){
 	else if($_POST["name"]=="")$error="名稱為空";
 	else{
 		UPDATE( "category",[ ["name",$_POST["name"]] ],[ ["id",$_POST["id"]] ] );
+		insertlog($data["id"],0,"managebook",true,"edit cat:".$_POST["id"]." ".$_POST["name"] );
 		$message="已修改分類 ID=".$_POST["id"]." 名稱=".$_POST["name"];
 	}
 }
@@ -43,10 +47,12 @@ while($temp=mfa($row)){
 $bookavaltext=["隱藏","顯示"];
 if(isset($_POST["avalid"])){
 	UPDATE( "booklist",[ ["aval",(1-$_POST["aval"]) ] ],[ ["id",$_POST["avalid"]] ] );
+	insertlog($data["id"],0,"managebook",true,"edit book aval:".(1-$_POST["aval"]) );
 	$message="已將圖書 ID=".$_POST["avalid"]." ".$bookavaltext[1-$_POST["aval"]];
 }
 else if(isset($_POST["bookdelid"])){
 	DELETE("booklist",[ ["id",$_POST["bookdelid"]] ]);
+	insertlog($data["id"],0,"managebook",true,"del book:".$_POST["bookdelid"] );
 	$message="已刪除圖書 ID=".$_POST["bookdelid"];
 }
 else if(isset($_POST["addbook"])){
@@ -61,10 +67,12 @@ else if(isset($_POST["addbook"])){
 			for($i=0;$i<$_POST["number"];$i++){
 				if($isbn["totalItems"]==1){
 					INSERT( "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["year",$isbn["items"][0]["volumeInfo"]["publishedDate"]],["source",$_POST["source"]],["ISBN",$name]  ] );
+					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
 					$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$name;
 				}
 				else {
 					INSERT( "booklist",[ [ "id",$newid ],[ "name",$name],[ "cat",$_POST["cat"]],["year",$_POST["year"]],["source",$_POST["source"]] ]  );
+					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
 					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$row["year"]." 來源=".$_POST["source"];
 				}
 				$newid++;
@@ -97,6 +105,7 @@ else if(isset($_POST["editbook"])){
 		}
 	}
 	$row=mfa(SELECT("*","booklist",[ ["id",$_POST["id"]] ]));
+	insertlog($data["id"],0,"managebook",true,"edit book:".$_POST["id"];
 	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
 $row=SELECT(["id","name"],"account",null,null,"all");

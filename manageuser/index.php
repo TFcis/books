@@ -11,25 +11,31 @@ $powername=array("封禁","使用者","管理員","系統管理員");
 if($data==false)header("Location: ../login/?from=manageuser");
 else if($data["power"]<=1){
 	$error="你沒有權限";
+	insertlog($data["id"],0,"manageuser",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
 else if(isset($_POST["editid"])){
 	if($data["id"]==$_POST["editid"]){
 		$error="無法更改自己的權限";
+		insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own");
 	}
 	else{
 		$row=mfa(SELECT( ["user","name","power"],"account",[ ["id",$_POST["editid"]] ]));
 		if($row["power"]>$data["power"]){
 			$error="無法更改比自己權限高的帳戶";
+			insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit other power higher");
 		}
 		else if($_POST["editpower"]>$data["power"]){
 			$error="無法將權限調比自己高";
+			insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own higher power");
 		}
 		else {
 			UPDATE( "account",[ ["power",$_POST["editpower"]] ],[ ["id",$_POST["editid"]] ] );
+			insertlog($data["id"],$_POST["editid"],"manageuser",true,$_POST["editpower"]);
 			$message="已將 ".$row["user"]."(".$row["name"].") 的權限更改為 ".$powername[$_POST["editpower"]];
 			if($_POST["editpower"]<=0){
 				DELETE("session",[ ["id",$_POST["editid"] ] ],"all");
+				insertlog($data["id"],$_POST["editid"],"logout",true,"block");
 			}
 		}
 	}

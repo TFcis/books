@@ -11,24 +11,30 @@ if($data==false){
 	header("Location: ../login/?from=borrow");
 }else if($data["power"]<=1){
 	$error="你沒有權限";
+	insertlog($data["id"],0,"borrow",false,"no power");
 	?><script>setTimeout(function(){location="../";},1000)</script><?php
 }else if(isset($_POST["bookid"])){
 	if($_POST["bookid"]==""){
 		$error="圖書ID為空";
+		insertlog($data["id"],0,"borrow",false,"bookid empty");
 	}else if($_POST["borrowuser"]==""){
 		$error="借閱使用者為空";
+		insertlog($data["id"],0,"borrow",false,"user empty");
 	}else{
 		$book=mfa(SELECT(["name","lend"],"booklist",[ ["id",$_POST["bookid"] ] ] ));
 		$acct=mfa(SELECT(["id","user","name"],"account",[ ["user",$_POST["borrowuser"] ] ] ));
 		if($book==""){
 			$error="無此圖書ID";
+			insertlog($data["id"],0,"borrow",false,"no bookid:".$_POST["bookid"]);
 		}else if($acct==""){
 			$error="無此使用者";
+			insertlog($data["id"],0,"borrow",false,"no user:".$_POST["borrowuser"]);
 		}else if($book["lend"]!="0"){
 			$error="此本書已經被其他人借閱";
+			insertlog($data["id"],$acct["id"],"borrow",false,"already lead:".$_POST["bookid"]);
 		}else{
 			UPDATE( "booklist",[["lend",$acct["id"]] ],[["id",$_POST["bookid"]]]);
-			INSERT("log",[["operate",$data["id"]],["affect",$acct["id"]],["type","borrow"],["action","borrow book id=".$_POST["bookid"]]]);
+			insertlog($data["id"],$acct["id"],"borrow",true,"book id=".$_POST["bookid"]);
 			$message="已將圖書 ".$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["user"]."(".$acct["name"].")";
 		}
 	}

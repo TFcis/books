@@ -3,6 +3,7 @@
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 include_once("../func/url.php");
+include_once("../func/log.php");
 $error="";
 $message="";
 $noshow=true;
@@ -15,44 +16,57 @@ if(checklogin()){
 	$row = mfa(SELECT(["id","pwd","power","verify"],"account",[["user",$_POST['user']]]));
 	if($row==""){
 		$error="無此帳號";
+		insertlog(0,0,"login",false,"no user");
 	}else if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
 		if($row["power"]<=0){
 			$error="此帳戶已遭封禁，無法登入";
+			insertlog(0,$row["id"],"login",false,"account block");
 		}else if($row["verify"]!="OK"){
 			$error="你尚未驗證帳號，請至信箱點選驗證連結，或是到<a href='../verify'>這裡</a>重發驗證信";
+			insertlog(0,$row["id"],"login",false,"no verify");
 		}else{
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
 			INSERT("session",[["id",$row["id"]],["cookie",$cookie]]);
+			insertlog(0,$row["id"],"login");
 			$message="登入成功";
 			$noshow=false;
 			?><script>setTimeout(function(){location="../<?php echo ($_GET["from"]==""?"home":$_GET["from"]);?>";},3000)</script><?php
 		}
 	}else{
 		$error="密碼錯誤";
+		insertlog(0,$row["id"],"login",false,"wrong password");
 	}
 }else if(isset($_POST['suser'])){
 	$row = mfa(SELECT("*","account",[["user",$_POST['suser']]]));
 	if($row!=""){
 		$error="已經有人註冊此帳號";
+		insertlog(0,0,"signup",false,"user exist:".$_POST['suser']);
 	}else if(!preg_match("/^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/", $_POST["suser"])){
 		$error="帳號不符合格式 /^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/<br>應該由英文字開頭，僅包含英數，至少3個字";
+		insertlog(0,0,"signup",false,"user format:".$_POST["suser"]);
 	}else if($_POST["spwd"]!=$_POST["spwd2"]){
 		$error="密碼不相符";
+		insertlog(0,0,"signup",false,"password not match");
 	}else if(preg_match("/\s/", $_POST["spwd"])){
 		$error="密碼不可有空白";
+		insertlog(0,0,"signup",false,"password has space");
 	}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
 		$error="密碼至少4個字";
+		insertlog(0,0,"signup",false,"password length");
 	}else if($_POST["sname"]==""){
 		$error="姓名為空";
+		insertlog(0,0,"signup",false,"name empty");
 	}else if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
 		$error="郵件位址不正確";
+		insertlog(0,0,"signup",false,"email format:".$_POST["semail"]);
 	}else{
 		$row = mfa(SELECT(["MAX(id)"],"account"));
 		$id=$row["MAX(id)"]+1;
 		$verifycode=md5(uniqid(rand(),true));
 		INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]],["verify",$verifycode]]);
 		mail($_POST["semail"], "ELMS 帳戶驗證", "你剛剛註冊了ELMS ( http://books.tfcis.org/ ) 的帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
+		insertlog(0,$id,"signup");
 		$message='註冊成功，請先至信箱點選驗證帳戶連結後，始可登入';
 		$nosignup=false;
 	}

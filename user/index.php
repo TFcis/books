@@ -14,19 +14,23 @@ $showdata=true;
 $editdata=mfa(SELECT(["name","email","power"],"account",[["id",$editid]]));
 if(isset($_POST["sid"])&&$editid!=$_POST["sid"]){
 	$error="有預設資料遭到修改，沒有任何修改動作被執行";
+	insertlog($login["id"],$editid,"useredit",false,"attack");
 	$showdata=false;
 }
 else if($editdata==""){
 	$error="無此ID";
+	insertlog($login["id"],$editid,"useredit",false,"no id");
 	$showdata=false;
 }
 else{
 	if($editid!=$login["id"]&&$login["power"]<=1){
 		$error="你沒有權限更改別人的資料";
+		insertlog($login["id"],$editid,"useredit",false,"no power");
 		$showdata=false;
 	}
 	else if($login["power"]<$editdata["power"]){
 		$error="無法更改較高權限的帳戶";
+		insertlog($login["id"],$editid,"useredit",false,"higher power");
 		$showdata=false;
 	}
 	else{
@@ -34,32 +38,39 @@ else{
 			$message="注意!你正在更改其他人的資料";
 		}
 		$oldpwd=mfa(SELECT(["pwd"],"account",[["id",$login["id"]]]))["pwd"];
-
 		if($_POST['spwd1']!=""){
 			if(crypt($_POST['spwd0'],$oldpwd)!=$oldpwd){
 				$error="舊密碼錯誤";
+				insertlog($login["id"],$editid,"useredit",false,"wrong old password");
 			}else if($_POST["spwd1"]!=$_POST["spwd2"]){
 				$error="密碼不符";
+				insertlog($login["id"],$editid,"useredit",false,"password not match");
 			}else if(preg_match("/\s/", $_POST["spwd1"])){
 				$error="密碼不可有空白";
+				insertlog($login["id"],$editid,"useredit",false,"password has space");
 			}else if(!preg_match("/^.{4,}$/", $_POST["spwd1"])){
 				$error="密碼至少4個字";
+				insertlog($login["id"],$editid,"useredit",false,"password length");
 			}else{
 				UPDATE("account",[ ["pwd",crypt($_POST['spwd1'])] ],[ ["id",$editid] ]);
+				insertlog($login["id"],$editid,"useredit",true,"edit password");
 				if($message2=="")$message2.="已更新以下資料";
 				$message2.=" 密碼";
 			}
 		}
 		if($_POST['sname']!=""&&$_POST['sname']!=$editdata["name"]){
 			UPDATE("account",[ ["name",$_POST['sname']] ],[ ["id",$editid] ]);
+			insertlog($login["id"],$editid,"useredit",true,"edit name");
 			if($message2=="")$message2.="已更新以下資料";
 			$message2.=" 姓名";
 		}
 		if($_POST['semail']!=""&&$_POST['semail']!=$editdata["email"]){
 			if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
 				$error="郵件位址不正確";
+				insertlog($login["id"],$editid,"useredit",false,"email format");
 			}else{
 				UPDATE("account",[ ["email",$_POST['semail']] ],[ ["id",$editid] ]);
+				insertlog($login["id"],$editid,"useredit",true,"edit email");
 				if($message2=="")$message2.="已更新以下資料";
 				$message2.=" 郵件 注意!你需要重新驗證郵件";
 				$verifycode=md5(uniqid(rand(),true));
