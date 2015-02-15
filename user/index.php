@@ -92,8 +92,6 @@ $editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
 <meta charset="UTF-8">
 <title>讀者資料查詢-TFcisBooks</title>
 <link href="user.css" rel="stylesheet" type="text/css">
-<link href="../res/css.css" rel="stylesheet" type="text/css">
-<link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
 include_once("../res/meta.php");
 meta();

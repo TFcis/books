@@ -56,8 +56,6 @@ if(checklogin()){
 <meta charset="UTF-8">
 <title>重發驗證信-TFcisBooks</title>
 <link href="login.css" rel="stylesheet" type="text/css">
-<link href="../res/css.css" rel="stylesheet" type="text/css">
-<link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
 include_once("../res/meta.php");
 meta();

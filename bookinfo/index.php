@@ -8,8 +8,6 @@ include_once("../func/consolelog.php");
 <head>
 <meta http-equiv="Content-Type" charset="UTF-8" name="viewport" content="width=device-width,user-scalable=yes">
 <title>圖書資料-TFcisBooks</title>
-<link href="../res/css.css" rel="stylesheet" type="text/css">
-<link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
 	include_once("../res/meta.php");
 	$bookinfo=mfa(SELECT(["id","name","cat","year","source","ISBN","lend"],"booklist",[["id",$_GET["id"]]]));

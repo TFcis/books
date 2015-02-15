@@ -117,8 +117,6 @@ while($temp=mfa($row)){
 <head>
 <meta charset="UTF-8">
 <title>圖書管理-TFcisBooks</title>
-<link href="../res/css.css" rel="stylesheet" type="text/css">
-<link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
 include_once("../res/meta.php");
 meta();
