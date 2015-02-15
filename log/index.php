@@ -16,7 +16,7 @@ else if($data["power"]<=1){
 ?>
 <head>
 <meta charset="UTF-8">
-<title>圖書管理-TFcisBooks</title>
+<title>Log-TFcisBooks</title>
 <?php
 include_once("../res/meta.php");
 meta();
