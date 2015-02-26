@@ -56,7 +56,13 @@ include_once("../func/consolelog.php");
 		</tr>
 		<tr>
 			<td>借出</td>
-			<td><?php echo ($bookinfo["lend"]==0?"在館內":"已借出"); ?></td>
+			<td><?php 
+				echo ($bookinfo["lend"]==0?"在館內":"已借出");
+				if($bookinfo["lend"]!=0&&checklogin()["power"]>=2){
+					$acct=mfa(SELECT(["name","user"],"account",[["id",$bookinfo["lend"]]]));
+					echo " ".$acct["user"]."(".$acct["name"].")";
+				}
+			?></td>
 		</tr>
 		<tr>
 			<td>圖片</td>
