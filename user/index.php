@@ -145,7 +145,7 @@ meta();
 				while($temp=mfa($row)){
 					$cate[$temp["id"]]=$temp["name"];
 				}
-				$row=SELECT(["id","name","cat","lend","source"],"booklist",[["lend",$login["id"]]],null,"all");
+				$row=SELECT(["id","name","cat","lend","source"],"booklist",[["lend",$editid]],null,"all");
 				$noborrow=true;
 				while($book=mfa($row)){
 					$noborrow=false;
