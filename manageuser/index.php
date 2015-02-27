@@ -93,19 +93,25 @@ meta();
 		<tr>
 			<td>ID</td>
 			<td>帳號</td>
+			<td>目前借閱</td>
 			<td>姓名</td>
 			<td>Email</td>
 			<td>權限</td>
 			<td colspan="4">更改</td>
 		</tr>
 		<?php
+		$row=SELECT(["COUNT(*) AS `COUNT`","`lend`"],"booklist",null,null,"all",["lend"]);
+		while($temp=mfa($row)){
+			$borrowcount[$temp["lend"]]=$temp["COUNT"];
+		}
 		$row=SELECT("*","account",null,[ ["id","ASC"] ],"all");
 		while($acct=mfa($row)){
 			?>
 			<tr>
-				<td><?php echo $acct["id"]; ?></td>
+				<td><a href="../user?id=<?php echo $acct["id"]; ?>"><?php echo $acct["id"]; ?></a></td>
 				<td><?php echo $acct["user"]; ?></td>
-				<td><?php echo het($acct["name"]); ?></td>
+				<td><?php echo $borrowcount[$acct["id"]]; ?></td>
+				<td><?php echo substr(het($acct["name"]),0,15); ?></td>
 				<td><?php echo $acct["email"]; ?></td>
 				<td><?php echo $powername[$acct["power"]]; ?></td>
 				<td>
