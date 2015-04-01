@@ -10,8 +10,8 @@ include_once("../func/consolelog.php");
 <title>圖書資料-TFcisBooks</title>
 <?php
 	include_once("../res/meta.php");
-	$bookinfo=mfa(SELECT(["id","name","cat","year","source","ISBN","lend"],"booklist",[["id",$_GET["id"]]]));
-	$cate=mfa(SELECT(["name"],"category",[["id",$bookinfo["cat"]]]))["name"];
+	$bookinfo=mfa(SELECT("ELMS",["id","name","cat","year","source","ISBN","lend"],"booklist",[["id",$_GET["id"]]]));
+	$cate=mfa(SELECT("ELMS",["name"],"category",[["id",$bookinfo["cat"]]]))["name"];
 	meta([["description","TFcisBooks圖書資訊 ID=".$bookinfo["id"].",書名=".$bookinfo["name"].",分類=".$cate.",年份=".$bookinfo["year"].",來源=".$bookinfo["source"].",ISBN=".$bookinfo["ISBN"]]]);
 ?>
 </head>
@@ -59,7 +59,7 @@ include_once("../func/consolelog.php");
 			<td><?php 
 				echo ($bookinfo["lend"]==0?"在館內":"已借出");
 				if($bookinfo["lend"]!=0&&checklogin()["power"]>=2){
-					$acct=mfa(SELECT(["name","user"],"account",[["id",$bookinfo["lend"]]]));
+					$acct=mfa(SELECT("ELMS",["name","user"],"account",[["id",$bookinfo["lend"]]]));
 					echo " ".$acct["user"]."(".$acct["name"].")";
 				}
 			?></td>
@@ -89,13 +89,13 @@ include_once("../func/consolelog.php");
 <tr>
 	<td height="20"></td>
 </tr>
-<?php
-	if(checklogin()["power"]>=2){
-?>
 <tr>
 	<td align="center"><a href="../borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
 	</td>
 </tr>
+<?php
+	if(checklogin()["power"]>=2){
+?>
 <tr>
 	<td align="center"><a href="../return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
 	</td>
@@ -104,7 +104,7 @@ include_once("../func/consolelog.php");
 	}else{
 ?>
 <tr>
-	<td align="center">欲借還書請找管理員</td>
+	<td align="center">欲還書請找管理員</td>
 </tr>
 <?php
 	}

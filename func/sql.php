@@ -1,5 +1,5 @@
 <?php
-include_once("consolelog.php");
+require_once("consolelog.php");
 function WHERE($link,$where){
 	if($where){
 		$query="WHERE ";
@@ -22,9 +22,9 @@ function LIMIT($limit){
 	else
 		return "LIMIT ".$limit." ";
 }
-function SELECT($return,$table,$where=null,$order=null,$limit=array(0,1),$group=null){
-	include("../config/db.php");
-	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
+function SELECT($dbname,$return,$table,$where=null,$order=null,$limit=array(0,1),$group=null){
+	require("../config/db.php");
+	$link = mysqli_connect($db[0],$db[1],$db[2],$dbname);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
 	$query="SELECT ";
@@ -52,13 +52,14 @@ function SELECT($return,$table,$where=null,$order=null,$limit=array(0,1),$group=
 		}
 	}
 	$query.=LIMIT($limit);
+	//consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
 }
-function INSERT($table,$value){
-	include("../config/db.php");
-	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
+function INSERT($dbname,$table,$value){
+	require("../config/db.php");
+	$link = mysqli_connect($db[0],$db[1],$db[2],$dbname);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
 	$query="INSERT INTO `$table` (";
@@ -72,13 +73,14 @@ function INSERT($table,$value){
 		$query.="'".mysqli_real_escape_string($link,$temp[1])."' ";
 	}
 	$query.=")";
+	//consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
 }
-function UPDATE($table,$value,$where=null,$limit=1){
-	include("../config/db.php");
-	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
+function UPDATE($dbname,$table,$value,$where=null,$limit=1){
+	require("../config/db.php");
+	$link = mysqli_connect($db[0],$db[1],$db[2],$dbname);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
 	$query="UPDATE `$table` SET ";
@@ -87,25 +89,28 @@ function UPDATE($table,$value,$where=null,$limit=1){
 		$query.="`$temp[0]`='".mysqli_real_escape_string($link,$temp[1])."' ";
 	}
 	$query.=WHERE($link,$where).LIMIT($limit);
+	//consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
 }
-function DELETE($table,$where=null,$limit=1){
-	include("../config/db.php");
-	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
+function DELETE($dbname,$table,$where=null,$limit=1){
+	require("../config/db.php");
+	$link = mysqli_connect($db[0],$db[1],$db[2],$dbname);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
 	$query="DELETE FROM `$table` ".WHERE($link,$where).LIMIT($limit);
+	//consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;
 }
-function SQL($query){
-	include("../config/db.php");
-	$link = mysqli_connect($db[0],$db[1],$db[2],$db[3]);
+function SQL($dbname,$query){
+	require("../config/db.php");
+	$link = mysqli_connect($db[0],$db[1],$db[2],$dbname);
 	if(mysqli_connect_errno($link))
 		consolelog("Failed to connect to MySQL: " . iconv("big5","utf-8",mysqli_connect_error()));
+	//consolelog($query);
 	$result=mysqli_query($link, $query);
 	mysqli_close($link);
 	return $result;

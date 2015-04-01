@@ -22,8 +22,8 @@ if($data==false){
 		$error="借閱使用者為空";
 		insertlog($data["id"],0,"return",false,"user empty");
 	}else{
-		$book=mfa(SELECT(["id","name","lend"],"booklist",[ ["id",$_POST["bookid"] ] ] ));
-		$acct=mfa(SELECT(["id","user","name"],"account",[ ["user",$_POST["borrowuser"] ] ] ));
+		$book=mfa(SELECT("ELMS",["id","name","lend"],"booklist",[ ["id",$_POST["bookid"] ] ] ));
+		$acct=mfa(SELECT("ELMS",["id","user","name"],"account",[ ["user",$_POST["borrowuser"] ] ] ));
 		if($book==""){
 			$error="無此圖書ID";
 			insertlog($data["id"],0,"return",false,"no bookid:".$_POST["bookid"]);
@@ -34,7 +34,7 @@ if($data==false){
 			$error="使用者 ".$acct["user"]."(".$acct["name"].") 沒有借閱圖書 ".$book["id"]." ".$book["name"];
 			insertlog($data["id"],$acct["id"],"return",false,"no lead:".$_POST["bookid"]);
 		}else{
-			UPDATE( "booklist",[["lend",0] ],[["id",$_POST["bookid"]]]);
+			UPDATE("ELMS","booklist",[["lend",0] ],[["id",$_POST["bookid"]]]);
 			insertlog($data["id"],$acct["id"],"return",true,"book id=".$_POST["bookid"]);
 			$message=$acct["user"]."(".$acct["name"].") 已歸還圖書 ".$_POST["bookid"]."(".$book["name"].")";
 		}

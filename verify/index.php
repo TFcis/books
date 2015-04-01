@@ -11,7 +11,7 @@ if(checklogin()){
 	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }else if($_GET["code"]!=""){
-	$row = mfa(SELECT(["id"],"account",[["verify",$_GET["code"]]]));
+	$row = mfa(SELECT("ELMS",["id"],"account",[["verify",$_GET["code"]]]));
 	if($row==""){
 		$error="驗證碼錯誤";
 		insertlog(0,$row["id"],"verify",false,"wrong code");
@@ -23,7 +23,7 @@ if(checklogin()){
 		$noshow=false;
 	}
 }else if(isset($_POST['user'])){
-	$row = mfa(SELECT(["id","pwd","power","email","verify"],"account",[["user",$_POST['user']]]));
+	$row = mfa(SELECT("ELMS",["id","pwd","power","email","verify"],"account",[["user",$_POST['user']]]));
 	if($row==""){
 		$error="無此帳號";
 		insertlog(0,0,"verify",false,"no user");

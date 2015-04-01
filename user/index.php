@@ -12,7 +12,7 @@ $error="";
 $message="";
 $message2="";
 $showdata=true;
-$editdata=mfa(SELECT(["name","email","power"],"account",[["id",$editid]]));
+$editdata=mfa(SELECT("ELMS",["name","email","power"],"account",[["id",$editid]]));
 if(isset($_POST["sid"])&&$editid!=$_POST["sid"]){
 	$error="有預設資料遭到修改，沒有任何修改動作被執行";
 	insertlog($login["id"],$editid,"useredit",false,"attack");
@@ -38,7 +38,7 @@ else{
 		if($editid!=$login["id"]){
 			$message="注意!你正在更改其他人的資料";
 		}
-		$oldpwd=mfa(SELECT(["pwd"],"account",[["id",$login["id"]]]))["pwd"];
+		$oldpwd=mfa(SELECT("ELMS",["pwd"],"account",[["id",$login["id"]]]))["pwd"];
 		if($_POST['spwd1']!=""){
 			if(crypt($_POST['spwd0'],$oldpwd)!=$oldpwd){
 				$error="舊密碼錯誤";
@@ -77,7 +77,7 @@ else{
 				$verifycode=md5(uniqid(rand(),true));
 				UPDATE("account",[["verify",$verifycode]],[["id",$editid]]);
 				mail($row["email"], "ELMS 帳戶驗證", "你剛剛更改了ELMS ( http://books.tfcis.org/ ) 的郵件\n需要重新驗證帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
-				DELETE("session",[ ["id",$editid] ],"all");
+				DELETE("ELMS","session",[ ["id",$editid] ],"all");
 				$showdata=false;
 				?><script>setTimeout(function(){location="../login"},5000);</script><?php
 			}
@@ -86,7 +86,7 @@ else{
 }
 if($message!=""&&$message2!="")$message.="<br>";
 $message.=$message2;
-$editdata=mfa(SELECT(["name","email"],"account",[["id",$editid]]));
+$editdata=mfa(SELECT("ELMS",["name","email"],"account",[["id",$editid]]));
 ?>
 <head>
 <meta charset="UTF-8">
@@ -141,11 +141,11 @@ meta();
 					<td>來源</td>
 				</tr>
 				<?php
-				$row=SELECT("*","category",null,null,"all");
+				$row=SELECT("ELMS","*","category",null,null,"all");
 				while($temp=mfa($row)){
 					$cate[$temp["id"]]=$temp["name"];
 				}
-				$row=SELECT(["id","name","cat","lend","source"],"booklist",[["lend",$editid]],null,"all");
+				$row=SELECT("ELMS",["id","name","cat","lend","source"],"booklist",[["lend",$editid]],null,"all");
 				$noborrow=true;
 				while($book=mfa($row)){
 					$noborrow=false;

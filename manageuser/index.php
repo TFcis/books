@@ -21,7 +21,7 @@ else if(isset($_POST["editid"])){
 		insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own");
 	}
 	else{
-		$row=mfa(SELECT( ["user","name","power"],"account",[ ["id",$_POST["editid"]] ]));
+		$row=mfa(SELECT("ELMS", ["user","name","power"],"account",[ ["id",$_POST["editid"]] ]));
 		if($row["power"]>$data["power"]){
 			$error="無法更改比自己權限高的帳戶";
 			insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit other power higher");
@@ -35,7 +35,7 @@ else if(isset($_POST["editid"])){
 			insertlog($data["id"],$_POST["editid"],"manageuser",true,$_POST["editpower"]);
 			$message="已將 ".$row["user"]."(".$row["name"].") 的權限更改為 ".$powername[$_POST["editpower"]];
 			if($_POST["editpower"]<=0){
-				DELETE("session",[ ["id",$_POST["editid"] ] ],"all");
+				DELETE("ELMS","session",[ ["id",$_POST["editid"] ] ],"all");
 				insertlog($data["id"],$_POST["editid"],"logout",true,"block");
 			}
 		}
@@ -100,11 +100,11 @@ meta();
 			<td colspan="4">更改</td>
 		</tr>
 		<?php
-		$row=SELECT(["COUNT(*) AS `COUNT`","`lend`"],"booklist",null,null,"all",["lend"]);
+		$row=SELECT("ELMS",["COUNT(*) AS `COUNT`","`lend`"],"booklist",null,null,"all",["lend"]);
 		while($temp=mfa($row)){
 			$borrowcount[$temp["lend"]]=$temp["COUNT"];
 		}
-		$row=SELECT("*","account",null,[ ["id","ASC"] ],"all");
+		$row=SELECT("ELMS","*","account",null,[ ["id","ASC"] ],"all");
 		while($acct=mfa($row)){
 			?>
 			<tr>

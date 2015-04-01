@@ -15,23 +15,23 @@ else if($data["power"]<=1){
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
 else if(isset($_POST["catdelid"])){
-	DELETE("category",[ ["id",$_POST["catdelid"]] ]);
+	DELETE("ELMS","category",[ ["id",$_POST["catdelid"]] ]);
 	insertlog($data["id"],0,"managebook",true,"del cat:".$_POST["catdelid"]." ".$_POST["catdelname"] );
 	$message="已刪除分類 ID=".$_POST["catdelid"]." 名稱=".$_POST["catdelname"];
 }
 else if(isset($_POST["addcat"])){
-	$row=mfa(SELECT( ["id"],"category",[ [ "id",$_POST["id"] ] ] ,null,"all"));
+	$row=mfa(SELECT("ELMS", ["id"],"category",[ [ "id",$_POST["id"] ] ] ,null,"all"));
 	if($_POST["id"]=="")$error="ID為空";
 	else if($_POST["name"]=="")$error="名稱為空";
 	else if($row)$error="已有此ID";
 	else{
-		INSERT( "category",[ [ "id",$_POST["id"] ],[ "name",$_POST["name"] ] ] );
+		INSERT("ELMS", "category",[ [ "id",$_POST["id"] ],[ "name",$_POST["name"] ] ] );
 		insertlog($data["id"],0,"managebook",true,"add cat:".$_POST["id"]." ".$_POST["name"] );
 		$message="已增加分類 ID=".$_POST["id"]." 名稱=".$_POST["name"];
 	}
 }
 else if(isset($_POST["editcat"])){
-	$row=mfa(SELECT( ["id"],"category",[ [ "id",$_POST["id"] ] ] ));
+	$row=mfa(SELECT("ELMS", ["id"],"category",[ [ "id",$_POST["id"] ] ] ));
 	if($_POST["id"]=="")$error="ID為空";
 	else if(!$row)$error="無此ID";
 	else if($_POST["name"]=="")$error="名稱為空";
@@ -41,7 +41,7 @@ else if(isset($_POST["editcat"])){
 		$message="已修改分類 ID=".$_POST["id"]." 名稱=".$_POST["name"];
 	}
 }
-$row=SELECT("*","category",null,null,"all");
+$row=SELECT("ELMS","*","category",null,null,"all");
 while($temp=mfa($row)){
 	$cate[$temp["id"]]=$temp["name"];
 }
@@ -52,7 +52,7 @@ if(isset($_POST["avalid"])){
 	$message="已將圖書 ID=".$_POST["avalid"]." ".$bookavaltext[1-$_POST["aval"]];
 }
 else if(isset($_POST["bookdelid"])){
-	DELETE("booklist",[ ["id",$_POST["bookdelid"]] ]);
+	DELETE("ELMS","booklist",[ ["id",$_POST["bookdelid"]] ]);
 	insertlog($data["id"],0,"managebook",true,"del book:".$_POST["bookdelid"] );
 	$message="已刪除圖書 ID=".$_POST["bookdelid"];
 }
@@ -62,17 +62,17 @@ else if(isset($_POST["addbook"])){
 	else{
 		$booknames = explode(",",$_POST["name"]);
 		foreach($booknames as $name){
-			$row=mfa(SELECT(["MAX(id)"],"booklist"));
+			$row=mfa(SELECT("ELMS",["MAX(id)"],"booklist"));
 			$newid=$row["MAX(id)"]+1;
 			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$name),true);
 			for($i=0;$i<$_POST["number"];$i++){
 				if($isbn["totalItems"]==1){
-					INSERT( "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["year",$isbn["items"][0]["volumeInfo"]["publishedDate"]],["source",$_POST["source"]],["ISBN",$name]  ] );
+					INSERT("ELMS", "booklist",[ [ "id",$newid ],[ "name",$isbn["items"][0]["volumeInfo"]["title"]],[ "cat",$_POST["cat"]],["year",$isbn["items"][0]["volumeInfo"]["publishedDate"]],["source",$_POST["source"]],["ISBN",$name]  ] );
 					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
 					$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$name;
 				}
 				else {
-					INSERT( "booklist",[ [ "id",$newid ],[ "name",$name],[ "cat",$_POST["cat"]],["year",$_POST["year"]],["source",$_POST["source"]] ]  );
+					INSERT("ELMS", "booklist",[ [ "id",$newid ],[ "name",$name],[ "cat",$_POST["cat"]],["year",$_POST["year"]],["source",$_POST["source"]] ]  );
 					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
 					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$row["year"]." 來源=".$_POST["source"];
 				}
@@ -105,11 +105,11 @@ else if(isset($_POST["editbook"])){
 			UPDATE( "booklist",[ ["source",$_POST["source"] ] ],[ ["id",$id] ] );
 		}
 	}
-	$row=mfa(SELECT("*","booklist",[ ["id",$_POST["id"]] ]));
+	$row=mfa(SELECT("ELMS","*","booklist",[ ["id",$_POST["id"]] ]));
 	insertlog($data["id"],0,"managebook",true,"edit book:".$_POST["id"]);
 	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
-$row=SELECT(["id","name"],"account",null,null,"all");
+$row=SELECT("ELMS",["id","name"],"account",null,null,"all");
 while($temp=mfa($row)){
 	$acct[$temp["id"]]=$temp["name"];
 }
@@ -359,7 +359,7 @@ meta();
 				<td>管理</td>
 			</tr>
 			<?php
-			$row=SELECT( "*","booklist",null,[["id","ASC"]] ,"all");
+			$row=SELECT("ELMS", "*","booklist",null,[["id","ASC"]] ,"all");
 			while($book=mfa($row)){
 				?>
 				<tr>

@@ -84,7 +84,7 @@ meta();
 		<?php
 		$page=0;
 		if(is_numeric($_GET["page"]))$page=$_GET["page"];
-		$row=SELECT("*","log",null,[["time","DESC"]],[($page*30),30]);
+		$row=SELECT("ELMS","*","log",null,[["time","DESC"]],[($page*30),30]);
 		while($temp=mfa($row)){
 		?>
 			<tr>

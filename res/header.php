@@ -12,10 +12,10 @@ function keyFunction(){
 			case 49: location="../home";break;
 			case 50: location="../search";break;
 			case 51: location="../user";break;
+			case 52: location="../borrow";break;
 			<?php
 			if($login["power"]>=2){
 			?>
-			case 52: location="../borrow";break;
 			case 53: location="../return";break;
 			case 54: location="../managebook";break;
 			case 55: location="../manageuser";break;
@@ -45,7 +45,7 @@ document.onkeydown=keyFunction;
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td height="25" valign="middle" bgcolor="#0000FF" style="color: #FFF">
-			<div style="float:left;">&nbsp;&nbsp;&nbsp;&nbsp;<a href="../home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="../search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="../user" target="_parent" style="color:#FFF">讀者資料查詢</a></div><?php if($login["power"]>=2){ ?><div style="float:left;">&nbsp;|&nbsp;<a href="../borrow" target="_parent" style="color:#FFF">借書</a>&nbsp;|&nbsp;<a href="../return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="../managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="../manageuser" target="_parent" style="color:#FFF">使用者</a>&nbsp;|&nbsp;<a href="../log" target="_parent" style="color:#FFF">Log</a></div>
+			<div style="float:left;">&nbsp;&nbsp;&nbsp;&nbsp;<a href="../home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="../search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="../user" target="_parent" style="color:#FFF">讀者資料查詢</a>&nbsp;|&nbsp;<a href="../borrow" target="_parent" style="color:#FFF">借書</a></div><?php if($login["power"]>=2){ ?><div style="float:left;">&nbsp;|&nbsp;<a href="../return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="../managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="../manageuser" target="_parent" style="color:#FFF">使用者</a>&nbsp;|&nbsp;<a href="../log" target="_parent" style="color:#FFF">Log</a></div>
 			<?php } ?>
 		</td>
 		<td height="25" valign="middle" bgcolor="#0000FF" style="text-align: right; color: #FFF;">

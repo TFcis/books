@@ -4,7 +4,6 @@ include_once("../func/sql.php");
 include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
-if(checklogin()==false)header("Location: ../login/?from=search");
 ?>
 <head>
 <meta charset="UTF-8">
@@ -18,7 +17,7 @@ meta();
 <?php
 	include_once("../res/header.php");
 	if($_GET["bookid"]!="")header("Location: ../bookinfo/?id=".$_GET["bookid"]);
-	$row=SELECT("*","category",null,null,"all");
+	$row=SELECT("ELMS","*","category",null,null,"all");
 	while($temp=mfa($row)){
 		$cate[$temp["id"]]=$temp["name"];
 	}
@@ -26,7 +25,7 @@ meta();
 	if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
 	if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
 	if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
-	$row=SELECT("*","booklist",$temp,[["cat"],["name"]],"all");
+	$row=SELECT("ELMS","*","booklist",$temp,[["cat"],["name"]],"all");
 	while($temp=mfa($row)){
 		if($booklist[$temp["name"]]["id"]!="")$booklist[$temp["name"]]["id"].=",";
 		$booklist[$temp["name"]]["id"].=$temp["id"];

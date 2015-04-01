@@ -63,6 +63,11 @@ include_once("../res/header.php");
 		<hr>
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
+			<td valign="top">2015.04.01</td>
+			<td>開放使用者自行借書
+				</td>
+		</tr>
+		<tr>
 			<td valign="top">2015.02.12</td>
 			<td>操作紀錄
 				</td>

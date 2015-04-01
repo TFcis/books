@@ -12,7 +12,7 @@ if(checklogin()){
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
 if(isset($_POST['suser'])){
-	$row=mfa(SELECT(["id"],"account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ]));
+	$row=mfa(SELECT("ELMS",["id"],"account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ]));
 	if($row==""){
 		$error="資料錯誤";
 	}else if($_POST["spwd"]!=$_POST["spwd2"]){

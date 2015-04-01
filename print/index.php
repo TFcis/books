@@ -22,11 +22,11 @@ meta();
 <h1>PRINT</h1>
 <hr>
 <?php
-$row=SELECT("*","category",null,null,"all");
+$row=SELECT("ELMS","*","category",null,null,"all");
 while($temp=mfa($row)){
 	$cate[$temp["id"]]=$temp["name"];
 }
-$row=SELECT("*","booklist",null,null,"all");
+$row=SELECT("ELMS","*","booklist",null,null,"all");
 ?>
 <table border="0" cellspacing="0" cellpadding="5">
 <tr>

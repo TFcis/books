@@ -13,7 +13,7 @@ if(checklogin()){
 	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }else if(isset($_POST['user'])){
-	$row = mfa(SELECT(["id","pwd","power","verify"],"account",[["user",$_POST['user']]]));
+	$row = mfa(SELECT("ELMS",["id","pwd","power","verify"],"account",[["user",$_POST['user']]]));
 	if($row==""){
 		$error="無此帳號";
 		insertlog(0,0,"login",false,"no user");
@@ -27,7 +27,7 @@ if(checklogin()){
 		}else{
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
-			INSERT("session",[["id",$row["id"]],["cookie",$cookie]]);
+			INSERT("ELMS","session",[["id",$row["id"]],["cookie",$cookie]]);
 			insertlog(0,$row["id"],"login");
 			$message="登入成功";
 			$noshow=false;
@@ -38,7 +38,7 @@ if(checklogin()){
 		insertlog(0,$row["id"],"login",false,"wrong password");
 	}
 }else if(isset($_POST['suser'])){
-	$row = mfa(SELECT("*","account",[["user",$_POST['suser']]]));
+	$row = mfa(SELECT("ELMS","*","account",[["user",$_POST['suser']]]));
 	if($row!=""){
 		$error="已經有人註冊此帳號";
 		insertlog(0,0,"signup",false,"user exist:".$_POST['suser']);
@@ -61,10 +61,10 @@ if(checklogin()){
 		$error="郵件位址不正確";
 		insertlog(0,0,"signup",false,"email format:".$_POST["semail"]);
 	}else{
-		$row = mfa(SELECT(["MAX(id)"],"account"));
+		$row = mfa(SELECT("ELMS",["MAX(id)"],"account"));
 		$id=$row["MAX(id)"]+1;
 		$verifycode=md5(uniqid(rand(),true));
-		INSERT("account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]],["verify",$verifycode]]);
+		INSERT("ELMS","account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]],["verify",$verifycode]]);
 		mail($_POST["semail"], "ELMS 帳戶驗證", "你剛剛註冊了ELMS ( http://books.tfcis.org/ ) 的帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
 		insertlog(0,$id,"signup");
 		$message='註冊成功，請先至信箱點選驗證帳戶連結後，始可登入';
