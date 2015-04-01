@@ -89,12 +89,15 @@ include_once("../func/consolelog.php");
 <tr>
 	<td height="20"></td>
 </tr>
+<?php
+	if($bookinfo["lend"]==0){
+?>
 <tr>
 	<td align="center"><a href="../borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
 	</td>
 </tr>
 <?php
-	if(checklogin()["power"]>=2){
+	}else if(checklogin()["power"]>=2){
 ?>
 <tr>
 	<td align="center"><a href="../return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
