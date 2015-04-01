@@ -4,6 +4,7 @@ include_once("../func/sql.php");
 include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
+if(checklogin()==false)header("Location: ../login/?from=search");
 ?>
 <head>
 <meta charset="UTF-8">
