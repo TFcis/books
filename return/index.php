@@ -90,7 +90,18 @@ meta();
 		</tr>
 		<tr>
 			<td>歸還使用者</td>
-			<td><input name="borrowuser" type="text" id="borrowuser"></td>
+			<?php
+			if(isset($_GET["id"])){
+				$book=mfa(SELECT("ELMS",["id","name","lend"],"booklist",[ ["id",$_GET["id"] ] ] ));
+				$booklend=$book["lend"];
+				if($booklend==0){$booklend="";}
+				else{
+					$acct=mfa(SELECT("ELMS",["id","user","name"],"account",[ ["id",$booklend ] ] ));
+					$booklend=$acct["user"];
+				}
+			}else $booklend="";
+			?>
+			<td><input name="borrowuser" type="text" id="borrowuser" value="<?=$booklend?>"></td>
 		</tr>
 		<tr>
 			<td colspan="2" align="center"><input type="submit" value="還書"></td>
