@@ -36,6 +36,12 @@ if($data==false){
 			UPDATE("ELMS","booklist",[["lend",$acct["id"]] ],[["id",$_POST["bookid"]]]);
 			insertlog($data["id"],$acct["id"],"borrow",true,"book id=".$_POST["bookid"]);
 			$message="已將圖書 ".$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["user"]."(".$acct["name"].")";
+			if($data["power"]<=1){
+				$row=SELECT("ELMS","*","account",[ ["power",2,">=" ] ],null,"all" );
+				while($temp=mfa($row)){
+					consolelog(mail($temp["email"], "ELMS 借閱通知", $acct["user"]."(".$acct["name"].") 剛剛借閱了".$_POST["bookid"]."(".$book["name"].")\n圖書資料: http://books.tfcis.org/bookinfo/?id=".$_POST["bookid"], "From: t16@tfcis.org"));
+				}
+			}
 		}
 	}
 }
