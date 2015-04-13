@@ -7,7 +7,10 @@ include_once("../func/log.php");
 $data=checklogin();
 if($data==false)header("Location: ../login/?from=managebook");
 insertlog($data["id"],$data["id"],"logout");
-DELETE("ELMS","session",[ ["cookie",$_COOKIE["ELMScookie"]] ]);
+$query=new query;
+$query->table="session";
+$query->where=array("cookie",$_COOKIE["ELMScookie"]);
+DELETE($query);
 setcookie("ELMScookie", "", time(), "/");
 ?>
 <head>

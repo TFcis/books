@@ -21,7 +21,12 @@ else if(isset($_POST["editid"])){
 		insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own");
 	}
 	else{
-		$row=mfa(SELECT("ELMS", ["user","name","power"],"account",[ ["id",$_POST["editid"]] ]));
+		$query=new query;
+		$query->column=array("user","name","power");
+		$query->table="account";
+		$query->where=array("id",$_POST["editid"]);
+		$query->limit=array(0,1);
+		$row=fetchone(SELECT($query));
 		if($row["power"]>$data["power"]){
 			$error="無法更改比自己權限高的帳戶";
 			insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit other power higher");
@@ -31,11 +36,19 @@ else if(isset($_POST["editid"])){
 			insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own higher power");
 		}
 		else {
-			UPDATE( "account",[ ["power",$_POST["editpower"]] ],[ ["id",$_POST["editid"]] ] );
+			$query=new query;
+			$query->column=array("id");
+			$query->table="account";
+			$query->value=array("power",$_POST["editpower"]);
+			$query->where=array("id",$_POST["editid"]);
+			UPDATE($query);
 			insertlog($data["id"],$_POST["editid"],"manageuser",true,$_POST["editpower"]);
 			$message="已將 ".$row["user"]."(".$row["name"].") 的權限更改為 ".$powername[$_POST["editpower"]];
 			if($_POST["editpower"]<=0){
-				DELETE("ELMS","session",[ ["id",$_POST["editid"] ] ],"all");
+				$query=new query;
+				$query->table="session";
+				$query->where=array("id",$_POST["editid"]);
+				DELETE($query);
 				insertlog($data["id"],$_POST["editid"],"logout",true,"block");
 			}
 		}
@@ -100,12 +113,19 @@ meta();
 			<td colspan="4">更改</td>
 		</tr>
 		<?php
-		$row=SELECT("ELMS",["COUNT(*) AS `COUNT`","`lend`"],"booklist",null,null,"all",["lend"]);
-		while($temp=mfa($row)){
+		$query=new query;
+		$query->column=array("COUNT(*) AS `COUNT`","`lend`");
+		$query->table="booklist";
+		$query->group=array("lend");
+		$row=SELECT($query);
+		foreach($row as $temp){
 			$borrowcount[$temp["lend"]]=$temp["COUNT"];
 		}
-		$row=SELECT("ELMS","*","account",null,[ ["id","ASC"] ],"all");
-		while($acct=mfa($row)){
+		$query=new query;
+		$query->table="account";
+		$query->order=array("id","ASC");
+		$row=SELECT($query);
+		foreach($row as $acct){
 			?>
 			<tr>
 				<td><a href="../user?id=<?php echo $acct["id"]; ?>"><?php echo $acct["id"]; ?></a></td>

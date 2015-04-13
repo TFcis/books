@@ -11,19 +11,33 @@ if(checklogin()){
 	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }else if($_GET["code"]!=""){
-	$row = mfa(SELECT("ELMS",["id"],"account",[["verify",$_GET["code"]]]));
+	$query=new query;
+	$query->column=array("id");
+	$query->table="account";
+	$query->where=array("verify",$_GET["code"]);
+	$query->limit=array(0,1);
+	$row=fetchone(SELECT($query));
 	if($row==""){
 		$error="驗證碼錯誤";
 		insertlog(0,$row["id"],"verify",false,"wrong code");
 	}else {
-		UPDATE("account",[["verify","OK"]],[["verify",$_GET["code"]]]);
+		$query=new query;
+		$query->table="account";
+		$query->value=array("verify","OK");
+		$query->where=array("verify",$_GET["code"]);
+		UPDATE($query);
 		insertlog(0,$row["id"],"verify");
 		$message="已成功驗證帳號";
 		?><script>setTimeout(function(){location="../login";},3000)</script><?php
 		$noshow=false;
 	}
 }else if(isset($_POST['user'])){
-	$row = mfa(SELECT("ELMS",["id","pwd","power","email","verify"],"account",[["user",$_POST['user']]]));
+	$query=new query;
+	$query->column=array("id","pwd","power","email","verify");
+	$query->table="account";
+	$query->where=array("user",$_POST['user']);
+	$query->limit=array(0,1);
+	$row=fetchone(SELECT($query));
 	if($row==""){
 		$error="無此帳號";
 		insertlog(0,0,"verify",false,"no user");
@@ -39,7 +53,11 @@ if(checklogin()){
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
 			$verifycode=md5(uniqid(rand(),true));
-			UPDATE("account",[["verify",$verifycode]],[["user",$_POST['user']]]);
+			$query=new query;
+			$query->table="account";
+			$query->value=array("verify",$verifycode);
+			$query->where=array("user",$_POST['user']);
+			UPDATE($query);
 			insertlog(0,$row["id"],"verify",true,"resend verify email");
 			mail($row["email"], "ELMS 帳戶驗證", "你剛剛重新發送ELMS ( http://books.tfcis.org/ ) 的驗證信\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!\n舊的驗證碼將失效", "From: t16@tfcis.org");
 			$message='已重新發送驗證信，請先至信箱點選驗證帳戶連結後，始可登入；舊的驗證碼將失效';

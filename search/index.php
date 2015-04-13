@@ -18,16 +18,22 @@ meta();
 <?php
 	include_once("../res/header.php");
 	if($_GET["bookid"]!="")header("Location: ../bookinfo/?id=".$_GET["bookid"]);
-	$row=SELECT("ELMS","*","category",null,null,"all");
-	while($temp=mfa($row)){
+	$query=new query;
+	$query->table="category";
+	$row=SELECT($query);
+	foreach($row as $temp){
 		$cate[$temp["id"]]=$temp["name"];
 	}
 	$temp=[["aval","0","!="]];
 	if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
 	if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
 	if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
-	$row=SELECT("ELMS","*","booklist",$temp,[["cat"],["name"]],"all");
-	while($temp=mfa($row)){
+	$query=new query;
+	$query->table="booklist";
+	$query->where=$temp;
+	$query->order=[["cat"],["name"]];
+	$row=SELECT($query);
+	foreach($row as $temp){
 		if($booklist[$temp["name"]]["id"]!="")$booklist[$temp["name"]]["id"].=",";
 		$booklist[$temp["name"]]["id"].=$temp["id"];
 		$booklist[$temp["name"]]["count"]++;

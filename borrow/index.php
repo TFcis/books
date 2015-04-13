@@ -21,8 +21,18 @@ if($data==false){
 		$error="借閱使用者為空";
 		insertlog($data["id"],0,"borrow",false,"user empty");
 	}else{
-		$book=mfa(SELECT("ELMS",["name","lend"],"booklist",[ ["id",$_POST["bookid"] ] ] ));
-		$acct=mfa(SELECT("ELMS",["id","user","name"],"account",[ ["user",$_POST["borrowuser"] ] ] ));
+		$query=new query;
+		$query->column=array("name","lend");
+		$query->table="booklist";
+		$query->where=array("id",$_POST["bookid"]);
+		$query->limit=array(0,1);
+		$book=fetchone(SELECT($query));
+		$query=new query;
+		$query->column=array("id","user","name");
+		$query->table="account";
+		$query->where=array("user",$_POST["borrowuser"]);
+		$query->limit=array(0,1);
+		$acct=fetchone(SELECT($query));
 		if($book==""){
 			$error="無此圖書ID";
 			insertlog($data["id"],0,"borrow",false,"no bookid:".$_POST["bookid"]);
@@ -33,12 +43,20 @@ if($data==false){
 			$error="此本書已有人借閱";
 			insertlog($data["id"],$acct["id"],"borrow",false,"already lead:".$_POST["bookid"]);
 		}else{
-			UPDATE("ELMS","booklist",[["lend",$acct["id"]] ],[["id",$_POST["bookid"]]]);
+			$query=new query;
+			$query->table="booklist";
+			$query->value=array("lend",$acct["id"]);
+			$query->where=array("id",$_POST["bookid"]);
+			UPDATE($query);
 			insertlog($data["id"],$acct["id"],"borrow",true,"book id=".$_POST["bookid"]);
 			$message="已將圖書 ".$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["user"]."(".$acct["name"].")";
 			if($data["power"]<=1){
-				$row=SELECT("ELMS","*","account",[ ["power",2,">=" ] ],null,"all" );
-				while($temp=mfa($row)){
+				$query=new query;
+				$query->table="account";
+				$query->where=array("power",2,">=");
+				$query->limit="all";
+				$row=fetchone(SELECT($query));
+				foreach($row as $temp){
 					consolelog(mail($temp["email"], "ELMS 借閱通知", $acct["user"]."(".$acct["name"].") 剛剛借閱了".$_POST["bookid"]."(".$book["name"].")\n圖書資料: http://books.tfcis.org/bookinfo/?id=".$_POST["bookid"], "From: t16@tfcis.org"));
 				}
 			}

@@ -12,14 +12,27 @@ if(checklogin()){
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }
 if(isset($_POST['suser'])){
-	$row=mfa(SELECT("ELMS",["id"],"account",[ ["user",$_POST['suser']],["email",$_POST['semail']],["name",$_POST['sname']] ]));
+	$query=new query;
+	$query->column=array("id");
+	$query->table="account";
+	$query->where=array(
+		array("user",$_POST['suser']),
+		array("email",$_POST['semail']),
+		array("name",$_POST['sname'])
+	);
+	$query->limit=array(0,1);
+	$row=fetchone(SELECT($query));
 	if($row==""){
 		$error="資料錯誤";
 	}else if($_POST["spwd"]!=$_POST["spwd2"]){
 		$error="密碼不符";
 	}else{
 		$newpwd=substr(md5(uniqid(rand(),true)),0,6);
-		UPDATE("account",[ ["pwd",crypt($newpwd)] ],[ ["user",$_POST['suser']] ]);
+		$query=new query;
+		$query->table="account";
+		$query->value=array("pwd",crypt($newpwd));
+		$query->where=array("user",$_POST['suser']);
+		UPDATE($query);
 		$message="你的密碼已更新為".$newpwd."，請登入以修改密碼";
 	}
 }
@@ -31,6 +44,7 @@ if(isset($_POST['suser'])){
 <?php
 include_once("../res/meta.php");
 meta();
+?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php

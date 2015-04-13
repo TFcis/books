@@ -10,8 +10,19 @@ include_once("../func/consolelog.php");
 <title>圖書資料-TFcisBooks</title>
 <?php
 	include_once("../res/meta.php");
-	$bookinfo=mfa(SELECT("ELMS",["id","name","cat","year","source","ISBN","lend"],"booklist",[["id",$_GET["id"]]]));
-	$cate=mfa(SELECT("ELMS",["name"],"category",[["id",$bookinfo["cat"]]]))["name"];
+	$data=checklogin();
+	$query=new query;
+	$query->column=array("id","name","cat","year","source","ISBN","lend");
+	$query->table="booklist";
+	$query->where=array("id",$_GET["id"]);
+	$query->limit=array(0,1);
+	$bookinfo=fetchone(SELECT($query));
+	$query=new query;
+	$query->column="name";
+	$query->table="category";
+	$query->where=array("id",$bookinfo["cat"]);
+	$query->limit=array(0,1);
+	$cate=fetchone(SELECT($query))["name"];
 	meta([["description","TFcisBooks圖書資訊 ID=".$bookinfo["id"].",書名=".$bookinfo["name"].",分類=".$cate.",年份=".$bookinfo["year"].",來源=".$bookinfo["source"].",ISBN=".$bookinfo["ISBN"]]]);
 ?>
 </head>
@@ -58,8 +69,13 @@ include_once("../func/consolelog.php");
 			<td>借出</td>
 			<td><?php 
 				echo ($bookinfo["lend"]==0?"在館內":"已借出");
-				if($bookinfo["lend"]!=0&&checklogin()["power"]>=2){
-					$acct=mfa(SELECT("ELMS",["name","user"],"account",[["id",$bookinfo["lend"]]]));
+				if($bookinfo["lend"]!=0&&$data["power"]>=2){
+					$query=new query;
+					$query->column=array("name","user");
+					$query->table="account";
+					$query->where=array("id",$bookinfo["lend"]);
+					$query->limit=array(0,1);
+					$acct=fetchone(SELECT($query));
 					echo " ".$acct["user"]."(".$acct["name"].")";
 				}
 			?></td>
@@ -97,7 +113,7 @@ include_once("../func/consolelog.php");
 	</td>
 </tr>
 <?php
-	}else if(checklogin()["power"]>=2){
+	}else if($data["power"]>=2){
 ?>
 <tr>
 	<td align="center"><a href="../return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>

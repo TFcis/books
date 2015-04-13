@@ -12,7 +12,12 @@ $error="";
 $message="";
 $message2="";
 $showdata=true;
-$editdata=mfa(SELECT("ELMS",["name","email","power"],"account",[["id",$editid]]));
+$query=new query;
+$query->column=array("name","email","power");
+$query->table="account";
+$query->where=array("id",$editid);
+$query->limit=array(0,1);
+$editdata=fetchone(SELECT($query));
 if(isset($_POST["sid"])&&$editid!=$_POST["sid"]){
 	$error="有預設資料遭到修改，沒有任何修改動作被執行";
 	insertlog($login["id"],$editid,"useredit",false,"attack");
@@ -38,7 +43,12 @@ else{
 		if($editid!=$login["id"]){
 			$message="注意!你正在更改其他人的資料";
 		}
-		$oldpwd=mfa(SELECT("ELMS",["pwd"],"account",[["id",$login["id"]]]))["pwd"];
+		$query=new query;
+		$query->column=array("pwd");
+		$query->table="account";
+		$query->where=array("id",$login["id"]);
+		$query->limit=array(0,1);
+		$oldpwd=fetchone(SELECT($query))["pwd"];
 		if($_POST['spwd1']!=""){
 			if(crypt($_POST['spwd0'],$oldpwd)!=$oldpwd){
 				$error="舊密碼錯誤";
@@ -53,14 +63,22 @@ else{
 				$error="密碼至少4個字";
 				insertlog($login["id"],$editid,"useredit",false,"password length");
 			}else{
-				UPDATE("account",[ ["pwd",crypt($_POST['spwd1'])] ],[ ["id",$editid] ]);
+				$query=new query;
+				$query->table="account";
+				$query->value=array("pwd",crypt($_POST['spwd1']));
+				$query->where=array("id",$editid);
+				UPDATE($query);
 				insertlog($login["id"],$editid,"useredit",true,"edit password");
 				if($message2=="")$message2.="已更新以下資料";
 				$message2.=" 密碼";
 			}
 		}
 		if($_POST['sname']!=""&&$_POST['sname']!=$editdata["name"]){
-			UPDATE("account",[ ["name",$_POST['sname']] ],[ ["id",$editid] ]);
+			$query=new query;
+			$query->table="account";
+			$query->value=array("name",$_POST['sname']);
+			$query->where=array("id",$editid);
+			UPDATE($query);
 			insertlog($login["id"],$editid,"useredit",true,"edit name");
 			if($message2=="")$message2.="已更新以下資料";
 			$message2.=" 姓名";
@@ -70,14 +88,25 @@ else{
 				$error="郵件位址不正確";
 				insertlog($login["id"],$editid,"useredit",false,"email format");
 			}else{
-				UPDATE("account",[ ["email",$_POST['semail']] ],[ ["id",$editid] ]);
+				$query=new query;
+				$query->table="account";
+				$query->value=array("email",$_POST['semail']);
+				$query->where=array("id",$editid);
+				UPDATE($query);
 				insertlog($login["id"],$editid,"useredit",true,"edit email");
 				if($message2=="")$message2.="已更新以下資料";
 				$message2.=" 郵件 注意!你需要重新驗證郵件";
 				$verifycode=md5(uniqid(rand(),true));
-				UPDATE("account",[["verify",$verifycode]],[["id",$editid]]);
+				$query=new query;
+				$query->table="account";
+				$query->value=array("verify",$verifycode);
+				$query->where=array("id",$editid);
+				UPDATE($query);
 				mail($row["email"], "ELMS 帳戶驗證", "你剛剛更改了ELMS ( http://books.tfcis.org/ ) 的郵件\n需要重新驗證帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
-				DELETE("ELMS","session",[ ["id",$editid] ],"all");
+				$query=new query;
+				$query->table="session";
+				$query->where=array("id",$editid);
+				DELETE($query);
 				$showdata=false;
 				?><script>setTimeout(function(){location="../login"},5000);</script><?php
 			}
@@ -86,7 +115,12 @@ else{
 }
 if($message!=""&&$message2!="")$message.="<br>";
 $message.=$message2;
-$editdata=mfa(SELECT("ELMS",["name","email"],"account",[["id",$editid]]));
+$query=new query;
+$query->column=array("name","email");
+$query->table="account";
+$query->where=array("id",$editid);
+$query->limit=array(0,1);
+$editdata=fetchone(SELECT($query));
 ?>
 <head>
 <meta charset="UTF-8">
@@ -141,19 +175,26 @@ meta();
 					<td>來源</td>
 				</tr>
 				<?php
-				$row=SELECT("ELMS","*","category",null,null,"all");
-				while($temp=mfa($row)){
+				$query=new query;
+				$query->table="category";
+				$row=SELECT($query);
+				foreach($row as $temp){
 					$cate[$temp["id"]]=$temp["name"];
 				}
-				$row=SELECT("ELMS",["id","name","cat","lend","source"],"booklist",[["lend",$editid]],null,"all");
+				$query=new query;
+				$query->column=array("id","name","cat","lend","source");
+				$query->table="booklist";
+				$query->where=array("lend",$editid);
+				$row=SELECT($query);
+				consolelog($row);
 				$noborrow=true;
-				while($book=mfa($row)){
+				foreach($row as $book){
 					$noborrow=false;
 				?>
 				<tr>
 					<td><?php echo $cate[$book["cat"]]; ?></td>
 					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
-					<td><?php echo ($book["name"]); ?></td>
+					<td><?php echo $book["name"]; ?></td>
 					<td><?php echo $book["source"]; ?></td>
 				</tr>
 				<?php

@@ -22,8 +22,18 @@ if($data==false){
 		$error="借閱使用者為空";
 		insertlog($data["id"],0,"return",false,"user empty");
 	}else{
-		$book=mfa(SELECT("ELMS",["id","name","lend"],"booklist",[ ["id",$_POST["bookid"] ] ] ));
-		$acct=mfa(SELECT("ELMS",["id","user","name"],"account",[ ["user",$_POST["borrowuser"] ] ] ));
+		$query=new query;
+		$query->column=array("id","name","lend");
+		$query->table="booklist";
+		$query->where=array("id",$_POST["bookid"]);
+		$query->limit=array(0,1);
+		$book=fetchone(SELECT($query));
+		$query=new query;
+		$query->column=array("id","user","name");
+		$query->table="account";
+		$query->where=array("user",$_POST["borrowuser"]);
+		$query->limit=array(0,1);
+		$acct=fetchone(SELECT($query));
 		if($book==""){
 			$error="無此圖書ID";
 			insertlog($data["id"],0,"return",false,"no bookid:".$_POST["bookid"]);
@@ -34,7 +44,11 @@ if($data==false){
 			$error="使用者 ".$acct["user"]."(".$acct["name"].") 沒有借閱圖書 ".$book["id"]." ".$book["name"];
 			insertlog($data["id"],$acct["id"],"return",false,"no lead:".$_POST["bookid"]);
 		}else{
-			UPDATE("ELMS","booklist",[["lend",0] ],[["id",$_POST["bookid"]]]);
+			$query=new query;
+			$query->table="booklist";
+			$query->value=array("lend",0);
+			$query->where=array("id",$_POST["bookid"]);
+			UPDATE($query);
 			insertlog($data["id"],$acct["id"],"return",true,"book id=".$_POST["bookid"]);
 			$message=$acct["user"]."(".$acct["name"].") 已歸還圖書 ".$_POST["bookid"]."(".$book["name"].")";
 		}
@@ -92,11 +106,21 @@ meta();
 			<td>歸還使用者</td>
 			<?php
 			if(isset($_GET["id"])){
-				$book=mfa(SELECT("ELMS",["id","name","lend"],"booklist",[ ["id",$_GET["id"] ] ] ));
+				$query=new query;
+				$query->column=array("id","name","lend");
+				$query->table="booklist";
+				$query->where=array("id",$_GET["id"]);
+				$query->limit=array(0,1);
+				$book=fetchone(SELECT($query));
 				$booklend=$book["lend"];
 				if($booklend==0){$booklend="";}
 				else{
-					$acct=mfa(SELECT("ELMS",["id","user","name"],"account",[ ["id",$booklend ] ] ));
+					$query=new query;
+					$query->column=array("id","user","name");
+					$query->table="account";
+					$query->where=array("id",$booklend);
+					$query->limit=array(0,1);
+					$acct=fetchone(SELECT($query));
 					$booklend=$acct["user"];
 				}
 			}else $booklend="";

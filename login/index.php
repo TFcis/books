@@ -13,7 +13,12 @@ if(checklogin()){
 	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }else if(isset($_POST['user'])){
-	$row = mfa(SELECT("ELMS",["id","pwd","power","verify"],"account",[["user",$_POST['user']]]));
+	$query=new query;
+	$query->column=["id","pwd","power","verify"];
+	$query->table="account";
+	$query->where=array("user",$_POST['user']);
+	$query->limit=array(0,1);
+	$row=fetchone(SELECT($query));
 	if($row==""){
 		$error="無此帳號";
 		insertlog(0,0,"login",false,"no user");
@@ -27,7 +32,13 @@ if(checklogin()){
 		}else{
 			$cookie=md5(uniqid(rand(),true));
 			setcookie("ELMScookie", $cookie, time()+86400*7, "/");
-			INSERT("ELMS","session",[["id",$row["id"]],["cookie",$cookie]]);
+			$query=new query;
+			$query->table="session";
+			$query->value=array(
+				array("id",$row["id"]),
+				array("cookie",$cookie)
+			);
+			INSERT($query);
 			insertlog(0,$row["id"],"login");
 			$message="登入成功";
 			$noshow=false;
@@ -38,7 +49,11 @@ if(checklogin()){
 		insertlog(0,$row["id"],"login",false,"wrong password");
 	}
 }else if(isset($_POST['suser'])){
-	$row = mfa(SELECT("ELMS","*","account",[["user",$_POST['suser']]]));
+	$query=new query;
+	$query->table="account";
+	$query->where=array("user",$_POST['suser']);
+	$query->limit=array(0,1);
+	$row=fetchone(SELECT($query));
 	if($row!=""){
 		$error="已經有人註冊此帳號";
 		insertlog(0,0,"signup",false,"user exist:".$_POST['suser']);
@@ -61,10 +76,24 @@ if(checklogin()){
 		$error="郵件位址不正確";
 		insertlog(0,0,"signup",false,"email format:".$_POST["semail"]);
 	}else{
-		$row = mfa(SELECT("ELMS",["MAX(id)"],"account"));
+		$query=new query;
+		$query->column="MAX(id)";
+		$query->table="account";
+		$query->limit=array(0,1);
+		$row=fetchone(SELECT($query));
 		$id=$row["MAX(id)"]+1;
 		$verifycode=md5(uniqid(rand(),true));
-		INSERT("ELMS","account",[["id",$id],["user",$_POST["suser"]],["pwd",crypt($_POST["spwd"])],["email",$_POST["semail"]],["name",$_POST["sname"]],["verify",$verifycode]]);
+		$query=new query;
+		$query->table="account";
+		$query->value=array(
+			array("id",$id),
+			array("user",$_POST["suser"]),
+			array("pwd",crypt($_POST["spwd"])),
+			array("email",$_POST["semail"]),
+			array("name",$_POST["sname"]),
+			array("verify",$verifycode)
+		);
+		INSERT($query);
 		mail($_POST["semail"], "ELMS 帳戶驗證", "你剛剛註冊了ELMS ( http://books.tfcis.org/ ) 的帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
 		insertlog(0,$id,"signup");
 		$message='註冊成功，請先至信箱點選驗證帳戶連結後，始可登入';
