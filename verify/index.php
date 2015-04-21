@@ -3,6 +3,7 @@
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
 include_once("../func/url.php");
+include_once("../func/log.php");
 $error="";
 $message="";
 $noshow=true;
@@ -10,27 +11,6 @@ if(checklogin()){
 	$message="你已經登入了";
 	$noshow=false;
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
-}else if($_GET["code"]!=""){
-	$query=new query;
-	$query->column=array("id");
-	$query->table="account";
-	$query->where=array("verify",$_GET["code"]);
-	$query->limit=array(0,1);
-	$row=fetchone(SELECT($query));
-	if($row==""){
-		$error="驗證碼錯誤";
-		insertlog(0,$row["id"],"verify",false,"wrong code");
-	}else {
-		$query=new query;
-		$query->table="account";
-		$query->value=array("verify","OK");
-		$query->where=array("verify",$_GET["code"]);
-		UPDATE($query);
-		insertlog(0,$row["id"],"verify");
-		$message="已成功驗證帳號";
-		?><script>setTimeout(function(){location="../login";},3000)</script><?php
-		$noshow=false;
-	}
 }else if(isset($_POST['user'])){
 	$query=new query;
 	$query->column=array("id","pwd","power","email","verify");
@@ -67,6 +47,27 @@ if(checklogin()){
 	}else{
 		$error="密碼錯誤";
 		insertlog(0,$row["id"],"verify",false,"wrong password");
+	}
+}else if($_GET["code"]!=""){
+	$query=new query;
+	$query->column=array("id");
+	$query->table="account";
+	$query->where=array("verify",$_GET["code"]);
+	$query->limit=array(0,1);
+	$row=fetchone(SELECT($query));
+	if($row==""){
+		$error="驗證碼錯誤";
+		insertlog(0,$row["id"],"verify",false,"wrong code");
+	}else {
+		$query=new query;
+		$query->table="account";
+		$query->value=array("verify","OK");
+		$query->where=array("verify",$_GET["code"]);
+		UPDATE($query);
+		insertlog(0,$row["id"],"verify");
+		$message="已成功驗證帳號";
+		?><script>setTimeout(function(){location="../login";},3000)</script><?php
+		$noshow=false;
 	}
 }
 ?>

@@ -40,7 +40,7 @@ function randomkey($length){
 	return $key;
 }
 function createbind($text,$value){
-	$bindvalue=randomkey(8);//substr(md5(uniqid(rand(),true)),0,10);
+	$bindvalue=randomkey(8);
 	$text->blindlist[$bindvalue]=$value;
 	return ":".$bindvalue;
 }

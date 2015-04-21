@@ -55,7 +55,7 @@ if($data==false){
 				$query->table="account";
 				$query->where=array("power",2,">=");
 				$query->limit="all";
-				$row=fetchone(SELECT($query));
+				$row=SELECT($query);
 				foreach($row as $temp){
 					consolelog(mail($temp["email"], "ELMS 借閱通知", $acct["user"]."(".$acct["name"].") 剛剛借閱了".$_POST["bookid"]."(".$book["name"].")\n圖書資料: http://books.tfcis.org/bookinfo/?id=".$_POST["bookid"], "From: t16@tfcis.org"));
 				}
