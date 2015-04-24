@@ -198,7 +198,6 @@ else if(isset($_POST["editbook"])){
 $query=new query;
 $query->column=["id","name"];
 $query->table="account";
-$query->where=array("id",$_POST["id"]);
 $row=SELECT($query);
 foreach($row as $temp){
 	$acct[$temp["id"]]=$temp["name"];
@@ -244,7 +243,7 @@ meta();
 <td valign="top">
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td colspan="2" align="center"><h1>分類管理</h1></td>
+		<td align="center"><h1>分類管理</h1></td>
 	</tr>
 	<tr>
 		<td align="center" valign="top">
@@ -269,6 +268,8 @@ meta();
 			</table>
 		</form>
 		</td>
+	</tr>
+	<tr>
 		<td valign="top">
 		<form method="post">
 			<input name="editcat" type="hidden" value="">
@@ -302,7 +303,7 @@ meta();
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" align="center">
+		<td align="center">
 			<table border="1" cellspacing="0" cellpadding="2">
 			<div style="display:none">
 				<form method="post" id="catdel">
@@ -459,7 +460,7 @@ meta();
 					<td><?php echo $cate[$book["cat"]]; ?></td>
 					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
-					<td><?php echo substr($acct[$book["lend"]],0,9); ?></td>
+					<td><?php echo $acct[$book["lend"]]; ?></td>
 					<td><?php echo $book["source"]; ?></td>
 					<td><?php echo $book["ISBN"]; ?></td>
 					<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>
