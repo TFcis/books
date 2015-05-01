@@ -162,6 +162,9 @@ meta();
 								<tr>
 									<td align="center" colspan="2"><a href="javascript:alert('請向管理員要求重置密碼');" target="_parent">忘記密碼</a></td>
 								</tr>
+								<tr>
+									<td align="center" colspan="2"><a href="../verify" target="_parent">驗證郵件</a></td>
+								</tr>
 							</table>
 						</form>
 					</td>

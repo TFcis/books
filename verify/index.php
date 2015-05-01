@@ -35,8 +35,10 @@ if(checklogin()){
 			$verifycode=md5(uniqid(rand(),true));
 			$query=new query;
 			$query->table="account";
-			$query->value=array("verify",$verifycode);
-			$query->value=array("email",$_POST['email']);
+			$query->value=array(
+				array("verify",$verifycode),
+				array("email",$_POST['email'])
+			);
 			$query->where=array("user",$_POST['user']);
 			UPDATE($query);
 			insertlog(0,$row["id"],"verify",true,"resend verify email");

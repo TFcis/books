@@ -49,6 +49,11 @@ else if(isset($_POST["editid"])){
 				$query->table="session";
 				$query->where=array("id",$_POST["editid"]);
 				DELETE($query);
+				$query=new query;
+				$query->table="account";
+				$query->value=array("verify","");
+				$query->where=array("id",$_POST["editid"]);
+				UPDATE($query);
 				insertlog($data["id"],$_POST["editid"],"logout",true,"block");
 			}
 		}
