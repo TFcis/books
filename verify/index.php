@@ -36,11 +36,12 @@ if(checklogin()){
 			$query=new query;
 			$query->table="account";
 			$query->value=array("verify",$verifycode);
+			$query->value=array("email",$_POST['email']);
 			$query->where=array("user",$_POST['user']);
 			UPDATE($query);
 			insertlog(0,$row["id"],"verify",true,"resend verify email");
-			mail($row["email"], "ELMS 帳戶驗證", "你剛剛重新發送ELMS ( http://books.tfcis.org/ ) 的驗證信\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!\n舊的驗證碼將失效", "From: t16@tfcis.org");
-			$message='已重新發送驗證信，請先至信箱點選驗證帳戶連結後，始可登入；舊的驗證碼將失效';
+			mail($_POST["email"], "ELMS 帳戶驗證", "你剛剛重新發送ELMS ( http://books.tfcis.org/ ) 的驗證信\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!\n舊的驗證碼將失效", "From: t16@tfcis.org");
+			$message='已重新發送驗證信至 '.$_POST["email"].' ，請先至信箱點選驗證帳戶連結後，始可登入；舊的驗證碼將失效';
 			?><script>setTimeout(function(){location="../login";},10000)</script><?php
 			$noshow=false;
 		}
@@ -121,6 +122,10 @@ meta();
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
 									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo $_POST['user'];?>" maxlength="32"></td>
+								</tr>
+								<tr>
+									<td valign="top" class="inputleft">郵件：</td>
+									<td valign="top" class="inputright"><input name="email" type="email"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">密碼：</td>
