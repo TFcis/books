@@ -21,7 +21,7 @@ include_once("../res/header.php");
 ?>
 <center>
 <?php
-include_once("information.php");
+@include_once("information.php");
 ?>
 </center>
 </body>
