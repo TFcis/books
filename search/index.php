@@ -17,7 +17,7 @@ meta();
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
 	include_once("../res/header.php");
-	if($_GET["bookid"]!="")header("Location: ../bookinfo/?id=".$_GET["bookid"]);
+	if(@$_GET["bookid"]!="")header("Location: ../bookinfo/?id=".@$_GET["bookid"]);
 	$query=new query;
 	$query->table="category";
 	$row=SELECT($query);
@@ -25,21 +25,21 @@ meta();
 		$cate[$temp["id"]]=$temp["name"];
 	}
 	$temp=[["aval","0","!="]];
-	if($_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars($_GET["bookname"]),"REGEXP"]);
-	if($_GET["bookcat"]!="")array_push($temp,["cat",$_GET["bookcat"]]);
-	if($_GET["bookid"]!="")array_push($temp,["id",$_GET["bookid"]]);
+	if(@$_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars(@$_GET["bookname"]),"REGEXP"]);
+	if(@$_GET["bookcat"]!="")array_push($temp,["cat",@$_GET["bookcat"]]);
+	if(@$_GET["bookid"]!="")array_push($temp,["id",@$_GET["bookid"]]);
 	$query=new query;
 	$query->table="booklist";
 	$query->where=$temp;
 	$query->order=[["cat"],["name"]];
 	$row=SELECT($query);
 	foreach($row as $temp){
-		if($booklist[$temp["name"]]["id"]!="")$booklist[$temp["name"]]["id"].=",";
-		$booklist[$temp["name"]]["id"].=$temp["id"];
-		$booklist[$temp["name"]]["count"]++;
-		$booklist[$temp["name"]]["ISBN"]=$temp["ISBN"];
-		$booklist[$temp["name"]]["cat"]=$temp["cat"];
-		if($temp["lend"]==0)$booklist[$temp["name"]]["aval"]++;
+		if(@$booklist[$temp["name"]]["id"]!="")$booklist[$temp["name"]]["id"].=",";
+		@$booklist[$temp["name"]]["id"].=$temp["id"];
+		@$booklist[$temp["name"]]["count"]++;
+		@$booklist[$temp["name"]]["ISBN"]=$temp["ISBN"];
+		@$booklist[$temp["name"]]["cat"]=$temp["cat"];
+		if($temp["lend"]==0)@$booklist[$temp["name"]]["aval"]++;
 	}
 ?>
 <center>
@@ -59,17 +59,17 @@ meta();
 				<table border="0" cellspacing="3" cellpadding="0">
 				<tr>
 					<td>書名</td>
-					<td><input name="bookname" type="text" id="bookname" value="<?php echo $_GET["bookname"];?>"></td>
+					<td><input name="bookname" type="text" id="bookname" value="<?php echo @$_GET["bookname"];?>"></td>
 				</tr>
 				<tr>
 					<td>分類</td>
 					<td>
 					<select name="bookcat">
-						<option value=""<?php echo($_GET["bookcat"]==""?" selected='selected'":""); ?>>所有分類</option>
+						<option value=""<?php echo(@$_GET["bookcat"]==""?" selected='selected'":""); ?>>所有分類</option>
 					<?php
 						foreach($cate as $i => $name){
 					?>
-						<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+						<option value="<?php echo $i; ?>"<?php echo($i==@$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
 					<?php
 						}
 					?>
@@ -80,9 +80,9 @@ meta();
 					<td>借閱狀態</td>
 					<td>
 					<select name="lend">
-						<option value="all"<?php echo($_GET["lend"]=="all"?" selected='selected'":""); ?>>所有</option>
-						<option value="0"<?php echo($_GET["lend"]=="0"?" selected='selected'":""); ?>>在館內</option>
-						<option value="1"<?php echo($_GET["lend"]=="1"?" selected='selected'":""); ?>>借閱中</option>
+						<option value="all"<?php echo(@$_GET["lend"]=="all"?" selected='selected'":""); ?>>所有</option>
+						<option value="0"<?php echo(@$_GET["lend"]=="0"?" selected='selected'":""); ?>>在館內</option>
+						<option value="1"<?php echo(@$_GET["lend"]=="1"?" selected='selected'":""); ?>>借閱中</option>
 					</select>
 					</td>
 				</tr>
@@ -112,8 +112,8 @@ meta();
 		<?php
 		if(is_array($booklist)){
 			foreach($booklist as $index => $book){
-				if($_GET["lend"]=="0"&&$book["aval"]==0)continue;
-				if($_GET["lend"]=="1"&&$book["count"]==$book["aval"])continue;
+				if(@$_GET["lend"]=="0"&&$book["aval"]==0)continue;
+				if(@$_GET["lend"]=="1"&&$book["count"]==$book["aval"])continue;
 			?>
 			<tr>
 				<td><?php echo $cate[$book["cat"]]; ?></td>
@@ -128,7 +128,7 @@ meta();
 				<td><?php echo $book["count"]; ?></td>
 				<td><?php
 				if($book["count"]==1){
-					if($book["aval"]==0)echo "已借出";
+					if(@$book["aval"]==0)echo "已借出";
 					else echo "在館內";
 				}else {
 					if($book["aval"]==0)echo "已全部借出";

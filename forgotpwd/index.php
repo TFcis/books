@@ -16,22 +16,22 @@ if(isset($_POST['suser'])){
 	$query->column=array("id");
 	$query->table="account";
 	$query->where=array(
-		array("user",$_POST['suser']),
-		array("email",$_POST['semail']),
-		array("name",$_POST['sname'])
+		array("user",@$_POST['suser']),
+		array("email",@$_POST['semail']),
+		array("name",@$_POST['sname'])
 	);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
 	if($row==""){
 		$error="資料錯誤";
-	}else if($_POST["spwd"]!=$_POST["spwd2"]){
+	}else if(@$_POST["spwd"]!=@$_POST["spwd2"]){
 		$error="密碼不符";
 	}else{
 		$newpwd=substr(md5(uniqid(rand(),true)),0,6);
 		$query=new query;
 		$query->table="account";
 		$query->value=array("pwd",crypt($newpwd));
-		$query->where=array("user",$_POST['suser']);
+		$query->where=array("user",@$_POST['suser']);
 		UPDATE($query);
 		$message="你的密碼已更新為".$newpwd."，請登入以修改密碼";
 	}
@@ -83,15 +83,15 @@ meta();
 				<table border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td valign="top" class="inputleft">帳號：</td>
-						<td valign="top" class="inputright"><input name="suser" type="text" id="suser" value="<?php echo $_POST['suser'];?>"></td>
+						<td valign="top" class="inputright"><input name="suser" type="text" id="suser" value="<?php echo @$_POST['suser'];?>"></td>
 					</tr>
 					<tr>
 						<td valign="top" class="inputleft">姓名：</td>
-						<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo $_POST['sname'];?>"></td>
+						<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo @$_POST['sname'];?>"></td>
 					</tr>
 					<tr>
 						<td valign="top" class="inputleft">郵件：</td>
-						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo $_POST['semail'];?>"></td>
+						<td valign="top" class="inputright"><input name="semail" type="text" id="semail" value="<?php echo @$_POST['semail'];?>"></td>
 					</tr>
 					<tr>
 						<td align="center" colspan="2"><input type="submit" value="重設密碼"></td>

@@ -16,13 +16,13 @@ if(checklogin()){
 	$query=new query;
 	$query->column=["id","pwd","power","verify"];
 	$query->table="account";
-	$query->where=array("user",$_POST['user']);
+	$query->where=array("user",@$_POST['user']);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
 	if($row==""){
 		$error="無此帳號";
 		insertlog(0,0,"login",false,"no user");
-	}else if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
+	}else if(crypt(@$_POST['pwd'],$row["pwd"])==$row["pwd"]){
 		if($row["power"]<=0){
 			$error="此帳戶已遭封禁，無法登入";
 			insertlog(0,$row["id"],"login",false,"account block");
@@ -42,7 +42,7 @@ if(checklogin()){
 			insertlog(0,$row["id"],"login");
 			$message="登入成功";
 			$noshow=false;
-			?><script>setTimeout(function(){location="../<?php echo ($_GET["from"]==""?"home":$_GET["from"]);?>";},3000)</script><?php
+			?><script>setTimeout(function(){location="../<?php echo (@$_GET["from"]==""?"home":@$_GET["from"]);?>";},3000)</script><?php
 		}
 	}else{
 		$error="密碼錯誤";
@@ -51,30 +51,30 @@ if(checklogin()){
 }else if(isset($_POST['suser'])){
 	$query=new query;
 	$query->table="account";
-	$query->where=array("user",$_POST['suser']);
+	$query->where=array("user",@$_POST['suser']);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
 	if($row!=""){
 		$error="已經有人註冊此帳號";
-		insertlog(0,0,"signup",false,"user exist:".$_POST['suser']);
-	}else if(!preg_match("/^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/", $_POST["suser"])){
+		insertlog(0,0,"signup",false,"user exist:".@$_POST['suser']);
+	}else if(!preg_match("/^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/", @$_POST["suser"])){
 		$error="帳號不符合格式 /^[a-zA-Z]{1}[a-zA-Z0-9]{2,}$/<br>應該由英文字開頭，僅包含英數，至少3個字";
-		insertlog(0,0,"signup",false,"user format:".$_POST["suser"]);
-	}else if($_POST["spwd"]!=$_POST["spwd2"]){
+		insertlog(0,0,"signup",false,"user format:".@$_POST["suser"]);
+	}else if(@$_POST["spwd"]!=@$_POST["spwd2"]){
 		$error="密碼不相符";
 		insertlog(0,0,"signup",false,"password not match");
-	}else if(preg_match("/\s/", $_POST["spwd"])){
+	}else if(preg_match("/\s/", @$_POST["spwd"])){
 		$error="密碼不可有空白";
 		insertlog(0,0,"signup",false,"password has space");
-	}else if(!preg_match("/^.{4,}$/", $_POST["spwd"])){
+	}else if(!preg_match("/^.{4,}$/", @$_POST["spwd"])){
 		$error="密碼至少4個字";
 		insertlog(0,0,"signup",false,"password length");
-	}else if($_POST["sname"]==""){
+	}else if(@$_POST["sname"]==""){
 		$error="姓名為空";
 		insertlog(0,0,"signup",false,"name empty");
-	}else if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", $_POST["semail"])){
+	}else if(!preg_match("/^[_a-z0-9-]+([.][_a-z0-9-]+)*@[a-z0-9-]+([.][a-z0-9-]+)*$/", @$_POST["semail"])){
 		$error="郵件位址不正確";
-		insertlog(0,0,"signup",false,"email format:".$_POST["semail"]);
+		insertlog(0,0,"signup",false,"email format:".@$_POST["semail"]);
 	}else{
 		$query=new query;
 		$query->column="MAX(id)";
@@ -87,14 +87,14 @@ if(checklogin()){
 		$query->table="account";
 		$query->value=array(
 			array("id",$id),
-			array("user",$_POST["suser"]),
-			array("pwd",crypt($_POST["spwd"])),
-			array("email",$_POST["semail"]),
-			array("name",$_POST["sname"]),
+			array("user",@$_POST["suser"]),
+			array("pwd",crypt(@$_POST["spwd"])),
+			array("email",@$_POST["semail"]),
+			array("name",@$_POST["sname"]),
 			array("verify",$verifycode)
 		);
 		INSERT($query);
-		mail($_POST["semail"], "ELMS 帳戶驗證", "你剛剛註冊了ELMS ( http://books.tfcis.org/ ) 的帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
+		mail(@$_POST["semail"], "ELMS 帳戶驗證", "你剛剛註冊了ELMS ( http://books.tfcis.org/ ) 的帳戶\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!", "From: t16@tfcis.org");
 		insertlog(0,$id,"signup");
 		$message='註冊成功，請先至信箱點選驗證帳戶連結後，始可登入';
 		$nosignup=false;
@@ -150,7 +150,7 @@ meta();
 							<table border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
-									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo $_POST['user'];?>" maxlength="32"></td>
+									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo @$_POST['user'];?>" maxlength="32"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">密碼：</td>
@@ -186,7 +186,7 @@ meta();
 							<table border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
-									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" placeholder="英文字開頭/僅含英數/至少3字" value="<?php echo $_POST['suser'];?>" maxlength="32"></td>
+									<td valign="top" class="inputright"><input name="suser" type="text" id="suser" placeholder="英文字開頭/僅含英數/至少3字" value="<?php echo @$_POST['suser'];?>" maxlength="32"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">密碼：</td>
@@ -198,11 +198,11 @@ meta();
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">姓名：</td>
-									<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo $_POST['sname'];?>" maxlength="32" placeholder="最長32字"></td>
+									<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo @$_POST['sname'];?>" maxlength="32" placeholder="最長32字"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">郵件：</td>
-									<td valign="top" class="inputright"><input name="semail" type="email" id="semail" value="<?php echo $_POST['semail'];?>" maxlength="64"></td>
+									<td valign="top" class="inputright"><input name="semail" type="email" id="semail" value="<?php echo @$_POST['semail'];?>" maxlength="64"></td>
 								</tr>
 								<tr>
 									<td align="center" colspan="2"><input type="submit" value="註冊"></td>

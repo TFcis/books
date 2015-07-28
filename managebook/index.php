@@ -17,51 +17,51 @@ else if($data["power"]<=1){
 else if(isset($_POST["catdelid"])){
 	$query=new query;
 	$query->table="category";
-	$query->where=array("id",$_POST["catdelid"]);
+	$query->where=array("id",@$_POST["catdelid"]);
 	DELETE($query);
-	insertlog($data["id"],0,"managebook",true,"del cat:".$_POST["catdelid"]." ".$_POST["catdelname"] );
-	$message="已刪除分類 ID=".$_POST["catdelid"]." 名稱=".$_POST["catdelname"];
+	insertlog($data["id"],0,"managebook",true,"del cat:".@$_POST["catdelid"]." ".@$_POST["catdelname"] );
+	$message="已刪除分類 ID=".@$_POST["catdelid"]." 名稱=".@$_POST["catdelname"];
 }
 else if(isset($_POST["addcat"])){
 	$query=new query;
 	$query->column=array("id");
 	$query->table="category";
-	$query->where=array("id",$_POST["id"]);
+	$query->where=array("id",@$_POST["id"]);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
-	if($_POST["id"]=="")$error="ID為空";
-	else if($_POST["name"]=="")$error="名稱為空";
+	if(@$_POST["id"]=="")$error="ID為空";
+	else if(@$_POST["name"]=="")$error="名稱為空";
 	else if($row)$error="已有此ID";
 	else{
 		$query=new query;
 		$query->table="category";
 		$query->value=array(
-			array("id",$_POST["id"]),
-			array("name",$_POST["name"]) 
+			array("id",@$_POST["id"]),
+			array("name",@$_POST["name"]) 
 		);
 		INSERT($query);
-		insertlog($data["id"],0,"managebook",true,"add cat:".$_POST["id"]." ".$_POST["name"] );
-		$message="已增加分類 ID=".$_POST["id"]." 名稱=".$_POST["name"];
+		insertlog($data["id"],0,"managebook",true,"add cat:".@$_POST["id"]." ".@$_POST["name"] );
+		$message="已增加分類 ID=".@$_POST["id"]." 名稱=".@$_POST["name"];
 	}
 }
 else if(isset($_POST["editcat"])){
 	$query=new query;
 	$query->column=array("id");
 	$query->table="category";
-	$query->where=array("id",$_POST["id"]);
+	$query->where=array("id",@$_POST["id"]);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
-	if($_POST["id"]=="")$error="ID為空";
+	if(@$_POST["id"]=="")$error="ID為空";
 	else if(!$row)$error="無此ID";
-	else if($_POST["name"]=="")$error="名稱為空";
+	else if(@$_POST["name"]=="")$error="名稱為空";
 	else{
 		$query=new query;
 		$query->table="category";
-		$query->value=array("name",$_POST["name"]);
-		$query->where=array("id",$_POST["id"]);
+		$query->value=array("name",@$_POST["name"]);
+		$query->where=array("id",@$_POST["id"]);
 		UPDATE($query);
-		insertlog($data["id"],0,"managebook",true,"edit cat:".$_POST["id"]." ".$_POST["name"] );
-		$message="已修改分類 ID=".$_POST["id"]." 名稱=".$_POST["name"];
+		insertlog($data["id"],0,"managebook",true,"edit cat:".@$_POST["id"]." ".@$_POST["name"] );
+		$message="已修改分類 ID=".@$_POST["id"]." 名稱=".@$_POST["name"];
 	}
 }
 $query=new query;
@@ -74,25 +74,25 @@ $bookavaltext=["隱藏","顯示"];
 if(isset($_POST["avalid"])){
 	$query=new query;
 	$query->table="booklist";
-	$query->value=array("aval",(1-$_POST["aval"]));
-	$query->where=array("id",$_POST["avalid"]);
+	$query->value=array("aval",(1-@$_POST["aval"]));
+	$query->where=array("id",@$_POST["avalid"]);
 	$row=UPDATE($query);
-	insertlog($data["id"],0,"managebook",true,"edit book aval:".(1-$_POST["aval"]) );
-	$message="已將圖書 ID=".$_POST["avalid"]." ".$bookavaltext[1-$_POST["aval"]];
+	insertlog($data["id"],0,"managebook",true,"edit book aval:".(1-@$_POST["aval"]) );
+	$message="已將圖書 ID=".@$_POST["avalid"]." ".$bookavaltext[1-@$_POST["aval"]];
 }
 else if(isset($_POST["bookdelid"])){
 	$query=new query;
 	$query->table="booklist";
-	$query->where=array("id",$_POST["bookdelid"]);
+	$query->where=array("id",@$_POST["bookdelid"]);
 	DELETE($query);
-	insertlog($data["id"],0,"managebook",true,"del book:".$_POST["bookdelid"] );
-	$message="已刪除圖書 ID=".$_POST["bookdelid"];
+	insertlog($data["id"],0,"managebook",true,"del book:".@$_POST["bookdelid"] );
+	$message="已刪除圖書 ID=".@$_POST["bookdelid"];
 }
 else if(isset($_POST["addbook"])){
-	if($_POST["name"]=="")$error="書名為空";
-	else if($_POST["cat"]=="")$error="分類為空";
+	if(@$_POST["name"]=="")$error="書名為空";
+	else if(@$_POST["cat"]=="")$error="分類為空";
 	else{
-		$booknames = explode(",",$_POST["name"]);
+		$booknames = explode(",",@$_POST["name"]);
 		foreach($booknames as $name){
 			$query=new query;
 			$query->column=array("MAX(id)");
@@ -100,21 +100,21 @@ else if(isset($_POST["addbook"])){
 			$row=fetchone(SELECT($query));
 			$newid=$row["MAX(id)"]+1;
 			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$name),true);
-			for($i=0;$i<$_POST["number"];$i++){
+			for($i=0;$i<@$_POST["number"];$i++){
 				if($isbn["totalItems"]==1){
 					$query=new query;
 					$query->table="booklist";
 					$query->value=array(
 						array("id",$newid),
 						array("name",$isbn["items"][0]["volumeInfo"]["title"]),
-						array("cat",$_POST["cat"]),
+						array("cat",@$_POST["cat"]),
 						array("year",$isbn["items"][0]["volumeInfo"]["publishedDate"]),
-						array("source",$_POST["source"]),
+						array("source",@$_POST["source"]),
 						array("ISBN",$name)
 					);
 					INSERT($query);
 					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
-					$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$name;
+					$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[@$_POST["cat"]]." 來源=".@$_POST["source"]." ISBN=".$name;
 				}
 				else {
 					$query=new query;
@@ -122,13 +122,13 @@ else if(isset($_POST["addbook"])){
 					$query->value=array(
 						array("id",$newid),
 						array("name",$name),
-						array("cat",$_POST["cat"]),
-						array("year",$_POST["year"]),
-						array("source",$_POST["source"])
+						array("cat",@$_POST["cat"]),
+						array("year",@$_POST["year"]),
+						array("source",@$_POST["source"])
 					);
 					INSERT($query);
 					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
-					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$row["year"]." 來源=".$_POST["source"];
+					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[@$_POST["cat"]]." 年份=".$row["year"]." 來源=".@$_POST["source"];
 				}
 				$newid++;
 			}
@@ -136,16 +136,16 @@ else if(isset($_POST["addbook"])){
 	}
 }
 else if(isset($_POST["editbook"])){
-	$editid=explode(",",$_POST["id"]);
+	$editid=explode(",",@$_POST["id"]);
 	foreach($editid as $id){
-		if($_POST["name"]!=""){
-			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
+		if(@$_POST["name"]!=""){
+			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".@$_POST["name"]),true);
 			if($isbn["totalItems"]==1){
 				$query=new query;
 				$query->table="booklist";
 				$query->value=array(
 					array("name",$isbn["items"][0]["volumeInfo"]["title"]),
-					array("ISBN",$_POST["name"])
+					array("ISBN",@$_POST["name"])
 				);
 				$query->where=array("id",$id);
 				$row=UPDATE($query);
@@ -154,46 +154,46 @@ else if(isset($_POST["editbook"])){
 			else {
 				$query=new query;
 				$query->table="booklist";
-				$query->value=array("name",$_POST["name"]);
+				$query->value=array("name",@$_POST["name"]);
 				$query->where=array("id",$id);
 				$row=UPDATE($query);
-				if($_POST["year"]!=""){
+				if(@$_POST["year"]!=""){
 					$query=new query;
 					$query->table="booklist";
-					$query->value=array("year",$_POST["year"]);
+					$query->value=array("year",@$_POST["year"]);
 					$query->where=array("id",$id);
 					$row=UPDATE($query);
 				}
 			}
 		}
-		if($_POST["cat"]!=0){
+		if(@$_POST["cat"]!=0){
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("cat",$_POST["cat"]);
+			$query->value=array("cat",@$_POST["cat"]);
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
-		if($_POST["year"]!=""){
+		if(@$_POST["year"]!=""){
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("year",$_POST["year"]);
+			$query->value=array("year",@$_POST["year"]);
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
-		if($_POST["source"]!=""){
+		if(@$_POST["source"]!=""){
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("source",$_POST["source"]);
+			$query->value=array("source",@$_POST["source"]);
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
 	}
 	$query=new query;
 	$query->table="booklist";
-	$query->where=array("id",$_POST["id"]);
+	$query->where=array("id",@$_POST["id"]);
 	$row=fetchone(SELECT($query));
-	insertlog($data["id"],0,"managebook",true,"edit book:".$_POST["id"]);
-	$message="已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
+	insertlog($data["id"],0,"managebook",true,"edit book:".@$_POST["id"]);
+	$message="已修改圖書 ID=".@$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
 $query=new query;
 $query->column=["id","name"];
@@ -284,7 +284,7 @@ meta();
 				<?php
 					foreach($cate as $i => $name){
 				?>
-					<option value="<?php echo $i; ?>"<?php echo($i==$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+					<option value="<?php echo $i; ?>"<?php echo($i==@$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
 				<?php
 					}
 				?>
@@ -357,7 +357,7 @@ meta();
 				<?php
 					foreach($cate as $i => $name){
 				?>
-					<option value="<?php echo $i; ?>"<?php echo(isset($_POST["addbook"])&&$i==$_POST["cat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+					<option value="<?php echo $i; ?>"<?php echo(isset($_POST["addbook"])&&$i==@$_POST["cat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
 				<?php
 					}
 				?>

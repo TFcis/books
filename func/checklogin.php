@@ -1,7 +1,7 @@
 <?php
 include_once("sql.php");
 function checklogin(){
-	if($_COOKIE["ELMScookie"]=="")return false;
+	if(@$_COOKIE["ELMScookie"]=="")return false;
 	$query=new query;
 	$query->column="id";
 	$query->table="session";

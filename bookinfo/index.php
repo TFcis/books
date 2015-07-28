@@ -14,7 +14,7 @@ include_once("../func/consolelog.php");
 	$query=new query;
 	$query->column=array("id","name","cat","year","source","ISBN","lend");
 	$query->table="booklist";
-	$query->where=array("id",$_GET["id"]);
+	$query->where=array("id",@$_GET["id"]);
 	$query->limit=array(0,1);
 	$bookinfo=fetchone(SELECT($query));
 	$query=new query;

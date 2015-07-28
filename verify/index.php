@@ -15,13 +15,13 @@ if(checklogin()){
 	$query=new query;
 	$query->column=array("id","pwd","power","email","verify");
 	$query->table="account";
-	$query->where=array("user",$_POST['user']);
+	$query->where=array("user",@$_POST['user']);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
 	if($row==""){
 		$error="無此帳號";
 		insertlog(0,0,"verify",false,"no user");
-	}else if(crypt($_POST['pwd'],$row["pwd"])==$row["pwd"]){
+	}else if(crypt(@$_POST['pwd'],$row["pwd"])==$row["pwd"]){
 		if($row["power"]<=0){
 			$error="此帳戶已遭封禁，無法驗證";
 			insertlog(0,$row["id"],"verify",false,"account block");
@@ -37,13 +37,13 @@ if(checklogin()){
 			$query->table="account";
 			$query->value=array(
 				array("verify",$verifycode),
-				array("email",$_POST['email'])
+				array("email",@$_POST['email'])
 			);
-			$query->where=array("user",$_POST['user']);
+			$query->where=array("user",@$_POST['user']);
 			UPDATE($query);
 			insertlog(0,$row["id"],"verify",true,"resend verify email");
-			mail($_POST["email"], "ELMS 帳戶驗證", "你剛剛重新發送ELMS ( http://books.tfcis.org/ ) 的驗證信\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!\n舊的驗證碼將失效", "From: t16@tfcis.org");
-			$message='已重新發送驗證信至 '.$_POST["email"].' ，請先至信箱點選驗證帳戶連結後，始可登入；舊的驗證碼將失效';
+			mail(@$_POST["email"], "ELMS 帳戶驗證", "你剛剛重新發送ELMS ( http://books.tfcis.org/ ) 的驗證信\n請點選此連結驗證帳戶: http://books.tfcis.org/verify/?code=".$verifycode."\n若沒有註冊請不要點選!!\n舊的驗證碼將失效", "From: t16@tfcis.org");
+			$message='已重新發送驗證信至 '.@$_POST["email"].' ，請先至信箱點選驗證帳戶連結後，始可登入；舊的驗證碼將失效';
 			?><script>setTimeout(function(){location="../login";},10000)</script><?php
 			$noshow=false;
 		}
@@ -51,11 +51,11 @@ if(checklogin()){
 		$error="密碼錯誤";
 		insertlog(0,$row["id"],"verify",false,"wrong password");
 	}
-}else if($_GET["code"]!=""){
+}else if(@$_GET["code"]!=""){
 	$query=new query;
 	$query->column=array("id");
 	$query->table="account";
-	$query->where=array("verify",$_GET["code"]);
+	$query->where=array("verify",@$_GET["code"]);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
 	if($row==""){
@@ -65,7 +65,7 @@ if(checklogin()){
 		$query=new query;
 		$query->table="account";
 		$query->value=array("verify","OK");
-		$query->where=array("verify",$_GET["code"]);
+		$query->where=array("verify",@$_GET["code"]);
 		UPDATE($query);
 		insertlog(0,$row["id"],"verify");
 		$message="已成功驗證帳號";
@@ -123,7 +123,7 @@ meta();
 							<table border="0" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top" class="inputleft">帳號：</td>
-									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo $_POST['user'];?>" maxlength="32"></td>
+									<td valign="top" class="inputright"><input name="user" type="text" value="<?php echo @$_POST['user'];?>" maxlength="32"></td>
 								</tr>
 								<tr>
 									<td valign="top" class="inputleft">郵件：</td>

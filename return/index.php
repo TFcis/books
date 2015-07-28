@@ -15,42 +15,42 @@ if($data==false){
 	insertlog($data["id"],0,"return",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
 }else if(isset($_POST["bookid"])){
-	if($_POST["bookid"]==""){
+	if(@$_POST["bookid"]==""){
 		$error="圖書ID為空";
 		insertlog($data["id"],0,"return",false,"bookid empty");
-	}else if($_POST["borrowuser"]==""){
+	}else if(@$_POST["borrowuser"]==""){
 		$error="借閱使用者為空";
 		insertlog($data["id"],0,"return",false,"user empty");
 	}else{
 		$query=new query;
 		$query->column=array("id","name","lend");
 		$query->table="booklist";
-		$query->where=array("id",$_POST["bookid"]);
+		$query->where=array("id",@$_POST["bookid"]);
 		$query->limit=array(0,1);
 		$book=fetchone(SELECT($query));
 		$query=new query;
 		$query->column=array("id","user","name");
 		$query->table="account";
-		$query->where=array("user",$_POST["borrowuser"]);
+		$query->where=array("user",@$_POST["borrowuser"]);
 		$query->limit=array(0,1);
 		$acct=fetchone(SELECT($query));
 		if($book==""){
 			$error="無此圖書ID";
-			insertlog($data["id"],0,"return",false,"no bookid:".$_POST["bookid"]);
+			insertlog($data["id"],0,"return",false,"no bookid:".@$_POST["bookid"]);
 		}else if($acct==""){
 			$error="無此使用者";
-			insertlog($data["id"],0,"return",false,"no user:".$_POST["borrowuser"]);
+			insertlog($data["id"],0,"return",false,"no user:".@$_POST["borrowuser"]);
 		}else if($book["lend"]!=$acct["id"]){
 			$error="使用者 ".$acct["user"]."(".$acct["name"].") 沒有借閱圖書 ".$book["id"]." ".$book["name"];
-			insertlog($data["id"],$acct["id"],"return",false,"no lead:".$_POST["bookid"]);
+			insertlog($data["id"],$acct["id"],"return",false,"no lead:".@$_POST["bookid"]);
 		}else{
 			$query=new query;
 			$query->table="booklist";
 			$query->value=array("lend",0);
-			$query->where=array("id",$_POST["bookid"]);
+			$query->where=array("id",@$_POST["bookid"]);
 			UPDATE($query);
-			insertlog($data["id"],$acct["id"],"return",true,"book id=".$_POST["bookid"]);
-			$message=$acct["user"]."(".$acct["name"].") 已歸還圖書 ".$_POST["bookid"]."(".$book["name"].")";
+			insertlog($data["id"],$acct["id"],"return",true,"book id=".@$_POST["bookid"]);
+			$message=$acct["user"]."(".$acct["name"].") 已歸還圖書 ".@$_POST["bookid"]."(".$book["name"].")";
 		}
 	}
 }
@@ -100,7 +100,7 @@ meta();
 		<table border="0" cellspacing="5" cellpadding="0">
 		<tr>
 			<td>書本ID</td>
-			<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo $_GET["id"];?>"></td>
+			<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo @$_GET["id"];?>"></td>
 		</tr>
 		<tr>
 			<td>歸還使用者</td>
@@ -109,7 +109,7 @@ meta();
 				$query=new query;
 				$query->column=array("id","name","lend");
 				$query->table="booklist";
-				$query->where=array("id",$_GET["id"]);
+				$query->where=array("id",@$_GET["id"]);
 				$query->limit=array(0,1);
 				$book=fetchone(SELECT($query));
 				$booklend=$book["lend"];

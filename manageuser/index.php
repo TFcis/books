@@ -16,45 +16,45 @@ else if($data["power"]<=1){
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
 else if(isset($_POST["editid"])){
-	if($data["id"]==$_POST["editid"]){
+	if($data["id"]==@$_POST["editid"]){
 		$error="無法更改自己的權限";
-		insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own");
+		insertlog($data["id"],@$_POST["editid"],"manageuser",false,"edit own");
 	}
 	else{
 		$query=new query;
 		$query->column=array("user","name","power");
 		$query->table="account";
-		$query->where=array("id",$_POST["editid"]);
+		$query->where=array("id",@$_POST["editid"]);
 		$query->limit=array(0,1);
 		$row=fetchone(SELECT($query));
 		if($row["power"]>$data["power"]){
 			$error="無法更改比自己權限高的帳戶";
-			insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit other power higher");
+			insertlog($data["id"],@$_POST["editid"],"manageuser",false,"edit other power higher");
 		}
-		else if($_POST["editpower"]>$data["power"]){
+		else if(@$_POST["editpower"]>$data["power"]){
 			$error="無法將權限調比自己高";
-			insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own higher power");
+			insertlog($data["id"],@$_POST["editid"],"manageuser",false,"edit own higher power");
 		}
 		else {
 			$query=new query;
 			$query->column=array("id");
 			$query->table="account";
-			$query->value=array("power",$_POST["editpower"]);
-			$query->where=array("id",$_POST["editid"]);
+			$query->value=array("power",@$_POST["editpower"]);
+			$query->where=array("id",@$_POST["editid"]);
 			UPDATE($query);
-			insertlog($data["id"],$_POST["editid"],"manageuser",true,$_POST["editpower"]);
-			$message="已將 ".$row["user"]."(".$row["name"].") 的權限更改為 ".$powername[$_POST["editpower"]];
-			if($_POST["editpower"]<=0){
+			insertlog($data["id"],@$_POST["editid"],"manageuser",true,@$_POST["editpower"]);
+			$message="已將 ".$row["user"]."(".$row["name"].") 的權限更改為 ".$powername[@$_POST["editpower"]];
+			if(@$_POST["editpower"]<=0){
 				$query=new query;
 				$query->table="session";
-				$query->where=array("id",$_POST["editid"]);
+				$query->where=array("id",@$_POST["editid"]);
 				DELETE($query);
 				$query=new query;
 				$query->table="account";
 				$query->value=array("verify","");
-				$query->where=array("id",$_POST["editid"]);
+				$query->where=array("id",@$_POST["editid"]);
 				UPDATE($query);
-				insertlog($data["id"],$_POST["editid"],"logout",true,"block");
+				insertlog($data["id"],@$_POST["editid"],"logout",true,"block");
 			}
 		}
 	}
@@ -135,7 +135,7 @@ meta();
 			<tr>
 				<td><a href="../user?id=<?php echo $acct["id"]; ?>"><?php echo $acct["id"]; ?></a></td>
 				<td><?php echo $acct["user"]; ?></td>
-				<td><?php echo $borrowcount[$acct["id"]]; ?></td>
+				<td><?php echo @$borrowcount[$acct["id"]]; ?></td>
 				<td><?php echo substr(het($acct["name"]),0,15); ?></td>
 				<td><?php echo $acct["email"]; ?></td>
 				<td><?php echo $powername[$acct["power"]]; ?></td>

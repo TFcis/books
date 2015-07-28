@@ -59,12 +59,12 @@ meta();
 		<tr>
 			<td>
 			<form action="" method="get">
-				<input name="page" type="hidden" value="<?php echo ($_GET["page"]-1); ?>">
-				<input name="" type="submit" value="上一頁" <?php echo ($_GET["page"]==0?"style='display:none;'":""); ?>>
+				<input name="page" type="hidden" value="<?php echo (@$_GET["page"]-1); ?>">
+				<input name="" type="submit" value="上一頁" <?php echo (@$_GET["page"]==0?"style='display:none;'":""); ?>>
 			</form>
 			</td>
 			<td>
-			<form action="" method="get"><input name="page" type="hidden" value="<?php echo ($_GET["page"]+1); ?>"><input name="" type="submit" value="下一頁"></form>
+			<form action="" method="get"><input name="page" type="hidden" value="<?php echo (@$_GET["page"]+1); ?>"><input name="" type="submit" value="下一頁"></form>
 			</td>
 		</tr>
 		</table>
@@ -83,7 +83,7 @@ meta();
 		</tr>
 		<?php
 		$page=0;
-		if(is_numeric($_GET["page"]))$page=$_GET["page"];
+		if(is_numeric(@$_GET["page"]))$page=@$_GET["page"];
 		$query=new query;
 		$query->table="log";
 		$query->order=array("time","DESC");
