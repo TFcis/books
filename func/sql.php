@@ -20,10 +20,10 @@ function dsn($host,$dbname,$type="mysql"){
 	return $type.":dbname=".$dbname.";host=".$host;
 }
 function connect($dbname){
-	require("../config/db.php");
+	require("../config/config.php");
 	try {
-		if(isset($dbname))$link=new PDO(dsn($db->host,$dbname),$db->username,$db->password);
-		else $link=new PDO(dsn($db->host,$db->dbname),$db->username,$db->password);
+		if(isset($dbname))$link=new PDO(dsn($config["DB"]["host"],$dbname),$config["DB"]["user"],$config["DB"]["pwd"]);
+		else $link=new PDO(dsn($config["DB"]["host"],$config["DB"]["dbname"]),$config["DB"]["user"],$config["DB"]["pwd"]);
 	}catch (PDOException $e){
 		$errormessage="DatabaseError: ".$e->getMessage();
 		echo $errormessage;
