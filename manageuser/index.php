@@ -110,10 +110,8 @@ meta();
 		<table border="1" cellspacing="0" cellpadding="2">
 		<tr>
 			<td>ID</td>
-			<td>帳號</td>
 			<td>目前借閱</td>
 			<td>姓名</td>
-			<td>Email</td>
 			<td>權限</td>
 			<td colspan="4">更改</td>
 		</tr>
@@ -134,10 +132,8 @@ meta();
 			?>
 			<tr>
 				<td><a href="../user?id=<?php echo $acct["id"]; ?>"><?php echo $acct["id"]; ?></a></td>
-				<td><?php echo $acct["user"]; ?></td>
 				<td><?php echo @$borrowcount[$acct["id"]]; ?></td>
 				<td><?php echo substr(het($acct["name"]),0,15); ?></td>
-				<td><?php echo $acct["email"]; ?></td>
 				<td><?php echo $powername[$acct["power"]]; ?></td>
 				<td>
 				<?php

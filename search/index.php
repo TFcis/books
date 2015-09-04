@@ -4,7 +4,8 @@ include_once("../func/sql.php");
 include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/consolelog.php");
-if(checklogin()==false)header("Location: ../login/?from=search");
+$login=checklogin();
+if(!$login["login"])header("Location: ".login_system::getLoginUrl());
 ?>
 <head>
 <meta charset="UTF-8">
@@ -24,10 +25,10 @@ meta();
 	foreach($row as $temp){
 		$cate[$temp["id"]]=$temp["name"];
 	}
-	$temp=[["aval","0","!="]];
-	if(@$_GET["bookname"]!="")array_push($temp,["name",htmlspecialchars(@$_GET["bookname"]),"REGEXP"]);
+	$temp=array();
+	if(isset($_GET["lend"])&&$_GET["lend"]!="all")array_push($temp,["aval",@$_GET["lend"]]);
+	if(@$_GET["bookname"]!="")array_push($temp,["name",str_replace($_GET["bookname"],"+","[+]"),"REGEXP"]);
 	if(@$_GET["bookcat"]!="")array_push($temp,["cat",@$_GET["bookcat"]]);
-	if(@$_GET["bookid"]!="")array_push($temp,["id",@$_GET["bookid"]]);
 	$query=new query;
 	$query->table="booklist";
 	$query->where=$temp;

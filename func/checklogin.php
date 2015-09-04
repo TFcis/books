@@ -1,19 +1,24 @@
 <?php
 include_once("sql.php");
 function checklogin(){
-	if(@$_COOKIE["ELMScookie"]=="")return false;
+	include_once("login_sdk.php");
+	$status = login_system::status();
+	$data=array();
+	$data["login"]=$status->login;
+	if($data["login"]===false){
+		return $data;
+	}
 	$query=new query;
-	$query->column="id";
-	$query->table="session";
-	$query->where=array("cookie",$_COOKIE["ELMScookie"]);
-	$query->limit=array(0,1);
-	$row=fetchone(SELECT($query));
-	if($row=="")return false;
-	$query=new query;
-	$query->column=array("id","user","name","email","power");
+	$query->column=array("*");
 	$query->table="account";
-	$query->where=array("id",$row["id"]);
+	$query->where=array("id",$status->data->id);
 	$query->limit=array(0,1);
-	return fetchone(SELECT($query));
+	$temp=fetchone(SELECT($query));
+	$data["id"]=$status->data->id;
+	$data["user"]=$status->data->account;
+	$data["email"]=$status->data->email;
+	$data["name"]=$status->data->nickname;
+	$data["power"]=$temp["power"];
+	return $data;
 }
 ?>

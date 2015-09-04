@@ -2,6 +2,7 @@
 include_once("../func/url.php");
 include_once("../func/checklogin.php");
 include_once("../func/sql.php");
+require("../config/config.php");
 $login=checklogin();
 ?>
 <script src="../res/jquery.min.js"></script>
@@ -45,19 +46,19 @@ document.onkeydown=keyFunction;
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td height="25" valign="middle" bgcolor="#0000FF" style="color: #FFF">
-			<div style="float:left;">&nbsp;&nbsp;&nbsp;&nbsp;<a href="../home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="../search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="../user" target="_parent" style="color:#FFF">讀者資料查詢</a>&nbsp;|&nbsp;<a href="../borrow" target="_parent" style="color:#FFF">借書</a></div><?php if($login["power"]>=2){ ?><div style="float:left;">&nbsp;|&nbsp;<a href="../return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="../managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="../manageuser" target="_parent" style="color:#FFF">使用者</a>&nbsp;|&nbsp;<a href="../log" target="_parent" style="color:#FFF">Log</a></div>
+			<div style="float:left;">&nbsp;&nbsp;&nbsp;&nbsp;<a href="../home" target="_parent" style="color:#FFF" >首頁</a>&nbsp;|&nbsp;<a href="../search" target="_parent" style="color:#FFF">館藏查詢</a>&nbsp;|&nbsp;<a href="../user" target="_parent" style="color:#FFF">目前借閱</a>&nbsp;|&nbsp;<a href="../borrow" target="_parent" style="color:#FFF">借書</a></div><?php if(@$login["power"]>=2){ ?><div style="float:left;">&nbsp;|&nbsp;<a href="../return" target="_parent" style="color:#FFF">還書</a>&nbsp;|&nbsp;<a href="../managebook" target="_parent" style="color:#FFF">圖書</a>&nbsp;|&nbsp;<a href="../manageuser" target="_parent" style="color:#FFF">使用者</a>&nbsp;|&nbsp;<a href="../log" target="_parent" style="color:#FFF">Log</a></div>
 			<?php } ?>
 		</td>
 		<td height="25" valign="middle" bgcolor="#0000FF" style="text-align: right; color: #FFF;">
 			<?php 
-			if($login==false){
+			if($login["login"]===false){
 			?>
-			<a href="../login" target="_parent" style="color:#FFF">登入/註冊</a>
+			<a href="<?php echo login_system::getLoginUrl(); ?>" target="_parent" style="color:#FFF">登入</a>
 			<?php
 			}
 			else{echo "目前登入: ".$login["user"]."(".het($login["name"]).")";
 			?>
-			<a href="../logout" target="_parent" style="color:#FFF">登出</a>
+			<a href="<?php echo login_system::getLogoutUrl($config["site"]["url"]."home"); ?>" target="_parent" style="color:#FFF">登出</a>
 			<?php
 			}
 			?>

@@ -196,7 +196,7 @@ else if(isset($_POST["editbook"])){
 	$message="已修改圖書 ID=".@$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
 }
 $query=new query;
-$query->column=["id","name"];
+$query->column=["*"];
 $query->table="account";
 $row=SELECT($query);
 foreach($row as $temp){
@@ -460,7 +460,7 @@ meta();
 					<td><?php echo $cate[$book["cat"]]; ?></td>
 					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
-					<td><?php echo $acct[$book["lend"]]; ?></td>
+					<td><?php echo @$acct[$book["lend"]]; ?></td>
 					<td><?php echo $book["source"]; ?></td>
 					<td><?php echo $book["ISBN"]; ?></td>
 					<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>

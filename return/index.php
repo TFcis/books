@@ -29,9 +29,9 @@ if($data==false){
 		$query->limit=array(0,1);
 		$book=fetchone(SELECT($query));
 		$query=new query;
-		$query->column=array("id","user","name");
+		$query->column=array("*");
 		$query->table="account";
-		$query->where=array("user",@$_POST["borrowuser"]);
+		$query->where=array("id",@$_POST["borrowuser"]);
 		$query->limit=array(0,1);
 		$acct=fetchone(SELECT($query));
 		if($book==""){
@@ -41,7 +41,7 @@ if($data==false){
 			$error="無此使用者";
 			insertlog($data["id"],0,"return",false,"no user:".@$_POST["borrowuser"]);
 		}else if($book["lend"]!=$acct["id"]){
-			$error="使用者 ".$acct["user"]."(".$acct["name"].") 沒有借閱圖書 ".$book["id"]." ".$book["name"];
+			$error="使用者 ".$acct["name"]." 沒有借閱圖書 ".$book["id"]." ".$book["name"];
 			insertlog($data["id"],$acct["id"],"return",false,"no lead:".@$_POST["bookid"]);
 		}else{
 			$query=new query;
@@ -50,7 +50,7 @@ if($data==false){
 			$query->where=array("id",@$_POST["bookid"]);
 			UPDATE($query);
 			insertlog($data["id"],$acct["id"],"return",true,"book id=".@$_POST["bookid"]);
-			$message=$acct["user"]."(".$acct["name"].") 已歸還圖書 ".@$_POST["bookid"]."(".$book["name"].")";
+			$message=$acct["name"]." 已歸還圖書 ".@$_POST["bookid"]."(".$book["name"].")";
 		}
 	}
 }

@@ -5,7 +5,7 @@ include_once("../func/sql.php");
 include_once("../func/url.php");
 include_once("../func/log.php");
 $login=checklogin();
-if($login==false)header("Location: ../login/?from=user");
+if($login["login"]===false)header("Location: ".login_system::getLoginUrl());
 $editid=$login["id"];
 if(is_numeric(@$_GET["id"]))$editid=@$_GET["id"];
 $error="";
@@ -13,7 +13,7 @@ $message="";
 $message2="";
 $showdata=true;
 $query=new query;
-$query->column=array("name","email","power");
+$query->column=array("*");
 $query->table="account";
 $query->where=array("id",$editid);
 $query->limit=array(0,1);
@@ -208,46 +208,6 @@ meta();
 				}
 				?>
 				</table>
-			</td>
-		</tr>
-		</table>
-	</td>
-	<td width="40"></td>
-	<td valign="top">
-		<table border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<td align="center"><h1>更新資料</h1></td>
-		</tr>
-		<tr>
-			<td>
-				<form method="post">
-					<input name="sid" type="hidden" id="sid" value="<?php echo $editid;?>">
-					<table border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<td valign="top" class="inputleft">舊密碼：</td>
-							<td valign="top" class="inputright"><input name="spwd0" type="password" id="spwd0"></td>
-						</tr>
-						<tr>
-							<td valign="top" class="inputleft">新密碼：</td>
-							<td valign="top" class="inputright"><input name="spwd1" type="password" id="spwd1"></td>
-						</tr>
-						<tr>
-							<td valign="top" class="inputleft">再確認：</td>
-							<td valign="top" class="inputright"><input name="spwd2" type="password" id="spwd2"></td>
-						</tr>
-						<tr>
-							<td valign="top" class="inputleft">姓名：</td>
-							<td valign="top" class="inputright"><input name="sname" type="text" id="sname" value="<?php echo het($editdata["name"]);?>" maxlength="32"></td>
-						</tr>
-						<tr>
-							<td valign="top" class="inputleft">郵件：</td>
-							<td valign="top" class="inputright"><input name="semail" type="email" id="semail" value="<?php echo $editdata["email"];?>" maxlength="64"></td>
-						</tr>
-						<tr>
-							<td align="center" colspan="2"><input type="submit" value="更新資料"></td>
-						</tr>
-					</table>
-				</form>
 			</td>
 		</tr>
 		</table>

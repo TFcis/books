@@ -8,8 +8,8 @@ include_once("../func/consolelog.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false){
-	header("Location: ../login/?from=borrow");
+if(!$data["login"]){
+	header("Location: ".login_system::getLoginUrl());
 }else if(isset($_POST["bookid"])){
 	if($data["power"]<=1){
 		@$_POST["borrowuser"]=$data["user"];
@@ -22,15 +22,15 @@ if($data==false){
 		insertlog($data["id"],0,"borrow",false,"user empty");
 	}else{
 		$query=new query;
-		$query->column=array("name","lend");
+		$query->column=array("*");
 		$query->table="booklist";
 		$query->where=array("id",@$_POST["bookid"]);
 		$query->limit=array(0,1);
 		$book=fetchone(SELECT($query));
 		$query=new query;
-		$query->column=array("id","user","name");
+		$query->column=array("*");
 		$query->table="account";
-		$query->where=array("user",@$_POST["borrowuser"]);
+		$query->where=array("id",@$_POST["borrowuser"]);
 		$query->limit=array(0,1);
 		$acct=fetchone(SELECT($query));
 		if($book==""){
@@ -45,11 +45,11 @@ if($data==false){
 		}else{
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("lend",$acct["id"]);
+			$query->value=array("lend",$_POST["borrowuser"]);
 			$query->where=array("id",@$_POST["bookid"]);
 			UPDATE($query);
 			insertlog($data["id"],$acct["id"],"borrow",true,"book id=".@$_POST["bookid"]);
-			$message="已將圖書 ".@$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["user"]."(".$acct["name"].")";
+			$message="已將圖書 ".@$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["name"];
 			if($data["power"]<=1){
 				$query=new query;
 				$query->table="account";
@@ -57,7 +57,7 @@ if($data==false){
 				$query->limit="all";
 				$row=SELECT($query);
 				foreach($row as $temp){
-					consolelog(mail($temp["email"], "ELMS 借閱通知", $acct["user"]."(".$acct["name"].") 剛剛借閱了".@$_POST["bookid"]."(".$book["name"].")\n圖書資料: http://books.tfcis.org/bookinfo/?id=".@$_POST["bookid"], "From: t16@tfcis.org"));
+					consolelog(mail($temp["email"], "ELMS 借閱通知", $acct["name"]." 剛剛借閱了".@$_POST["bookid"]."(".$book["name"].")\n圖書資料: http://books.tfcis.org/bookinfo/?id=".@$_POST["bookid"], "From: t16@tfcis.org"));
 				}
 			}
 		}

@@ -8,10 +8,12 @@ $error="";
 $message="";
 $noshow=true;
 $nosignup=true;
-if(checklogin()){
-	$message="你已經登入了";
+$data=checklogin();
+if($data["login"]){
+	//header("Location: ../home/");
+	$message="你已經登入成功";
 	$noshow=false;
-	?><script>setTimeout(function(){history.back();},1000)</script><?php
+	?><script>setTimeout(function(){document.location="../home/";},1000)</script><?php
 }else if(isset($_POST['user'])){
 	$query=new query;
 	$query->column=["id","pwd","power","verify"];
