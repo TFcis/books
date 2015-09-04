@@ -142,7 +142,7 @@ function SELECT($text){
 		$query.=" ";
 	}
 	if($text->limit!==null)$query.=LIMIT($text->limit);
-	consolelog($query);
+	//consolelog($query);
 	$result=fetch($link,$query,$text);
 	return $result;
 }
@@ -162,7 +162,7 @@ function INSERT($text){
 		$query.=createbind($text,$temp[1]);
 	}
 	$query.=")";
-	consolelog($query);
+	//consolelog($query);
 	$result=fetch($link,$query,$text);
 	return $result;
 }
@@ -177,20 +177,20 @@ function UPDATE($text){
 		$query.="`".$temp[0]."`=".createbind($text,$temp[1]);
 	}
 	$query.=" ".WHERE($text).LIMIT($text->limit);
-	consolelog($query);
+	//consolelog($query);
 	$result=fetch($link,$query,$text);
 	return $result;
 }
 function DELETE($text){
 	$link=connect($text->dbname);
 	$query="DELETE FROM `".$text->table."` ".WHERE($text).LIMIT($text->limit);
-	consolelog($query);
+	//consolelog($query);
 	$result=fetch($link,$query,$text);
 	return $result;
 }
 function SQL($query){
 	$link=connect($text->dbname);
-	consolelog($query);
+	//consolelog($query);
 	$result=$link->query($query);
 	return $result;
 }
