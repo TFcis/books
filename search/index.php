@@ -1,23 +1,22 @@
 <html>
 <?php
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/checklogin.php");
-include_once("../func/consolelog.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/checklogin.php");
 $login=checklogin();
-if(!$login["login"])header("Location: ".login_system::getLoginUrl());
+if(!$login["login"])header("Location: ".$login["url"]);
 ?>
 <head>
 <meta charset="UTF-8">
 <title>館藏查詢-TFcisBooks</title>
 <?php
-include_once("../res/meta.php");
+include_once(__DIR__."/../res/meta.php");
 meta();
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../res/header.php");
+	include_once(__DIR__."/../res/header.php");
 	if(@$_GET["bookid"]!="")header("Location: ../bookinfo/?id=".@$_GET["bookid"]);
 	$query=new query;
 	$query->table="category";

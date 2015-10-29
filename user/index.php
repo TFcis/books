@@ -1,23 +1,18 @@
 <html>
 <?php
-include_once("../func/checklogin.php");
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/log.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/checklogin.php");
+include_once(__DIR__."/../func/log.php");
 $login=checklogin();
-if($login["login"]===false)header("Location: ".login_system::getLoginUrl());
+if($login["login"]===false)header("Location: ".$login["url"]);
 $editid=$login["id"];
 if(is_numeric(@$_GET["id"]))$editid=@$_GET["id"];
 $error="";
 $message="";
 $message2="";
 $showdata=true;
-$query=new query;
-$query->column=array("*");
-$query->table="account";
-$query->where=array("id",$editid);
-$query->limit=array(0,1);
-$editdata=fetchone(SELECT($query));
+$editdata=login_system::getinfobyid($editid);
 if(isset($_POST["sid"])&&$editid!=@$_POST["sid"]){
 	$error="有預設資料遭到修改，沒有任何修改動作被執行";
 	insertlog($login["id"],$editid,"useredit",false,"attack");
@@ -32,11 +27,6 @@ else{
 	if($editid!=$login["id"]&&$login["power"]<=1){
 		$error="你沒有權限更改別人的資料";
 		insertlog($login["id"],$editid,"useredit",false,"no power");
-		$showdata=false;
-	}
-	else if($login["power"]<$editdata["power"]){
-		$error="無法更改較高權限的帳戶";
-		insertlog($login["id"],$editid,"useredit",false,"higher power");
 		$showdata=false;
 	}
 	else{
@@ -186,7 +176,6 @@ meta();
 				$query->table="booklist";
 				$query->where=array("lend",$editid);
 				$row=SELECT($query);
-				consolelog($row);
 				$noborrow=true;
 				foreach($row as $book){
 					$noborrow=false;

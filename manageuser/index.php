@@ -1,16 +1,14 @@
 <html>
 <?php
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/log.php");
-include_once("../func/checklogin.php");
-include_once("../func/consolelog.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/checklogin.php");
+include_once(__DIR__."/../func/log.php");
 $error="";
 $message="";
 $data=checklogin();
-$powername=array("封禁","使用者","管理員","系統管理員");
-if($data==false)header("Location: ../login/?from=manageuser");
-else if($data["power"]<=1){
+if($data["login"]===false)header("Location: ../login/?from=manageuser");
+else if(!$data["power"]){
 	$error="你沒有權限";
 	insertlog($data["id"],0,"manageuser",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
@@ -89,7 +87,7 @@ meta();
 </table>
 <?php
 	}
-	if($data["power"]>=2){
+	if($data["power"]>0){
 ?>
 <center>
 <table border="0" cellspacing="0" cellpadding="0">

@@ -8,7 +8,7 @@ $error="";
 $message="";
 $data=checklogin();
 if($data==false)header("Location: ../login/?from=managebook");
-else if($data["power"]<=1){
+else if($data["power"]==0){
 	$error="你沒有權限";
 	insertlog($data["id"],0,"managebook",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
@@ -43,7 +43,7 @@ meta();
 </table>
 <?php
 	}
-	if($data["power"]>=2){
+	if($data["power"]>0){
 ?>
 <center>
 <table border="0" cellspacing="0" cellpadding="0">

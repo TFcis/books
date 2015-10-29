@@ -2,14 +2,15 @@
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 <?php
 function meta($array=null){
+	global $config;
 	$meta["title"]="TFcis Books";
 	$meta["type"]="website";
 	$meta["description"]="目前此系統用來管理南一中資訊社TFcis社部內的圖書，若要借書請和社團幹部詢問，所有圖書資訊和出借狀態都可透過本系統查詢。";
-	$meta["url"]="http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	$meta["url"]=$config["site"]["url"];
 	$meta["image"]="http://books.tfcis.org/res/icon.png";
-	if($array!=null){
-		foreach($array as $temp){
-			$meta[$temp[0]]=$temp[1];
+	if(is_array($array)){
+		foreach($array as $index => $temp){
+			$meta[$index]=$temp;
 		}
 	}
 	?>

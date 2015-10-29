@@ -1,19 +1,16 @@
 <html>
 <?php
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/log.php");
-include_once("../func/checklogin.php");
-include_once("../func/consolelog.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/checklogin.php");
+include_once(__DIR__."/../func/log.php");
 $error="";
 $message="";
 $data=checklogin();
 if(!$data["login"]){
-	header("Location: ".login_system::getLoginUrl());
+	header("Location: ".$data["url"]);
 }else if(isset($_POST["bookid"])){
-	if($data["power"]<=1){
-		@$_POST["borrowuser"]=$data["user"];
-	}
+	if(!$data["power"])@$_POST["borrowuser"]=$data["account"];
 	if(@$_POST["bookid"]==""){
 		$error="圖書ID為空";
 		insertlog($data["id"],0,"borrow",false,"bookid empty");
@@ -27,16 +24,11 @@ if(!$data["login"]){
 		$query->where=array("id",@$_POST["bookid"]);
 		$query->limit=array(0,1);
 		$book=fetchone(SELECT($query));
-		$query=new query;
-		$query->column=array("*");
-		$query->table="account";
-		$query->where=array("id",@$_POST["borrowuser"]);
-		$query->limit=array(0,1);
-		$acct=fetchone(SELECT($query));
+		$acct=login_system::getinfobyaccount(@$_POST["borrowuser"]);
 		if($book==""){
 			$error="無此圖書ID";
 			insertlog($data["id"],0,"borrow",false,"no bookid:".@$_POST["bookid"]);
-		}else if($acct==""){
+		}else if($acct==false){
 			$error="無此使用者";
 			insertlog($data["id"],0,"borrow",false,"no user:".@$_POST["borrowuser"]);
 		}else if($book["lend"]!="0"){
@@ -45,11 +37,11 @@ if(!$data["login"]){
 		}else{
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("lend",$_POST["borrowuser"]);
+			$query->value=array("lend",$acct["id"]);
 			$query->where=array("id",@$_POST["bookid"]);
 			UPDATE($query);
 			insertlog($data["id"],$acct["id"],"borrow",true,"book id=".@$_POST["bookid"]);
-			$message="已將圖書 ".@$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["name"];
+			$message="已將圖書 ".@$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["nickname"];
 			if($data["power"]<=1){
 				$query=new query;
 				$query->table="account";
@@ -111,11 +103,11 @@ meta();
 			<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo @$_GET["id"];?>"></td>
 		</tr>
 		<?php 
-		if($data["power"]>=2){
+		if($data["power"]){
 		?>
 		<tr>
 			<td>借閱使用者</td>
-			<td><input name="borrowuser" type="text" id="borrowuser"></td>
+			<td><input name="borrowuser" type="text" id="borrowuser" value="<?php echo $data["nickname"];?>"></td>
 		</tr>
 		<?php 
 		}

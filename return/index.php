@@ -1,16 +1,15 @@
 <html>
 <?php
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/log.php");
-include_once("../func/checklogin.php");
-include_once("../func/consolelog.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/checklogin.php");
+include_once(__DIR__."/../func/log.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false){
+if($data["login"]===false){
 	header("Location: ../login/?from=return");
-}else if($data["power"]<=1){
+}else if(!$data["power"]){
 	$error="你沒有權限";
 	insertlog($data["id"],0,"return",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000)</script><?php
@@ -23,17 +22,12 @@ if($data==false){
 		insertlog($data["id"],0,"return",false,"user empty");
 	}else{
 		$query=new query;
-		$query->column=array("id","name","lend");
+		$query->column=array("*");
 		$query->table="booklist";
 		$query->where=array("id",@$_POST["bookid"]);
 		$query->limit=array(0,1);
 		$book=fetchone(SELECT($query));
-		$query=new query;
-		$query->column=array("*");
-		$query->table="account";
-		$query->where=array("id",@$_POST["borrowuser"]);
-		$query->limit=array(0,1);
-		$acct=fetchone(SELECT($query));
+		$acct=login_system::getinfobyaccount(@$_POST["borrowuser"]);
 		if($book==""){
 			$error="無此圖書ID";
 			insertlog($data["id"],0,"return",false,"no bookid:".@$_POST["bookid"]);
@@ -41,7 +35,7 @@ if($data==false){
 			$error="無此使用者";
 			insertlog($data["id"],0,"return",false,"no user:".@$_POST["borrowuser"]);
 		}else if($book["lend"]!=$acct["id"]){
-			$error="使用者 ".$acct["name"]." 沒有借閱圖書 ".$book["id"]." ".$book["name"];
+			$error="使用者 ".$acct["nickname"]." 沒有借閱圖書 ".$book["id"]." ".$book["name"];
 			insertlog($data["id"],$acct["id"],"return",false,"no lead:".@$_POST["bookid"]);
 		}else{
 			$query=new query;
@@ -50,7 +44,7 @@ if($data==false){
 			$query->where=array("id",@$_POST["bookid"]);
 			UPDATE($query);
 			insertlog($data["id"],$acct["id"],"return",true,"book id=".@$_POST["bookid"]);
-			$message=$acct["name"]." 已歸還圖書 ".@$_POST["bookid"]."(".$book["name"].")";
+			$message=$acct["nickname"]." 已歸還圖書 ".@$_POST["bookid"]."(".$book["name"].")";
 		}
 	}
 }
@@ -84,7 +78,7 @@ meta();
 </table>
 <?php
 	}
-	if($data["power"]>=2){
+	if($data["power"]>0){
 ?>
 <center>
 <table border="0" cellspacing="0" cellpadding="0">

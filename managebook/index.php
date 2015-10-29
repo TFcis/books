@@ -1,15 +1,14 @@
 <html>
 <?php
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/log.php");
-include_once("../func/checklogin.php");
-include_once("../func/consolelog.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/checklogin.php");
+include_once(__DIR__."/../func/log.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false)header("Location: ../login/?from=managebook");
-else if($data["power"]<=1){
+if($data["login"]===false)header("Location: ../login/?from=managebook");
+else if(!$data["power"]){
 	$error="你沒有權限";
 	insertlog($data["id"],0,"managebook",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
@@ -128,7 +127,7 @@ else if(isset($_POST["addbook"])){
 					);
 					INSERT($query);
 					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
-					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[@$_POST["cat"]]." 年份=".$row["year"]." 來源=".@$_POST["source"];
+					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[@$_POST["cat"]]." 年份=".@$_POST["year"]." 來源=".@$_POST["source"];
 				}
 				$newid++;
 			}
@@ -232,7 +231,7 @@ meta();
 </table>
 <?php
 	}
-	if($data["power"]>=2){
+	if($data["power"]>0){
 ?>
 <center>
 <table border="0" cellspacing="0" cellpadding="0">
@@ -460,7 +459,12 @@ meta();
 					<td><?php echo $cate[$book["cat"]]; ?></td>
 					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
-					<td><?php echo @$acct[$book["lend"]]; ?></td>
+					<td><?php 
+					if(@$book["lend"]!=0){
+						$acct=login_system::getinfobyid($book["lend"]);
+						echo $acct["nickname"];
+					}
+					?></td>
 					<td><?php echo $book["source"]; ?></td>
 					<td><?php echo $book["ISBN"]; ?></td>
 					<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>
