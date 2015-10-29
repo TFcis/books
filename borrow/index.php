@@ -107,7 +107,7 @@ meta();
 		?>
 		<tr>
 			<td>借閱使用者</td>
-			<td><input name="borrowuser" type="text" id="borrowuser" value="<?php echo $data["nickname"];?>"></td>
+			<td><input name="borrowuser" type="text" id="borrowuser" value="<?php echo $data["account"];?>"></td>
 		</tr>
 		<?php 
 		}
