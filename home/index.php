@@ -1,8 +1,8 @@
 <html>
 <?php
-include_once("../func/checklogin.php");
-include_once("../func/sql.php");
-include_once("../func/url.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/checklogin.php");
 ?>
 <head>
 <meta charset="UTF-8">
