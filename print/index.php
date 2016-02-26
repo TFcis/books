@@ -1,9 +1,7 @@
 <html>
 <?php
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/checklogin.php");
-include_once("../func/consolelog.php");
+include_once(__DIR__."/../config/config.php");
+include_once($config["path"]["sql"]);
 ?>
 <head>
 <meta charset="UTF-8">
@@ -22,38 +20,45 @@ meta();
 <h1>PRINT</h1>
 <hr>
 <?php
-$row=SELECT("ELMS","*","category",null,null,"all");
-while($temp=mfa($row)){
-	$cate[$temp["id"]]=$temp["name"];
-}
-$row=SELECT("ELMS","*","booklist",null,null,"all");
-?>
-<table border="0" cellspacing="0" cellpadding="5">
-<tr>
-	<?php
-	$count=0;
-	while($bookinfo=mfa($row)){
-	?>
-	<td align="center">
-	<?php
-	/*$im = imagecreatefrompng("https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http://books.tfcis.org/b?".$bookinfo["id"]);
-	$im2 = ImageCreateTrueColor(100,100);
-	imagecopyresized($im2,$im,0,0,20,20,100,100,110,110);
-	imagepng($im2,"./".$bookinfo["id"].".png");
-	imagedestroy($im);
-	imagedestroy($im2); */
-	?>
-	<img src="<?php echo $bookinfo["id"];?>.png"><br>
-	ID:<?php echo $bookinfo["id"]; ?>,Cat:<?php echo $cate[$bookinfo["cat"]]; ?>
-	</td>
-	<?php
-	$count++;
-	if($count%4==0)echo "</tr><tr>";
+if (!isset($_GET["start"]) || !isset($_GET["end"])) {
+	echo "Not given start or end";
+} else {
+	$query=new query;
+	$query->table="category";
+	$row=SELECT($query);
+	foreach ($row as $temp) {
+		$category[$temp["id"]]=$temp["name"];
 	}
+
+	$query=new query;
+	$query->table="booklist";
+	$query->where=array(
+		array("id",@$_GET["start"],">="),
+		array("id",@$_GET["end"],"<=")
+	);
+	$row=SELECT($query);
 	?>
-</tr>
-</tr>
-</table>
+	<table border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<?php
+		$count=0;
+		foreach ($row as $temp) {
+		?>
+		<td align="center">
+		<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http://books.tfcis.org/b?<?php echo $temp["id"]; ?>"><br>
+		ID:<?php echo $temp["id"]; ?>,Cat:<?php echo $category[$temp["cat"]]; ?>
+		</td>
+		<?php
+		$count++;
+		if($count%4==0)echo "</tr><tr>";
+		}
+		?>
+	</tr>
+	</tr>
+	</table>
+<?php
+}
+?>
 </center>
 </body>
 </html>
