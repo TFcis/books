@@ -38,7 +38,7 @@ if (!isset($_GET["start"]) || !isset($_GET["end"])) {
 	);
 	$row=SELECT($query);
 	?>
-	<table border="0" cellspacing="0" cellpadding="5">
+	<table border="1" cellspacing="0" cellpadding="5">
 	<tr>
 		<?php
 		$count=0;
