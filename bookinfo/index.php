@@ -67,15 +67,11 @@ include_once(__DIR__."/../func/checklogin.php");
 		<tr>
 			<td>借出</td>
 			<td><?php 
-				echo ($bookinfo["lend"]==0?"在館內":"已借出");
-				if($bookinfo["lend"]!=0&&$data["power"]>=2){
-					$query=new query;
-					$query->column=array("name","user");
-					$query->table="account";
-					$query->where=array("id",$bookinfo["lend"]);
-					$query->limit=array(0,1);
-					$acct=fetchone(SELECT($query));
-					echo " ".$acct["user"]."(".$acct["name"].")";
+				if(@$bookinfo["lend"]!=0){
+					$acct=login_system::getinfobyid($bookinfo["lend"]);
+					echo $acct["nickname"];
+				} else {
+					echo "在館內";
 				}
 			?></td>
 		</tr>
