@@ -111,20 +111,24 @@ meta();
 		</tr>
 		<?php
 		if(is_array($booklist)){
-			foreach($booklist as $index => $book){
+			foreach($booklist as $name => $book){
 				if(@$_GET["lend"]=="0"&&$book["aval"]==0)continue;
 				if(@$_GET["lend"]=="1"&&$book["count"]==$book["aval"])continue;
 			?>
 			<tr>
 				<td><?php echo $cate[$book["cat"]]; ?></td>
-				<td><?php
-					$bookidlist=explode(",",$book["id"]);
-					foreach($bookidlist as $temp){
+				<td>
+				<?php
+				$bookidlist=explode(",",$book["id"]);
+				foreach($bookidlist as $count => $temp){
 				?>
 					<a href="../bookinfo/?id=<?php echo $temp; ?>"><?php echo $temp; ?></a>
-				<?php } ?>
+				<?php
+					if($count%10==9) echo "<br>";
+				}
+				?>
 				</td>
-				<td><?php echo $index; ?></td>
+				<td><?php echo $name; ?></td>
 				<td><?php echo $book["count"]; ?></td>
 				<td><?php
 				if($book["count"]==1){
