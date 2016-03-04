@@ -62,7 +62,7 @@ include_once(__DIR__."/../func/checklogin.php");
 		</tr>
 		<tr>
 			<td>ISBN</td>
-			<td><a href="https://books.google.com.tw/books?vid=<?php echo $bookinfo["ISBN"]; ?>" target="_blank"><?php echo $bookinfo["ISBN"]; ?></a></td>
+			<td><a href="https://zh.wikipedia.org/wiki/Special:网络书源/<?php echo $bookinfo["ISBN"]; ?>" target="_blank"><?php echo $bookinfo["ISBN"]; ?></a></td>
 		</tr>
 		<tr>
 			<td>借出</td>

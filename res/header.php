@@ -57,7 +57,7 @@ document.onkeydown=keyFunction;
 			<a href="<?php echo $login["url"]; ?>" target="_parent" style="color:#FFF">登入</a>
 			<?php
 			}
-			else{echo "目前登入: ".$login["account"]."(".htmlentities($login["nickname"]).")";
+			else{echo "目前登入: ".$login["nickname"]."(".htmlentities($login["account"]).")";
 			?>
 			<a href="<?php echo $login["url"]; ?>" target="_parent" style="color:#FFF">登出</a>
 			<?php
