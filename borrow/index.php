@@ -32,16 +32,16 @@ if(!$data["login"]){
 			$error="無此使用者";
 			insertlog($data["id"],0,"borrow",false,"no user:".@$_POST["borrowuser"]);
 		}else if($book["lend"]!="0"){
-			$error="此本書已有人借閱";
-			insertlog($data["id"],$acct["id"],"borrow",false,"already lead:".@$_POST["bookid"]);
+			$error=$book["name"]."(".$_POST["bookid"].") 已有人借閱";
+			insertlog($data["id"],$acct->id,"borrow",false,"already lead:".@$_POST["bookid"]);
 		}else{
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("lend",$acct["id"]);
+			$query->value=array("lend",$acct->id);
 			$query->where=array("id",@$_POST["bookid"]);
 			UPDATE($query);
-			insertlog($data["id"],$acct["id"],"borrow",true,"book id=".@$_POST["bookid"]);
-			$message="已將圖書 ".@$_POST["bookid"]."(".$book["name"].") 借給 ".$acct["nickname"];
+			insertlog($data["id"],$acct->id,"borrow",true,"book id=".@$_POST["bookid"]);
+			$message="已將圖書 ".$book["name"]."(".$_POST["bookid"].") 借給 ".$acct->nickname."(".$acct->account.")";
 			if($data["power"]<=1){
 				$query=new query;
 				$query->table="account";

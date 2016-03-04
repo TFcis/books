@@ -2,8 +2,9 @@
 include_once(__DIR__."/../config/config.php");
 include_once($config["path"]["sql"]);
 function checklogin(){
-	include_once("login_sdk.php");
-	$status = login_system::status();
+	include_once("login-php-sdk/Login.php");
+	$login_system = new login_system;
+	$status = $login_system->status();
 	if($status->login===false){
 		$data=(array)$status;
 		$data["power"]=0;

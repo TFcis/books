@@ -462,7 +462,7 @@ meta();
 					<td><?php 
 					if(@$book["lend"]!=0){
 						$acct=login_system::getinfobyid($book["lend"]);
-						echo $acct["realname"];
+						echo $acct->nickname;
 					}
 					?></td>
 					<td><?php echo $book["source"]; ?></td>

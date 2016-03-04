@@ -3,6 +3,7 @@
 include_once(__DIR__."/../config/config.php");
 include_once($config["path"]["sql"]);
 include_once(__DIR__."/../func/checklogin.php");
+include_once(__DIR__."/../func/login-php-sdk/Login.php");
 ?>
 <head>
 <meta http-equiv="Content-Type" charset="UTF-8" name="viewport" content="width=device-width,user-scalable=yes">
@@ -69,7 +70,7 @@ include_once(__DIR__."/../func/checklogin.php");
 			<td><?php 
 				if(@$bookinfo["lend"]!=0){
 					$acct=login_system::getinfobyid($bookinfo["lend"]);
-					echo $acct["nickname"];
+					echo $acct->nickname;
 				} else {
 					echo "在館內";
 				}

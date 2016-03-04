@@ -1,3 +1,6 @@
 [submodule "func/SQL-function"]
 	path = func/SQL-function
 	url = https://github.com/Xi-Plus/SQL-function.git
+[submodule "func/login-php-sdk"]
+	path = func/login-php-sdk
+	url = https://github.com/TFcis/login-php-sdk.git

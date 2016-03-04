@@ -27,14 +27,14 @@ else if(isset($_POST["editid"])){
 		);
 		INSERT($query);
 		insertlog($data["id"],$_POST["editid"],"manageuser",true,"1");
-		$message="已將 ".$acct["nickname"]."(".$acct["account"].") 的權限更改為管理員";
+		$message="已將 ".$acct->nickname."(".$acct->account.") 的權限更改為管理員";
 	} else if($_POST["editpower"]==0){
 		$query=new query;
 		$query->table="powerlist";
 		$query->where=array("id",$_POST["editid"]);
 		DELETE($query);
 		insertlog($data["id"],$_POST["editid"],"manageuser",true,"0");
-		$message="已移除 ".$acct["nickname"]."(".$acct["account"].") 的權限";
+		$message="已移除 ".$acct->nickname."(".$acct->account.") 的權限";
 	} else {
 		$error="Something went wrong.";
 	}
@@ -101,9 +101,9 @@ meta();
 			$acct=login_system::getinfobyid($powerlist["id"]);
 			?>
 			<tr>
-				<td><?php echo $acct["id"]; ?></td>
-				<td><?php echo $acct["realname"]; ?></td>
-				<td><input type="button" value="移除" onClick="editid.value='<?php echo $acct["id"]; ?>';edit.submit();" ></td>
+				<td><?php echo $acct->id; ?></td>
+				<td><?php echo $acct->nickname."(".$acct->account.")"; ?></td>
+				<td><input type="button" value="移除" onClick="editid.value='<?php echo $acct->id; ?>';edit.submit();" ></td>
 			</tr>
 			<?php
 		}
