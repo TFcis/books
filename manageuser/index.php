@@ -7,54 +7,36 @@ include_once(__DIR__."/../func/log.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data["login"]===false)header("Location: ../login/?from=manageuser");
+if($data["login"]===false)header("Location: ".$data["url"]);
 else if(!$data["power"]){
 	$error="你沒有權限";
 	insertlog($data["id"],0,"manageuser",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
 else if(isset($_POST["editid"])){
-	if($data["id"]==@$_POST["editid"]){
+	$acct=login_system::getinfobyid($_POST["editid"]);
+	if($data["id"]==$_POST["editid"]){
 		$error="無法更改自己的權限";
-		insertlog($data["id"],@$_POST["editid"],"manageuser",false,"edit own");
-	}
-	else{
+		insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own");
+	} else if($_POST["editpower"]>=1){
 		$query=new query;
-		$query->column=array("user","name","power");
-		$query->table="account";
-		$query->where=array("id",@$_POST["editid"]);
-		$query->limit=array(0,1);
-		$row=fetchone(SELECT($query));
-		if($row["power"]>$data["power"]){
-			$error="無法更改比自己權限高的帳戶";
-			insertlog($data["id"],@$_POST["editid"],"manageuser",false,"edit other power higher");
-		}
-		else if(@$_POST["editpower"]>$data["power"]){
-			$error="無法將權限調比自己高";
-			insertlog($data["id"],@$_POST["editid"],"manageuser",false,"edit own higher power");
-		}
-		else {
-			$query=new query;
-			$query->column=array("id");
-			$query->table="account";
-			$query->value=array("power",@$_POST["editpower"]);
-			$query->where=array("id",@$_POST["editid"]);
-			UPDATE($query);
-			insertlog($data["id"],@$_POST["editid"],"manageuser",true,@$_POST["editpower"]);
-			$message="已將 ".$row["user"]."(".$row["name"].") 的權限更改為 ".$powername[@$_POST["editpower"]];
-			if(@$_POST["editpower"]<=0){
-				$query=new query;
-				$query->table="session";
-				$query->where=array("id",@$_POST["editid"]);
-				DELETE($query);
-				$query=new query;
-				$query->table="account";
-				$query->value=array("verify","");
-				$query->where=array("id",@$_POST["editid"]);
-				UPDATE($query);
-				insertlog($data["id"],@$_POST["editid"],"logout",true,"block");
-			}
-		}
+		$query->table="powerlist";
+		$query->value=array(
+			array("id",$_POST["editid"]),
+			array("power",$_POST["editpower"])
+		);
+		INSERT($query);
+		insertlog($data["id"],$_POST["editid"],"manageuser",true,"1");
+		$message="已將 ".$acct["nickname"]."(".$acct["account"].") 的權限更改為管理員";
+	} else if($_POST["editpower"]==0){
+		$query=new query;
+		$query->table="powerlist";
+		$query->where=array("id",$_POST["editid"]);
+		DELETE($query);
+		insertlog($data["id"],$_POST["editid"],"manageuser",true,"0");
+		$message="已移除 ".$acct["nickname"]."(".$acct["account"].") 的權限";
+	} else {
+		$error="Something went wrong.";
 	}
 }
 ?>
@@ -98,55 +80,46 @@ meta();
 	<td colspan="1" style="text-align: center"><h1>使用者管理</h1></td>
 </tr>
 <tr>
-	<td valign="top">
+	<td align="center">
 		<div style="display:none">
 			<form method="post" id="edit">
 				<input name="editid" type="hidden" id="editid">
-				<input name="editpower" type="hidden" id="editpower">
+				<input name="editpower" type="hidden" value="0">
 			</form>
 		</div>
 		<table border="1" cellspacing="0" cellpadding="2">
 		<tr>
 			<td>ID</td>
-			<td>目前借閱</td>
 			<td>姓名</td>
-			<td>權限</td>
-			<td colspan="4">更改</td>
+			<td>更改</td>
 		</tr>
 		<?php
 		$query=new query;
-		$query->column=array("COUNT(*) AS `COUNT`","`lend`");
-		$query->table="booklist";
-		$query->group=array("lend");
+		$query->table="powerlist";
 		$row=SELECT($query);
-		foreach($row as $temp){
-			$borrowcount[$temp["lend"]]=$temp["COUNT"];
-		}
-		$query=new query;
-		$query->table="account";
-		$query->order=array("id","ASC");
-		$row=SELECT($query);
-		foreach($row as $acct){
+		foreach($row as $powerlist){
+			$acct=login_system::getinfobyid($powerlist["id"]);
 			?>
 			<tr>
-				<td><a href="../user?id=<?php echo $acct["id"]; ?>"><?php echo $acct["id"]; ?></a></td>
-				<td><?php echo @$borrowcount[$acct["id"]]; ?></td>
-				<td><?php echo substr(het($acct["name"]),0,15); ?></td>
-				<td><?php echo $powername[$acct["power"]]; ?></td>
-				<td>
-				<?php
-				for($i=0;$i<=3;$i++){
-					?>
-					<input type="button" value="<?php echo $powername[$i];?>" onClick="editid.value=<?php echo $acct["id"]; ?>;editpower.value=<?php echo $i; ?>;edit.submit();" >
-					<?php
-				}
-				?>
-				</td>
+				<td><?php echo $acct["id"]; ?></td>
+				<td><?php echo $acct["realname"]; ?></td>
+				<td><input type="button" value="移除" onClick="editid.value='<?php echo $acct["id"]; ?>';edit.submit();" ></td>
 			</tr>
 			<?php
 		}
 		?>
 		</table>
+	</td>
+</tr>
+<tr height="20"><td></td></tr>
+<tr>
+	<td align="center">
+		<h3>增加管理員</h3>
+		<form method="post">
+			<input name="editid" type="number">
+			<input name="editpower" type="hidden" value="1">
+			<input type="submit" value="增加">
+		</form>
 	</td>
 </tr>
 </table>
