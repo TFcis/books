@@ -26,7 +26,7 @@ meta();
 	}
 	$temp=array();
 	if(isset($_GET["lend"])&&$_GET["lend"]!="all")array_push($temp,["aval",@$_GET["lend"]]);
-	if(@$_GET["bookname"]!="")array_push($temp,["name",str_replace($_GET["bookname"],"+","[+]"),"REGEXP"]);
+	if(@$_GET["bookname"]!="")array_push($temp,["name",str_replace("+","[+]",$_GET["bookname"]),"REGEXP"]);
 	if(@$_GET["bookcat"]!="")array_push($temp,["cat",@$_GET["bookcat"]]);
 	$query=new query;
 	$query->table="booklist";
