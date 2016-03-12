@@ -24,21 +24,24 @@ meta();
 		$cate[$temp["id"]]=$temp["name"];
 	}
 	$temp=array();
-	if(isset($_GET["lend"])&&$_GET["lend"]!="all")array_push($temp,["aval",@$_GET["lend"]]);
-	if(@$_GET["bookname"]!="")array_push($temp,["name",str_replace("+","[+]",$_GET["bookname"]),"REGEXP"]);
-	if(@$_GET["bookcat"]!="")array_push($temp,["cat",@$_GET["bookcat"]]);
+	if(@$_GET["bookname"]!="")$temp[]=array("name",str_replace("+","[+]",$_GET["bookname"]),"REGEXP");
+	if(@$_GET["bookcat"]!="")$temp[]=array("cat",$_GET["bookcat"]);
 	$query=new query;
 	$query->table="booklist";
 	$query->where=$temp;
 	$query->order=[["cat"],["name"]];
 	$row=SELECT($query);
 	foreach($row as $temp){
-		if(@$booklist[$temp["name"]]["id"]!="")$booklist[$temp["name"]]["id"].=",";
-		@$booklist[$temp["name"]]["id"].=$temp["id"];
-		@$booklist[$temp["name"]]["count"]++;
-		@$booklist[$temp["name"]]["ISBN"]=$temp["ISBN"];
-		@$booklist[$temp["name"]]["cat"]=$temp["cat"];
-		if($temp["lend"]==0)@$booklist[$temp["name"]]["aval"]++;
+		if (!isset($booklist[$temp["name"]])) {
+			$booklist[$temp["name"]]=array("id"=>array(),"count"=>0,"ISBN"=>"","cat"=>0,"aval"=>0);
+		}
+		if (!isset($_GET["lend"])||$_GET["lend"]=="all"||($_GET["lend"]==1&&$temp["lend"]!=0)||($_GET["lend"]==0&&$temp["lend"]==0)) {
+			$booklist[$temp["name"]]["id"][]=$temp["id"];
+		}
+		$booklist[$temp["name"]]["count"]++;
+		$booklist[$temp["name"]]["ISBN"]=$temp["ISBN"];
+		$booklist[$temp["name"]]["cat"]=$temp["cat"];
+		if($temp["lend"]==0)$booklist[$temp["name"]]["aval"]++;
 	}
 ?>
 <center>
@@ -104,12 +107,11 @@ meta();
 			<td>分類</td>
 			<td>ID</td>
 			<td>書名</td>
-			<td>數量</td>
-			<td>借用</td>
+			<td>數量<br>館內/借出/合計</td>
 			<td>ISBN</td>
 		</tr>
 		<?php
-		if(is_array($booklist)){
+		if(isset($booklist)&&is_array($booklist)){
 			foreach($booklist as $name => $book){
 				if(@$_GET["lend"]=="0"&&$book["aval"]==0)continue;
 				if(@$_GET["lend"]=="1"&&$book["count"]==$book["aval"])continue;
@@ -118,8 +120,7 @@ meta();
 				<td><?php echo $cate[$book["cat"]]; ?></td>
 				<td>
 				<?php
-				$bookidlist=explode(",",$book["id"]);
-				foreach($bookidlist as $count => $temp){
+				foreach($book["id"] as $count => $temp){
 				?>
 					<a href="../bookinfo/?id=<?php echo $temp; ?>"><?php echo $temp; ?></a>
 				<?php
@@ -128,16 +129,7 @@ meta();
 				?>
 				</td>
 				<td><?php echo $name; ?></td>
-				<td><?php echo $book["count"]; ?></td>
-				<td><?php
-				if($book["count"]==1){
-					if(@$book["aval"]==0)echo "已借出";
-					else echo "在館內";
-				}else {
-					if($book["aval"]==0)echo "已全部借出";
-					else echo $book["aval"]."本在館內";
-				}
-				?></td>
+				<td><?php echo @$book["aval"]." / ".($book["count"]-@$book["aval"])." / ".$book["count"]; ?></td>
 				<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
 			</tr>
 			<?php
