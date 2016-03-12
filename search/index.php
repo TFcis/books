@@ -4,7 +4,6 @@ include_once(__DIR__."/../config/config.php");
 include_once($config["path"]["sql"]);
 include_once(__DIR__."/../func/checklogin.php");
 $login=checklogin();
-if(!$login["login"])header("Location: ".$login["url"]);
 ?>
 <head>
 <meta charset="UTF-8">
