@@ -13,28 +13,36 @@ else if(!$data["power"]){
 	insertlog($data["id"],0,"manageuser",false,"no power");
 	?><script>setTimeout(function(){history.back();},1000);</script><?php
 }
-else if(isset($_POST["editid"])){
-	$acct=login_system::getinfobyid($_POST["editid"]);
-	if($data["id"]==$_POST["editid"]){
-		$error="無法更改自己的權限";
-		insertlog($data["id"],$_POST["editid"],"manageuser",false,"edit own");
-	} else if($_POST["editpower"]>=1){
-		$query=new query;
-		$query->table="powerlist";
-		$query->value=array(
-			array("id",$_POST["editid"]),
-			array("power",$_POST["editpower"])
-		);
-		INSERT($query);
-		insertlog($data["id"],$_POST["editid"],"manageuser",true,"1");
-		$message="已將 ".$acct->nickname."(".$acct->account.") 的權限更改為管理員";
+else if(isset($_POST["editpower"])){
+	if($_POST["editpower"]>=1){
+		$acct=login_system::getinfobyaccount($_POST["editaccount"]);
+		if($data["id"]==$acct->id){
+			$error="無法更改自己的權限";
+			insertlog($data["id"],$acct->id,"manageuser",false,"edit own");
+		} else {
+			$query=new query;
+			$query->table="powerlist";
+			$query->value=array(
+				array("id",$acct->id),
+				array("power",$_POST["editpower"])
+			);
+			INSERT($query);
+			insertlog($data["id"],$acct->id,"manageuser",true,"1");
+			$message="已將 ".$acct->nickname."(".$acct->account.") 的權限更改為管理員";
+		}
 	} else if($_POST["editpower"]==0){
-		$query=new query;
-		$query->table="powerlist";
-		$query->where=array("id",$_POST["editid"]);
-		DELETE($query);
-		insertlog($data["id"],$_POST["editid"],"manageuser",true,"0");
-		$message="已移除 ".$acct->nickname."(".$acct->account.") 的權限";
+		$acct=login_system::getinfobyid($_POST["editid"]);
+		if($data["id"]==$acct->id){
+			$error="無法更改自己的權限";
+			insertlog($data["id"],$acct->id,"manageuser",false,"edit own");
+		} else {
+			$query=new query;
+			$query->table="powerlist";
+			$query->where=array("id",$acct->id);
+			DELETE($query);
+			insertlog($data["id"],$acct->id,"manageuser",true,"0");
+			$message="已移除 ".$acct->nickname."(".$acct->account.") 的權限";
+		}
 	} else {
 		$error="Something went wrong.";
 	}
@@ -116,7 +124,7 @@ meta();
 	<td align="center">
 		<h3>增加管理員</h3>
 		<form method="post">
-			<input name="editid" type="number">
+			<input name="editaccount" type="text">
 			<input name="editpower" type="hidden" value="1">
 			<input type="submit" value="增加">
 		</form>
