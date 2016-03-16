@@ -6,7 +6,7 @@ include_once("../func/checklogin.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false)header("Location: ".$login["url"]);
+if($data==false)header("Location: ".$data["url"]);
 else if($data["power"]==0){
 	$error="你沒有權限";
 	insertlog($data["id"],0,"managebook",false,"no power");
