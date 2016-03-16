@@ -8,7 +8,7 @@ $error="";
 $message="";
 $data=checklogin();
 if($data["login"]===false){
-	header("Location: ../login/?from=return");
+	header("Location: ".$login["url"]);
 }else if(!$data["power"]){
 	$error="你沒有權限";
 	insertlog($data["id"],0,"return",false,"no power");
