@@ -1,16 +1,16 @@
 <html>
 <?php
-include_once("../func/sql.php");
-include_once("../func/url.php");
-include_once("../func/checklogin.php");
+include_once(__DIR__."/../func/sql.php");
+include_once(__DIR__."/../func/url.php");
+include_once(__DIR__."/../func/checklogin.php");
+include_once(__DIR__."/../func/log.php");
 $error="";
 $message="";
 $data=checklogin();
-if($data==false)header("Location: ".$data["url"]);
-else if($data["power"]==0){
+if($data["login"]===false)header("Location: ".$data["url"]);
+else if(!$data["power"]){
 	$error="你沒有權限";
-	insertlog($data["id"],0,"managebook",false,"no power");
-	?><script>setTimeout(function(){history.back();},1000);</script><?php
+	insertlog(@$data["id"],0,"view log",false,"no power");
 }
 ?>
 <head>
