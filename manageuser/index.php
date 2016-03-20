@@ -1,139 +1,115 @@
-<html>
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
 <?php
-include_once(__DIR__."/../config/config.php");
-include_once($config["path"]["sql"]);
-include_once(__DIR__."/../func/checklogin.php");
-include_once(__DIR__."/../func/log.php");
-$error="";
-$message="";
-$data=checklogin();
-if($data["login"]===false)header("Location: ".$data["url"]);
-else if(!$data["power"]){
-	$error="你沒有權限";
-	insertlog($data["id"],0,"manageuser",false,"no power");
-	?><script>setTimeout(function(){history.back();},1000);</script><?php
-}
-else if(isset($_POST["editpower"])){
+include(__DIR__."/../res/comhead.php");
+
+$meta->output();
+
+$ok=true;
+
+if($login["login"]===false){
+	$msgbox->add("danger","你必須先登入");
+	$ok=false;
+}else if ($login["power"]==0){
+	$ok=false;
+	$msgbox->add("danger","你沒有權限");
+	insertlog($login["id"],0,"return",false,"no power");
+}else if(isset($_POST["editpower"])){
 	if($_POST["editpower"]>=1){
-		$acct=login_system::getinfobyaccount($_POST["editaccount"]);
-		if($data["id"]==$acct->id){
-			$error="無法更改自己的權限";
-			insertlog($data["id"],$acct->id,"manageuser",false,"edit own");
+		$edit=login_system::getinfobyaccount($_POST["editaccount"]);
+		if($login["id"]==$edit->id){
+			$msgbox->add("danger","無法更改自己的權限");
+			insertlog($login["id"],$edit->id,"manageuser",false,"edit own");
 		} else {
 			$query=new query;
 			$query->table="powerlist";
 			$query->value=array(
-				array("id",$acct->id),
+				array("id",$edit->id),
 				array("power",$_POST["editpower"])
 			);
 			INSERT($query);
-			insertlog($data["id"],$acct->id,"manageuser",true,"1");
-			$message="已將 ".$acct->nickname."(".$acct->account.") 的權限更改為管理員";
+			insertlog($login["id"],$edit->id,"manageuser",true,"1");
+			$msgbox->add("success","已將 ".$edit->nickname."(".$edit->account.") 的權限更改為管理員");
 		}
 	} else if($_POST["editpower"]==0){
-		$acct=login_system::getinfobyid($_POST["editid"]);
-		if($data["id"]==$acct->id){
-			$error="無法更改自己的權限";
-			insertlog($data["id"],$acct->id,"manageuser",false,"edit own");
+		$edit=login_system::getinfobyid($_POST["editid"]);
+		if($login["id"]==$edit->id){
+			$msgbox->add("danger","無法更改自己的權限");
+			insertlog($login["id"],$edit->id,"manageuser",false,"edit own");
 		} else {
 			$query=new query;
 			$query->table="powerlist";
-			$query->where=array("id",$acct->id);
+			$query->where=array("id",$edit->id);
 			DELETE($query);
-			insertlog($data["id"],$acct->id,"manageuser",true,"0");
-			$message="已移除 ".$acct->nickname."(".$acct->account.") 的權限";
+			insertlog($login["id"],$edit->id,"manageuser",true,"0");
+			$msgbox->add("success","已移除 ".$edit->nickname."(".$edit->account.") 的權限");
 		}
 	} else {
-		$error="Something went wrong.";
+		$msgbox->add();
 	}
 }
-?>
-<head>
-<meta charset="UTF-8">
-<title>使用者管理-TFcisBooks</title>
-<?php
-include_once("../res/meta.php");
-meta();
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../res/header.php");
-	if($error!=""){
+include_once("../res/header.php");
+if($ok){
 ?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $error;?></td>
-	</tr>
-</table>
-<?php
-	}
-	if($message!=""){
-?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
-	</tr>
-</table>
-<?php
-	}
-	if($data["power"]>0){
-?>
-<center>
-<table border="0" cellspacing="0" cellpadding="0">
-<tr>
-	<td class="dfromh">&nbsp;</td>
-</tr>
-<tr>
-	<td colspan="1" style="text-align: center"><h1>使用者管理</h1></td>
-</tr>
-<tr>
-	<td align="center">
+<div class="row">
+	<div class="col-lg-4"></div>
+	<div class="col-lg-4"><h2>使用者管理</h2>
 		<div style="display:none">
 			<form method="post" id="edit">
 				<input name="editid" type="hidden" id="editid">
 				<input name="editpower" type="hidden" value="0">
 			</form>
 		</div>
-		<table border="1" cellspacing="0" cellpadding="2">
+		<div class="table-responsive">
+		<table class="table table-hover table-condensed">
 		<tr>
-			<td>ID</td>
-			<td>姓名</td>
-			<td>更改</td>
+			<th>ID</th>
+			<th>姓名</th>
+			<th>更改</th>
 		</tr>
 		<?php
 		$query=new query;
 		$query->table="powerlist";
 		$row=SELECT($query);
 		foreach($row as $powerlist){
-			$acct=login_system::getinfobyid($powerlist["id"]);
+			$edit=login_system::getinfobyid($powerlist["id"]);
 			?>
 			<tr>
-				<td><?php echo $acct->id; ?></td>
-				<td><?php echo $acct->nickname."(".$acct->account.")"; ?></td>
-				<td><input type="button" value="移除" onClick="editid.value='<?php echo $acct->id; ?>';edit.submit();" ></td>
+				<td><?php echo $edit->id; ?></td>
+				<td><?php echo $edit->nickname."(".$edit->account.")"; ?></td>
+				<td><button name="input" type="submit" class="btn btn-danger" onClick="editid.value='<?php echo $edit->id; ?>';edit.submit();"><span class="glyphicon glyphicon glyphicon-remove"></span>移除</button>
 			</tr>
 			<?php
 		}
 		?>
 		</table>
-	</td>
-</tr>
-<tr height="20"><td></td></tr>
-<tr>
-	<td align="center">
 		<h3>增加管理員</h3>
 		<form method="post">
-			<input name="editaccount" type="text">
 			<input name="editpower" type="hidden" value="1">
-			<input type="submit" value="增加">
+			<div class="input-group">
+				<span class="input-group-addon">使用者</span>
+				<input class="form-control" name="editaccount" type="text" required>
+				<span class="input-group-addon glyphicon glyphicon-user"></span>
+			</div>
+			<div class="input-group">
+				<button name="input" type="submit" class="btn btn-success">
+					<span class="glyphicon glyphicon glyphicon-plus"></span>
+					增加
+				</button>
+			</div>
 		</form>
-	</td>
-</tr>
-</table>
-</center>
+		</div>
+	</div>
+	<div class="col-lg-4"></div>
+</div>
 <?php
-	}
+}
+include(__DIR__."/../res/footer.php");
 ?>
 </body>
 </html>

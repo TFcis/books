@@ -1,66 +1,67 @@
-<html>
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
 <?php
-include_once(__DIR__."/../config/config.php");
-include_once($config["path"]["sql"]);
-include_once(__DIR__."/../func/checklogin.php");
-include_once(__DIR__."/../func/log.php");
-$error="";
-$message="";
-$data=checklogin();
-if($data["login"]===false)header("Location: ".$data["url"]);
-else if(!$data["power"]){
-	$error="你沒有權限";
-	insertlog($data["id"],0,"managebook",false,"no power");
-	?><script>setTimeout(function(){history.back();},1000);</script><?php
-}
-else if(isset($_POST["catdelid"])){
+include(__DIR__."/../res/comhead.php");
+
+$meta->output();
+
+$ok=true;
+
+if($login["login"]===false){
+	$msgbox->add("danger","你必須先登入");
+	$ok=false;
+}else if ($login["power"]==0){
+	$ok=false;
+	$msgbox->add("danger","你沒有權限");
+	insertlog($login["id"],0,"return",false,"no power");
+}else if(isset($_POST["catdelid"])){
 	$query=new query;
 	$query->table="category";
-	$query->where=array("id",@$_POST["catdelid"]);
+	$query->where=array("id",$_POST["catdelid"]);
 	DELETE($query);
-	insertlog($data["id"],0,"managebook",true,"del cat:".@$_POST["catdelid"]." ".@$_POST["catdelname"] );
-	$message="已刪除分類 ID=".@$_POST["catdelid"]." 名稱=".@$_POST["catdelname"];
-}
-else if(isset($_POST["addcat"])){
+	insertlog($login["id"],0,"managebook",true,"del cat:".$_POST["catdelid"]." ".$_POST["catdelname"] );
+	$msgbox->add("success","已刪除分類 ID=".$_POST["catdelid"]." 名稱=".$_POST["catdelname"]);
+}else if(isset($_POST["addcat"])){
 	$query=new query;
 	$query->column=array("id");
 	$query->table="category";
-	$query->where=array("id",@$_POST["id"]);
+	$query->where=array("id",$_POST["id"]);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
-	if(@$_POST["id"]=="")$error="ID為空";
-	else if(@$_POST["name"]=="")$error="名稱為空";
+	if($_POST["id"]=="")$error="ID為空";
+	else if($_POST["name"]=="")$error="名稱為空";
 	else if($row)$error="已有此ID";
 	else{
 		$query=new query;
 		$query->table="category";
 		$query->value=array(
-			array("id",@$_POST["id"]),
-			array("name",@$_POST["name"]) 
+			array("id",$_POST["id"]),
+			array("name",$_POST["name"]) 
 		);
 		INSERT($query);
-		insertlog($data["id"],0,"managebook",true,"add cat:".@$_POST["id"]." ".@$_POST["name"] );
-		$message="已增加分類 ID=".@$_POST["id"]." 名稱=".@$_POST["name"];
+		$msgbox->add("success","已增加分類 ID=".$_POST["id"]." 名稱=".$_POST["name"]);
+		insertlog($login["id"],0,"managebook",true,"add cat:".$_POST["id"]." ".$_POST["name"] );
 	}
 }
 else if(isset($_POST["editcat"])){
 	$query=new query;
 	$query->column=array("id");
 	$query->table="category";
-	$query->where=array("id",@$_POST["id"]);
+	$query->where=array("id",$_POST["id"]);
 	$query->limit=array(0,1);
 	$row=fetchone(SELECT($query));
-	if(@$_POST["id"]=="")$error="ID為空";
+	if($_POST["id"]=="")$error="ID為空";
 	else if(!$row)$error="無此ID";
-	else if(@$_POST["name"]=="")$error="名稱為空";
+	else if($_POST["name"]=="")$error="名稱為空";
 	else{
 		$query=new query;
 		$query->table="category";
-		$query->value=array("name",@$_POST["name"]);
-		$query->where=array("id",@$_POST["id"]);
+		$query->value=array("name",$_POST["name"]);
+		$query->where=array("id",$_POST["id"]);
 		UPDATE($query);
-		insertlog($data["id"],0,"managebook",true,"edit cat:".@$_POST["id"]." ".@$_POST["name"] );
-		$message="已修改分類 ID=".@$_POST["id"]." 名稱=".@$_POST["name"];
+		insertlog($login["id"],0,"managebook",true,"edit cat:".$_POST["id"]." ".$_POST["name"] );
+		$msgbox->add("success","已修改分類 ID=".$_POST["id"]." 名稱=".$_POST["name"]);
 	}
 }
 $query=new query;
@@ -73,47 +74,47 @@ $bookavaltext=["隱藏","顯示"];
 if(isset($_POST["avalid"])){
 	$query=new query;
 	$query->table="booklist";
-	$query->value=array("aval",(1-@$_POST["aval"]));
-	$query->where=array("id",@$_POST["avalid"]);
+	$query->value=array("aval",(1-$_POST["aval"]));
+	$query->where=array("id",$_POST["avalid"]);
 	$row=UPDATE($query);
-	insertlog($data["id"],0,"managebook",true,"edit book aval:".(1-@$_POST["aval"]) );
-	$message="已將圖書 ID=".@$_POST["avalid"]." ".$bookavaltext[1-@$_POST["aval"]];
+	insertlog($login["id"],0,"managebook",true,"edit book aval:".(1-$_POST["aval"]) );
+	$msgbox->add("success","已將圖書 ID=".$_POST["avalid"]." ".$bookavaltext[1-$_POST["aval"]]);
 }
 else if(isset($_POST["bookdelid"])){
 	$query=new query;
 	$query->table="booklist";
-	$query->where=array("id",@$_POST["bookdelid"]);
+	$query->where=array("id",$_POST["bookdelid"]);
 	DELETE($query);
-	insertlog($data["id"],0,"managebook",true,"del book:".@$_POST["bookdelid"] );
-	$message="已刪除圖書 ID=".@$_POST["bookdelid"];
+	insertlog($login["id"],0,"managebook",true,"del book:".$_POST["bookdelid"] );
+	$msgbox->add("success","已刪除圖書 ID=".$_POST["bookdelid"]);
 }
 else if(isset($_POST["addbook"])){
-	if(@$_POST["name"]=="")$error="書名為空";
-	else if(@$_POST["cat"]=="")$error="分類為空";
+	if($_POST["name"]=="")$error="書名為空";
+	else if($_POST["cat"]=="")$error="分類為空";
 	else{
-		$booknames = explode(",",@$_POST["name"]);
+		$booknames = explode(",",$_POST["name"]);
 		foreach($booknames as $name){
 			$query=new query;
 			$query->column=array("MAX(id)");
 			$query->table="booklist";
 			$row=fetchone(SELECT($query));
 			$newid=$row["MAX(id)"]+1;
-			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$name),true);
-			for($i=0;$i<@$_POST["number"];$i++){
+			$isbn=json_decode(file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$name),true);
+			for($i=0;$i<$_POST["number"];$i++){
 				if($isbn["totalItems"]==1){
 					$query=new query;
 					$query->table="booklist";
 					$query->value=array(
 						array("id",$newid),
 						array("name",$isbn["items"][0]["volumeInfo"]["title"]),
-						array("cat",@$_POST["cat"]),
+						array("cat",$_POST["cat"]),
 						array("year",$isbn["items"][0]["volumeInfo"]["publishedDate"]),
-						array("source",@$_POST["source"]),
+						array("source",$_POST["source"]),
 						array("ISBN",$name)
 					);
 					INSERT($query);
-					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
-					$message="已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[@$_POST["cat"]]." 來源=".@$_POST["source"]." ISBN=".$name;
+					insertlog($login["id"],0,"managebook",true,"add book:".$newid);
+					$msgbox->add("success","已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$name);
 				}
 				else {
 					$query=new query;
@@ -121,13 +122,13 @@ else if(isset($_POST["addbook"])){
 					$query->value=array(
 						array("id",$newid),
 						array("name",$name),
-						array("cat",@$_POST["cat"]),
-						array("year",@$_POST["year"]),
-						array("source",@$_POST["source"])
+						array("cat",$_POST["cat"]),
+						array("year",$_POST["year"]),
+						array("source",$_POST["source"])
 					);
 					INSERT($query);
-					insertlog($data["id"],0,"managebook",true,"add book:".$newid);
-					$message="已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[@$_POST["cat"]]." 年份=".@$_POST["year"]." 來源=".@$_POST["source"];
+					insertlog($login["id"],0,"managebook",true,"add book:".$newid);
+					$msgbox->add("success","已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$_POST["year"]." 來源=".$_POST["source"]);
 				}
 				$newid++;
 			}
@@ -135,16 +136,16 @@ else if(isset($_POST["addbook"])){
 	}
 }
 else if(isset($_POST["editbook"])){
-	$editid=explode(",",@$_POST["id"]);
+	$editid=explode(",",$_POST["id"]);
 	foreach($editid as $id){
-		if(@$_POST["name"]!=""){
-			$isbn=json_decode(@file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".@$_POST["name"]),true);
+		if($_POST["name"]!=""){
+			$isbn=json_decode(file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
 			if($isbn["totalItems"]==1){
 				$query=new query;
 				$query->table="booklist";
 				$query->value=array(
 					array("name",$isbn["items"][0]["volumeInfo"]["title"]),
-					array("ISBN",@$_POST["name"])
+					array("ISBN",$_POST["name"])
 				);
 				$query->where=array("id",$id);
 				$row=UPDATE($query);
@@ -153,253 +154,209 @@ else if(isset($_POST["editbook"])){
 			else {
 				$query=new query;
 				$query->table="booklist";
-				$query->value=array("name",@$_POST["name"]);
+				$query->value=array("name",$_POST["name"]);
 				$query->where=array("id",$id);
 				$row=UPDATE($query);
-				if(@$_POST["year"]!=""){
+				if($_POST["year"]!=""){
 					$query=new query;
 					$query->table="booklist";
-					$query->value=array("year",@$_POST["year"]);
+					$query->value=array("year",$_POST["year"]);
 					$query->where=array("id",$id);
 					$row=UPDATE($query);
 				}
 			}
 		}
-		if(@$_POST["cat"]!=0){
+		if($_POST["cat"]!=0){
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("cat",@$_POST["cat"]);
+			$query->value=array("cat",$_POST["cat"]);
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
-		if(@$_POST["year"]!=""){
+		if($_POST["year"]!=""){
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("year",@$_POST["year"]);
+			$query->value=array("year",$_POST["year"]);
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
-		if(@$_POST["source"]!=""){
+		if($_POST["source"]!=""){
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("source",@$_POST["source"]);
+			$query->value=array("source",$_POST["source"]);
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
 	}
 	$query=new query;
 	$query->table="booklist";
-	$query->where=array("id",@$_POST["id"]);
+	$query->where=array("id",$_POST["id"]);
 	$row=fetchone(SELECT($query));
-	insertlog($data["id"],0,"managebook",true,"edit book:".@$_POST["id"]);
-	$message="已修改圖書 ID=".@$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid);
+	insertlog($login["id"],0,"managebook",true,"edit book:".$_POST["id"]);
+	$msgbox->add("success","已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid));
 }
 $query=new query;
-$query->column=["*"];
 $query->table="account";
 $row=SELECT($query);
 foreach($row as $temp){
 	$acct[$temp["id"]]=$temp["name"];
 }
 ?>
-<head>
-<meta charset="UTF-8">
-<title>圖書管理-TFcisBooks</title>
-<?php
-include_once("../res/meta.php");
-meta();
-?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../res/header.php");
-	if($error!=""){
+include_once("../res/header.php");
+if($ok){
 ?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $error;?></td>
-	</tr>
-</table>
-<?php
-	}
-	if($message!=""){
-?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
-	</tr>
-</table>
-<?php
-	}
-	if($data["power"]>0){
-?>
-<center>
-<table border="0" cellspacing="0" cellpadding="0">
-<tr>
-	<td class="dfromh" colspan="3">&nbsp;</td>
-</tr>
-<tr>
-<td valign="top">
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center"><h1>分類管理</h1></td>
-	</tr>
-	<tr>
-		<td align="center" valign="top">
+<div class="row">
+<div class="col-lg-3"><h2>分類管理</h2>
+	<div class="row">
+	<div class="col-lg-12">
 		<form method="post">
-			
 			<input name="addcat" type="hidden" value="">
-			<table border="0" cellspacing="3" cellpadding="0">
-			<tr>
-				<td colspan="2" align="center"><h2>新增</h2></td>
-			</tr>
-			<tr>
-				<td>ID</td>
-				<td><input name="id" type="number" min="1" id="id"></td>
-			</tr>
-			<tr>
-				<td>名稱</td>
-				<td><input name="name" type="text" id="name"></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="submit" value="新增"></td>
-			</tr>
-			</table>
+			<h3>新增</h3>
+			<div class="input-group">
+				<span class="input-group-addon">ID</span>
+				<input class="form-control" name="id" type="number" min="1">
+				<span class="input-group-addon glyphicon glyphicon-tags"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">名稱</span>
+				<input class="form-control" name="name" type="text">
+				<span class="input-group-addon glyphicon glyphicon-font"></span>
+			</div>
+			<div class="input-group">
+				<button name="input" type="submit" class="btn btn-success">
+					<span class="glyphicon glyphicon glyphicon-plus"></span>
+					新增 
+				</button>
+			</div>
 		</form>
-		</td>
-	</tr>
-	<tr>
-		<td valign="top">
+	</div>
+	<div class="col-lg-12">
 		<form method="post">
 			<input name="editcat" type="hidden" value="">
-			<table border="0" cellspacing="3" cellpadding="0">
-			<tr>
-				<td colspan="2" align="center"><h2>修改</h2></td>
-			</tr>
-			<tr>
-				<td>ID</td>
-				<td>
-				<select name="id">
+			<h3>修改</h3>
+			<div class="input-group">
+				<span class="input-group-addon">ID</span>
+				<select class="form-control" name="id">
 				<?php
 					foreach($cate as $i => $name){
 				?>
-					<option value="<?php echo $i; ?>"<?php echo($i==@$_GET["bookcat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+					<option value="<?php echo $i; ?>"><?php echo $name; ?></option>
 				<?php
 					}
 				?>
 				</select>
-				</td>
-			</tr>
-			<tr>
-				<td>名稱</td>
-				<td><input name="name" type="text" id="name"></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="submit" value="修改"></td>
-			</tr>
-			</table>
-		</form>
-		</td>
-	</tr>
-	<tr>
-		<td align="center">
-			<table border="1" cellspacing="0" cellpadding="2">
-			<div style="display:none">
-				<form method="post" id="catdel">
-					<input name="catdelid" type="hidden" id="catdelid">
-					<input name="catdelname" type="hidden" id="catdelname">
-				</form>
+				<span class="input-group-addon glyphicon glyphicon-tags"></span>
 			</div>
+			<div class="input-group">
+				<span class="input-group-addon">名稱</span>
+				<input class="form-control" name="name" type="text">
+				<span class="input-group-addon glyphicon glyphicon-font"></span>
+			</div>
+			<div class="input-group">
+				<button name="input" type="submit" class="btn btn-success">
+					<span class="glyphicon glyphicon glyphicon-pencil"></span>
+					修改 
+				</button>
+			</div>
+		</form>
+	</div>
+	<div class="col-lg-12">
+		<div style="display:none">
+			<form method="post" id="catdel">
+				<input name="catdelid" type="hidden" id="catdelid">
+				<input name="catdelname" type="hidden" id="catdelname">
+			</form>
+		</div>
+		<div class="table-responsive">
+		<table class="table table-hover table-condensed">
+		<tr>
+			<th>ID</th>
+			<th>名稱</th>
+			<th>管理</th>
+		</tr>
+		<?php
+			foreach($cate as $i => $temp){
+		?>
 			<tr>
-				<td>ID</td>
-				<td>名稱</td>
-				<td>管理</td>
+			<td><?php echo $i; ?></td>
+			<td><?php echo $temp; ?></td>
+			<td><button name="input" type="submit" class="btn btn-danger" onClick="if(!confirm('確認刪除?'))return false;catdelid.value='<?php echo $i; ?>';catdelname.value='<?php echo $temp; ?>';catdel.submit();"><span class="glyphicon glyphicon glyphicon-remove"></span>刪除</button></td>
 			</tr>
-			<?php
-				foreach($cate as $i => $temp){
-			?>
-				<tr>
-				<td><?php echo $i; ?></td>
-				<td><?php echo $temp; ?></td>
-				<td><input type="button" value="刪除" onClick="if(!confirm('確認刪除?'))return false;catdelid.value='<?php echo $i; ?>';catdelname.value='<?php echo $temp; ?>';catdel.submit();" ></td>
-				</tr>
-			<?php
-				}
-			?>
+		<?php
+			}
+		?>
 		</table>
-		</td>
-	</tr>
-	</table>
-</td>
-<td width="20"></td>
-<td valign="top">
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" colspan="2"><h1>圖書管理</h1></td>
-	</tr>
-	<tr>
-		<td align="center" valign="top">
+		</div>
+	</div>
+	</div>
+</div>
+<div class="col-lg-9"><h2>圖書管理</h2>
+	<div class="row">
+	<div class="col-lg-6">
 		<form method="post">
 			<input name="addbook" type="hidden" value="true">
-			<table border="0" cellspacing="3" cellpadding="0">
-			<tr>
-				<td align="center" colspan="2"><h2>新增</h2></td>
-			</tr>
-			<tr>
-				<td>書名/ISBN</td>
-				<td><input name="name" type="text" id="name" placeholder="逗點分隔新增多本"></td>
-			</tr>
-			<tr>
-				<td>分類</td>
-				<td>
-				<select name="cat">
+			<h3>新增</h3>
+			<div class="input-group">
+				<span class="input-group-addon">書名/ISBN</span>
+				<input class="form-control" name="name" type="text" placeholder="逗點分隔新增多本">
+				<span class="input-group-addon glyphicon glyphicon-font"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">分類</span>
+				<select class="form-control" name="cat">
 				<?php
 					foreach($cate as $i => $name){
 				?>
-					<option value="<?php echo $i; ?>"<?php echo(isset($_POST["addbook"])&&$i==@$_POST["cat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
+					<option value="<?php echo $i; ?>"<?php echo(isset($_POST["addbook"])&&$i==$_POST["cat"]?" selected='selected'":""); ?>><?php echo $name; ?></option>
 				<?php
 					}
 				?>
 				</select>
-				</td>
-			</tr>
-			<tr>
-				<td>年份</td>
-				<td><input name="year" type="text" id="year" value="0"></td>
-			</tr>
-			<tr>
-				<td>來源</td>
-				<td><input name="source" type="text" id="source" value="不明"></td>
-			</tr>
-			<tr>
-				<td>數量</td>
-				<td><input name="number" type="number" min="1" id="number" value="1"></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="submit" value="新增"></td>
-			</tr>
-			</table>
+				<span class="input-group-addon glyphicon glyphicon-inbox"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">年份</span>
+				<input class="form-control" name="year" type="number" value="0">
+				<span class="input-group-addon glyphicon glyphicon-calendar"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">來源</span>
+				<input class="form-control" name="source" type="text" value="不明">
+				<span class="input-group-addon glyphicon glyphicon-user"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">數量</span>
+				<input class="form-control" name="number" type="number" value="1">
+				<span class="input-group-addon glyphicon glyphicon-th-list"></span>
+			</div>
+			<div class="input-group">
+				<button name="input" type="submit" class="btn btn-success">
+					<span class="glyphicon glyphicon-plus"></span>
+					新增
+				</button>
+			</div>
 		</form>
-		</td>
-		<td align="center" valign="top">
+	</div>
+	<div class="col-lg-6">
 		<form method="post">
 			<input name="editbook" type="hidden" value="true">
-			<table border="0" cellspacing="3" cellpadding="0">
-			<tr>
-				<td align="center" colspan="2"><h2>修改</h2></td>
-			</tr>
-			<tr>
-				<td>ID</td>
-				<td><input name="id" type="text" id="id" placeholder="逗點分隔修改多本"></td>
-			</tr>
-			<tr>
-				<td>書名/ISBN</td>
-				<td><input name="name" type="text" id="name"></td>
-			</tr>
-			<tr>
-				<td>分類</td>
-				<td>
-				<select name="cat">
+			<h3>修改</h3>
+			<div class="input-group">
+				<span class="input-group-addon">ID</span>
+				<input class="form-control" name="id" type="text" placeholder="逗點分隔修改多本">
+				<span class="input-group-addon glyphicon glyphicon-tags"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">書名/ISBN</span>
+				<input class="form-control" name="name" type="text" placeholder="逗點分隔新增多本">
+				<span class="input-group-addon glyphicon glyphicon-font"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">分類</span>
+				<select class="form-control" name="cat">
 					<option value="0">不更改</option>
 				<?php
 					foreach($cate as $i => $name){
@@ -409,83 +366,92 @@ meta();
 					}
 				?>
 				</select>
+				<span class="input-group-addon glyphicon glyphicon-inbox"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">年份</span>
+				<input class="form-control" name="year" type="number" value="0">
+				<span class="input-group-addon glyphicon glyphicon-calendar"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">來源</span>
+				<input class="form-control" name="source" type="text" value="不明">
+				<span class="input-group-addon glyphicon glyphicon-user"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">數量</span>
+				<input class="form-control" name="number" type="number" value="1">
+				<span class="input-group-addon glyphicon glyphicon-th-list"></span>
+			</div>
+			<div class="input-group">
+				<button name="input" type="submit" class="btn btn-success">
+					<span class="glyphicon glyphicon glyphicon-pencil"></span>
+					修改 
+				</button>
+			</div>
+		</form>
+	</div>
+	<div class="col-lg-12">
+		<div style="display:none">
+			<form method="post" id="bookaval">
+				<input name="avalid" type="hidden" id="avalid">
+				<input name="aval" type="hidden" id="aval">
+			</form>
+			<form method="post" id="bookdel">
+				<input name="bookdelid" type="hidden" id="bookdelid">
+			</form>
+		</div>
+		<div class="table-responsive">
+		<table class="table table-hover table-condensed">
+		<tr>
+			<th>分類</th>
+			<th>ID</th>
+			<th>書名</th>
+			<th>借出</th>
+			<th>資訊</th>
+			<th>管理</th>
+		</tr>
+		<?php
+		$query=new query;
+		$query->table="booklist";
+		$query->order=array("id","ASC");
+		$row=SELECT($query);
+		foreach($row as $book){
+			?>
+			<tr>
+				<td><?php echo $cate[$book["cat"]]; ?></td>
+				<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
+				<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
+				<td><?php 
+				if($book["lend"]!=0){
+					$acct=login_system::getinfobyid($book["lend"]);
+					echo $acct->nickname;
+				}
+				?></td>
+				<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>
+				<td>
+					<?php
+					if($book["aval"]){
+						?><button name="input" type="submit" class="btn btn-warning" onClick="avalid.value=<?php echo $book["id"]; ?>;aval.value=<?php echo $book["aval"]; ?>;bookaval.submit();"><span class="glyphicon glyphicon glyphicon-eye-close"></span><?php echo $bookavaltext[0];?></button><?php
+					}else {
+						?><button name="input" type="submit" class="btn btn-info" onClick="avalid.value=<?php echo $book["id"]; ?>;aval.value=<?php echo $book["aval"]; ?>;bookaval.submit();"><span class="glyphicon glyphicon glyphicon-eye-open"></span><?php echo $bookavaltext[1];?></button><?php
+					}
+					?>
+					<button name="input" type="submit" class="btn btn-danger" onClick="if(!confirm('確認刪除?'))return false;bookdelid.value=<?php echo $book["id"]; ?>;bookdel.submit();"><span class="glyphicon glyphicon glyphicon-remove"></span>刪除</button>
 				</td>
 			</tr>
-			<tr>
-				<td>年份</td>
-				<td><input name="year" type="text" id="year"></td>
-			</tr>
-			<tr>
-				<td>來源</td>
-				<td><input name="source" type="text" id="source"></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="submit" value="修改"></td>
-			</tr>
-			</table>
-		</form>
-		</td>
-	</tr>
-	<tr>
-		<td valign="top" colspan="2">
-			<div style="display:none">
-				<form method="post" id="bookaval">
-					<input name="avalid" type="hidden" id="avalid">
-					<input name="aval" type="hidden" id="aval">
-				</form>
-				<form method="post" id="bookdel">
-					<input name="bookdelid" type="hidden" id="bookdelid">
-				</form>
-			</div>
-			<table border="1" cellspacing="0" cellpadding="2">
-			<tr>
-				<td>分類</td>
-				<td>ID</td>
-				<td>書名</td>
-				<td>借出</td>
-				<td>來源</td>
-				<td>ISBN</td>
-				<td>資訊</td>
-				<td>管理</td>
-			</tr>
 			<?php
-			$query=new query;
-			$query->table="booklist";
-			$query->order=array("id","ASC");
-			$row=SELECT($query);
-			foreach($row as $book){
-				?>
-				<tr>
-					<td><?php echo $cate[$book["cat"]]; ?></td>
-					<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
-					<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
-					<td><?php 
-					if(@$book["lend"]!=0){
-						$acct=login_system::getinfobyid($book["lend"]);
-						echo $acct->nickname;
-					}
-					?></td>
-					<td><?php echo $book["source"]; ?></td>
-					<td><?php echo $book["ISBN"]; ?></td>
-					<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>
-					<td>
-					<input type="button" value="<?php echo $bookavaltext[1-$book["aval"]];?>" onClick="avalid.value=<?php echo $book["id"]; ?>;aval.value=<?php echo $book["aval"]; ?>;bookaval.submit();">
-					<input type="button" value="刪除" onClick="if(!confirm('確認刪除?'))return false;bookdelid.value=<?php echo $book["id"]; ?>;bookdel.submit();">
-					</td>
-				</tr>
-				<?php
-			}
-			?>
+		}
+		?>
 		</table>
-		</td>
-	</tr>
-	</table>
-</td>
-</tr>
-</table>
-</center>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
 <?php
-	}
+}
 ?>
+<?php include(__DIR__."/../res/footer.php"); ?>
 </body>
 </html>

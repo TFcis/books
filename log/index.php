@@ -1,77 +1,50 @@
-<html>
-<?php
-include_once(__DIR__."/../func/sql.php");
-include_once(__DIR__."/../func/url.php");
-include_once(__DIR__."/../func/checklogin.php");
-include_once(__DIR__."/../func/log.php");
-$error="";
-$message="";
-$data=checklogin();
-if($data["login"]===false)header("Location: ".$data["url"]);
-else if(!$data["power"]){
-	$error="你沒有權限";
-	insertlog(@$data["id"],0,"view log",false,"no power");
-}
-?>
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
 <head>
-<meta charset="UTF-8">
-<title>Log-TFcisBooks</title>
 <?php
-include_once("../res/meta.php");
-meta();
+include(__DIR__."/../res/comhead.php");
+
+$meta->output();
+
+$ok=true;
+
+if($login["login"]===false){
+	$msgbox->add("danger","你必須先登入");
+	$ok=false;
+}else if ($login["power"]==0){
+	$ok=false;
+	$msgbox->add("danger","你沒有權限");
+	insertlog($login["id"],0,"return",false,"no power");
+}
+if (!isset($_GET["page"])||!is_numeric($_GET["page"])) {
+	$_GET["page"]=0;
+}
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../res/header.php");
-	if($error!=""){
+include_once("../res/header.php");
+if($ok){
 ?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $error;?></td>
-	</tr>
-</table>
-<?php
-	}
-	if($message!=""){
-?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
-	</tr>
-</table>
-<?php
-	}
-	if($data["power"]>0){
-?>
-<center>
-<table border="0" cellspacing="0" cellpadding="0">
-<tr>
-	<td colspan="2" height="20"></td>
-</tr>
-<tr>
-	<td colspan="2" align="center"><h1>log</h1></td>
-</tr>
-<tr>
-	<td align="center">
-		<table border="0" cellspacing="3" cellpadding="0">
-		<tr>
-			<td>
-			<form action="" method="get">
-				<input name="page" type="hidden" value="<?php echo (@$_GET["page"]-1); ?>">
-				<input name="" type="submit" value="上一頁" <?php echo (@$_GET["page"]==0?"style='display:none;'":""); ?>>
-			</form>
-			</td>
-			<td>
-			<form action="" method="get"><input name="page" type="hidden" value="<?php echo (@$_GET["page"]+1); ?>"><input name="" type="submit" value="下一頁"></form>
-			</td>
-		</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td colspan="2" align="center">
-		<table border="1" cellspacing="0" cellpadding="2">
+<div class="row">
+	<div class="col-lg-3"></div>
+	<div class="col-lg-6"><h2>Log</h2>
+		<div class="row">
+		<div class="col-lg-2">
+		<form action="" method="get">
+			<input name="page" type="hidden" value="<?php echo ($_GET["page"]-1); ?>">
+			<button type="submit" class="btn btn-success" <?php echo ($_GET["page"]==0?"style='display:none;'":""); ?>>上一頁</button>
+		</form>
+		</div>
+		<div class="col-lg-2">
+		<form action="" method="get">
+			<input name="page" type="hidden" value="<?php echo ($_GET["page"]+1); ?>">
+			<button type="submit" class="btn btn-success">下一頁</button>
+		</form>
+		</div>
+		</div>
+		<div class="table-responsive">
+		<table class="table table-hover table-condensed">
 		<tr>
 			<td>operate</td>
 			<td>affect</td>
@@ -82,7 +55,7 @@ meta();
 		</tr>
 		<?php
 		$page=0;
-		if(is_numeric(@$_GET["page"]))$page=@$_GET["page"];
+		if(is_numeric($_GET["page"]))$page=$_GET["page"];
 		$query=new query;
 		$query->table="log";
 		$query->order=array("time","DESC");
@@ -101,13 +74,14 @@ meta();
 		<?php
 		}
 		?>
-	</table>
-	</td>
-</tr>
-</table>
-</center>
+		</table>
+		</div>
+	</div>
+	<div class="col-lg-3"></div>
+</div>
 <?php
-	}
+}
+include(__DIR__."/../res/footer.php");
 ?>
 </body>
 </html>

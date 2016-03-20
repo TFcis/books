@@ -1,46 +1,55 @@
-<html>
-<?php
-include_once(__DIR__."/../config/config.php");
-include_once($config["path"]["sql"]);
-include_once(__DIR__."/../func/checklogin.php");
-include_once(__DIR__."/../func/login-php-sdk/Login.php");
-?>
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
 <head>
-<meta http-equiv="Content-Type" charset="UTF-8" name="viewport" content="width=device-width,user-scalable=yes">
-<title>圖書資料-TFcisBooks</title>
 <?php
-	include_once("../res/meta.php");
-	$data=checklogin();
+include(__DIR__."/../res/comhead.php");
+
+$ok=true;
+
+if (!isset($_GET["id"])) {
+	$msgbox->add("danger","沒有ID");
+	$ok=false;
+} else if (!is_numeric($_GET["id"])) {
+	$msgbox->add("danger","ID錯誤");
+	$ok=false;
+}
+if ($ok) {
 	$query=new query;
-	$query->column=array("id","name","cat","year","source","ISBN","lend");
 	$query->table="booklist";
-	$query->where=array("id",@$_GET["id"]);
+	$query->where=array("id",$_GET["id"]);
 	$query->limit=array(0,1);
 	$bookinfo=fetchone(SELECT($query));
+	if (!$bookinfo) {
+		$msgbox->add("danger","沒有此書");
+		$ok=false;
+	}
+}
+if ($bookinfo["aval"]==0) {
+	$msgbox->add("warning","此書目前隱藏中");
+	$ok=false;
+}
+if ($ok) {
 	$query=new query;
 	$query->column="name";
 	$query->table="category";
 	$query->where=array("id",$bookinfo["cat"]);
 	$query->limit=array(0,1);
 	$cate=fetchone(SELECT($query))["name"];
-	meta([["description","TFcisBooks圖書資訊 ID=".$bookinfo["id"].",書名=".$bookinfo["name"].",分類=".$cate.",年份=".$bookinfo["year"].",來源=".$bookinfo["source"].",ISBN=".$bookinfo["ISBN"]]]);
+	$meta->meta["og:description"]="TFcisBooks圖書資訊 ID=".$bookinfo["id"].",書名=".$bookinfo["name"].",分類=".$cate.",年份=".$bookinfo["year"].",來源=".$bookinfo["source"].",ISBN=".$bookinfo["ISBN"];
+}
+$meta->output();
 ?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../res/header.php");
+include_once("../res/header.php");
+if($ok){
 ?>
-<center>
-<table border="0" cellspacing="0" cellpadding="0">
-<tr>
-	<td class="dfromh" colspan="2">&nbsp;</td>
-</tr>
-<tr>
-	<td colspan="2" style="text-align: center"><h1>圖書資料</h1></td>
-</tr>
-<tr>
-	<td>
-		<table border="0" cellspacing="5" cellpadding="0">
+<div class="row">
+	<div class="col-lg-4"></div>
+	<div class="col-lg-4"><h2>圖書資料</h2>
+		<div class="table-responsive">
+		<table class="table table-hover table-condensed">
 		<tr>
 			<td>ID</td>
 			<td><?php echo $bookinfo["id"]; ?></td>
@@ -68,7 +77,7 @@ include_once(__DIR__."/../func/login-php-sdk/Login.php");
 		<tr>
 			<td>借出</td>
 			<td><?php 
-				if(@$bookinfo["lend"]!=0){
+				if($bookinfo["lend"]!=0){
 					$acct=login_system::getinfobyid($bookinfo["lend"]);
 					echo $acct->nickname;
 				} else {
@@ -95,36 +104,37 @@ include_once(__DIR__."/../func/login-php-sdk/Login.php");
 			?>
 			</td>
 		</tr>
+		<?php
+		if($bookinfo["lend"]==0){
+		?>
+		<tr>
+			<td>操作</td><td><a href="../borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
+			</td>
+		</tr>
+		<?php
+		}else if($login["power"]>0){
+		?>
+		<tr>
+			<td>操作</td><td><a href="../return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
+			</td>
+		</tr>
+		<?php
+		}else{
+		?>
+		<tr>
+			<td>操作</td><td>欲還書請找管理員</td>
+		</tr>
+		<?php
+		}
+		?>
 		</table>
-	</td>
-</tr>
-<tr>
-	<td height="20"></td>
-</tr>
+		</div>
+	</div>
+	<div class="col-lg-4"></div>
+</div>
 <?php
-	if($bookinfo["lend"]==0){
+}
+include(__DIR__."/../res/footer.php");
 ?>
-<tr>
-	<td align="center"><a href="../borrow/?id=<?php echo $bookinfo["id"]; ?>">借閱此書</a>
-	</td>
-</tr>
-<?php
-	}else if($data["power"]>0){
-?>
-<tr>
-	<td align="center"><a href="../return/?id=<?php echo $bookinfo["id"]; ?>">歸還此書</a>
-	</td>
-</tr>
-<?php
-	}else{
-?>
-<tr>
-	<td align="center">欲還書請找管理員</td>
-</tr>
-<?php
-	}
-?>
-</table>
-</center>
 </body>
 </html>

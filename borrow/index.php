@@ -1,57 +1,39 @@
-<html>
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
 <?php
-include_once(__DIR__."/../config/config.php");
-include_once($config["path"]["sql"]);
-include_once(__DIR__."/../func/checklogin.php");
-include_once(__DIR__."/../func/log.php");
-$error="";
-$message="";
-$data=checklogin();
-if(!$data["login"]){
-	header("Location: ".$data["url"]);
-}else if(isset($_POST["bookid"])){
-	if(!$data["power"])@$_POST["borrowuser"]=$data["account"];
-	if(@$_POST["bookid"]==""){
-		$error="圖書ID為空";
-		insertlog($data["id"],0,"borrow",false,"bookid empty");
-	}else if(@$_POST["borrowuser"]==""){
-		$error="借閱使用者為空";
-		insertlog($data["id"],0,"borrow",false,"user empty");
-	}else{
+include(__DIR__."/../res/comhead.php");
+
+$meta->output();
+
+if($login["login"]===false){
+	$msgbox->add("danger","你必須先登入");
+} else if(isset($_POST["bookid"])){
+	$edit=login_system::getinfobyaccount($_POST["user"]);
+	if ($edit===false) {
+		$msgbox->add("danger","無此用戶");
+	} else if (!is_numeric($_POST["bookid"])) {
+		$msgbox->add("danger","圖書ID錯誤");
+		insertlog($login["id"],0,"borrow",false,"bookid empty");
+	} else {
 		$query=new query;
-		$query->column=array("*");
 		$query->table="booklist";
-		$query->where=array("id",@$_POST["bookid"]);
-		$query->limit=array(0,1);
+		$query->where=array("id",$_POST["bookid"]);
 		$book=fetchone(SELECT($query));
-		$acct=login_system::getinfobyaccount(@$_POST["borrowuser"]);
-		if($book==""){
-			$error="無此圖書ID";
-			insertlog($data["id"],0,"borrow",false,"no bookid:".@$_POST["bookid"]);
-		}else if($acct==false){
-			$error="無此使用者";
-			insertlog($data["id"],0,"borrow",false,"no user:".@$_POST["borrowuser"]);
+		if($book===null){
+			$msgbox->add("danger","無此圖書ID");
+			insertlog($login["id"],0,"borrow",false,"no bookid:".$_POST["bookid"]);
 		}else if($book["lend"]!="0"){
-			$error=$book["name"]."(".$_POST["bookid"].") 已有人借閱";
-			insertlog($data["id"],$acct->id,"borrow",false,"already lead:".@$_POST["bookid"]);
+			$msgbox->add("danger",$book["name"]."(".$_POST["bookid"].") 已有人借閱");
+			insertlog($login["id"],$edit->id,"borrow",false,"already lead:".$_POST["bookid"]);
 		}else{
 			$query=new query;
 			$query->table="booklist";
-			$query->value=array("lend",$acct->id);
-			$query->where=array("id",@$_POST["bookid"]);
+			$query->value=array("lend",$edit->id);
+			$query->where=array("id",$_POST["bookid"]);
 			UPDATE($query);
-			insertlog($data["id"],$acct->id,"borrow",true,"book id=".@$_POST["bookid"]);
-			$message="已將圖書 ".$book["name"]."(".$_POST["bookid"].") 借給 ".$acct->nickname."(".$acct->account.")";
-			if($data["power"]<=1){
-				$query=new query;
-				$query->table="account";
-				$query->where=array("power",2,">=");
-				$query->limit="all";
-				$row=SELECT($query);
-				foreach($row as $temp){
-					consolelog(mail($temp["email"], "ELMS 借閱通知", $acct["name"]." 剛剛借閱了".@$_POST["bookid"]."(".$book["name"].")\n圖書資料: http://books.tfcis.org/bookinfo/?id=".@$_POST["bookid"], "From: t16@tfcis.org"));
-				}
-			}
+			$msgbox->add("success","已將圖書 ".$book["name"]."(".$_POST["bookid"].") 借給 ".$edit->nickname."(".$edit->account.")");
+			insertlog($login["id"],$edit->id,"borrow",true,"book id=".$_POST["bookid"]);
 		}
 	}
 }
@@ -59,67 +41,37 @@ if(!$data["login"]){
 <head>
 <meta http-equiv="Content-Type" charset="UTF-8" name="viewport" content="width=device-width,user-scalable=yes">
 <title>借書-TFcisBooks</title>
-<?php
-include_once("../res/meta.php");
-meta();
-?>
 </head>
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
-	include_once("../res/header.php");
-	if($error!=""){
+include(__DIR__."/../res/header.php");
 ?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#F00" class="message"><?php echo $error;?></td>
-	</tr>
-</table>
-<?php
-	}
-	if($message!=""){
-?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center" valign="middle" bgcolor="#0A0" class="message"><?php echo $message;?></td>
-	</tr>
-</table>
-<?php
-	}
-?>
-<center>
-<table border="0" cellspacing="0" cellpadding="0">
-<tr>
-	<td class="dfromh">&nbsp;</td>
-</tr>
-<tr>
-	<td colspan="1" style="text-align: center"><h1>借書</h1></td>
-</tr>
-<tr>
-	<td>
+<div class="row">
+	<div class="col-lg-4"></div>
+	<div class="col-lg-4"><h2>借書</h2>
 		<form method="post">
-		<table border="0" cellspacing="5" cellpadding="0">
-		<tr>
-			<td>書本ID</td>
-			<td><input name="bookid" type="number" min="1" id="bookid" value="<?php echo @$_GET["id"];?>"></td>
-		</tr>
-		<?php 
-		if($data["power"]){
-		?>
-		<tr>
-			<td>借閱使用者</td>
-			<td><input name="borrowuser" type="text" id="borrowuser" value="<?php echo $data["account"];?>"></td>
-		</tr>
-		<?php 
-		}
-		?>
-		<tr>
-			<td colspan="2" align="center"><input type="submit" value="借書"></td>
-		</tr>
-		</table>
+			<div class="input-group">
+				<span class="input-group-addon">書本ID</span>
+				<input class="form-control" name="bookid" type="number" min="1" required>
+				<span class="input-group-addon glyphicon glyphicon-book"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">借閱使用者</span>
+				<input class="form-control" name="user" type="text" required>
+				<span class="input-group-addon glyphicon glyphicon-user"></span>
+			</div>
+			<div class="input-group">
+				<button name="input" type="submit" class="btn btn-success">
+					<span class="glyphicon glyphicon glyphicon-log-out"></span>
+					借閱
+				</button>
+			</div>
 		</form>
-	</td>
-</tr>
-</table>
-</center>
+	</div>
+	<div class="col-lg-4"></div>
+</div>
+<?php 
+include(__DIR__."/../res/footer.php");
+?>
 </body>
 </html>
