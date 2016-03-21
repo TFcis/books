@@ -6,8 +6,11 @@ include(__DIR__."/../res/comhead.php");
 
 $meta->output();
 
+$ok=true;
+
 if($login["login"]===false){
 	$msgbox->add("danger","你必須先登入");
+	$ok=false;
 } else if(isset($_POST["bookid"])){
 	$edit=login_system::getinfobyaccount($_POST["user"]);
 	if ($edit===false) {
@@ -45,6 +48,7 @@ if($login["login"]===false){
 <body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
 <?php
 include(__DIR__."/../res/header.php");
+if ($ok) {
 ?>
 <div class="row">
 	<div class="col-lg-4"></div>
@@ -71,6 +75,7 @@ include(__DIR__."/../res/header.php");
 	<div class="col-lg-4"></div>
 </div>
 <?php 
+}
 include(__DIR__."/../res/footer.php");
 ?>
 </body>
