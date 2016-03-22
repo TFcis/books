@@ -124,11 +124,11 @@ if (count($booklist)==0)
 			?>
 				<tr>
 					<td><?php echo $cate[$book["cat"]]; ?></td>
-					<td>
+					<td <?php echo (count($book["id"])>5?'style="line-height: 25px;"':'');?>>
 					<?php
 					foreach($book["id"] as $count => $temp){
 					?>
-						<a href="../bookinfo/?id=<?php echo $temp; ?>"><?php echo $temp; ?></a>
+						<a href="../bookinfo/?id=<?php echo $temp; ?>"><?php echo $temp; ?></a>&nbsp;&nbsp;&nbsp;&nbsp;
 					<?php
 						if($count%5==4) echo "<br>";
 					}
