@@ -1,6 +1,2 @@
 config/config.php
-res/icon.ico
-res/icon.png
 home/information.php
-func/login_sdk.php
-func/sql/

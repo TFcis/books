@@ -10,7 +10,7 @@
 				</button>
 				<a href="../home" class="navbar-brand">
 					<div style="float: left;">
-						<img src="http://www.tfcis.org/img/icon.png" alt="臺南一中資訊社TFcis" height="30px">
+						<img src="../res/icon.png" alt="臺南一中資訊社TFcis" height="30px">
 					</div>
 					<div style="float: left;">
 						&nbsp;&nbsp;<span style="font-weight: bold; font-size: px; font-family: '標楷體';">電子化圖書管理系統</span><br>
