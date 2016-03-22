@@ -8,7 +8,7 @@
 					<span class="icon-bar" style="background-color:#FFFFFF;"></span>
 					<span class="icon-bar" style="background-color:#FFFFFF;"></span>
 				</button>
-				<a href="../home" class="navbar-brand">
+				<a href="https://github.com/TFcis/books" target="_blank" class="navbar-brand">
 					<div style="float: left;">
 						<img src="../res/icon.png" alt="臺南一中資訊社TFcis" height="30px">
 					</div>
