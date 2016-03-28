@@ -50,7 +50,8 @@ if (!isset($_GET["start"]) || !isset($_GET["end"])) {
 		</td>
 		<?php
 		$count++;
-		if($count%4==0)echo "</tr><tr>";
+		if($count%20==0)echo '</tr></table><table border="1" cellspacing="0" cellpadding="5"><tr>';
+		else if($count%4==0)echo "</tr><tr>";
 		}
 		?>
 	</tr>
