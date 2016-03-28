@@ -24,7 +24,7 @@ if ($ok) {
 		$ok=false;
 	}
 }
-if ($bookinfo["aval"]==0) {
+if ($ok && $bookinfo["aval"]==0) {
 	$msgbox->add("warning","此書目前隱藏中");
 	$ok=false;
 }
