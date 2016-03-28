@@ -71,6 +71,10 @@ if($ok){
 			<td><?php echo $bookinfo["source"]; ?></td>
 		</tr>
 		<tr>
+			<td>註記</td>
+			<td><?php echo $bookinfo["note"]; ?></td>
+		</tr>
+		<tr>
 			<td>ISBN</td>
 			<td><a href="https://zh.wikipedia.org/wiki/Special:网络书源/<?php echo $bookinfo["ISBN"]; ?>" target="_blank"><?php echo $bookinfo["ISBN"]; ?></a></td>
 		</tr>

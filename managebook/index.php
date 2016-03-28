@@ -110,6 +110,7 @@ else if(isset($_POST["addbook"])){
 						array("cat",$_POST["cat"]),
 						array("year",$isbn["items"][0]["volumeInfo"]["publishedDate"]),
 						array("source",$_POST["source"]),
+						array("note",$_POST["note"]),
 						array("ISBN",$name)
 					);
 					INSERT($query);
@@ -124,11 +125,12 @@ else if(isset($_POST["addbook"])){
 						array("name",$name),
 						array("cat",$_POST["cat"]),
 						array("year",$_POST["year"]),
-						array("source",$_POST["source"])
+						array("source",$_POST["source"]),
+						array("note",$_POST["note"])
 					);
 					INSERT($query);
 					insertlog($login["id"],0,"managebook",true,"add book:".$newid);
-					$msgbox->add("success","已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$_POST["year"]." 來源=".$_POST["source"]);
+					$msgbox->add("success","已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$_POST["year"]." 來源=".$_POST["source"]." 註記=".$_POST["note"]);#
 				}
 				$newid++;
 			}
@@ -139,32 +141,11 @@ else if(isset($_POST["editbook"])){
 	$editid=explode(",",$_POST["id"]);
 	foreach($editid as $id){
 		if($_POST["name"]!=""){
-			$isbn=json_decode(file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$_POST["name"]),true);
-			if($isbn["totalItems"]==1){
-				$query=new query;
-				$query->table="booklist";
-				$query->value=array(
-					array("name",$isbn["items"][0]["volumeInfo"]["title"]),
-					array("ISBN",$_POST["name"])
-				);
-				$query->where=array("id",$id);
-				$row=UPDATE($query);
-				UPDATE( "booklist",[ ["year",$isbn["items"][0]["volumeInfo"]["publishedDate"] ] ],[ ["id",$id] ] );
-			}
-			else {
-				$query=new query;
-				$query->table="booklist";
-				$query->value=array("name",$_POST["name"]);
-				$query->where=array("id",$id);
-				$row=UPDATE($query);
-				if($_POST["year"]!=""){
-					$query=new query;
-					$query->table="booklist";
-					$query->value=array("year",$_POST["year"]);
-					$query->where=array("id",$id);
-					$row=UPDATE($query);
-				}
-			}
+			$query=new query;
+			$query->table="booklist";
+			$query->value=array("name",$_POST["name"]);
+			$query->where=array("id",$id);
+			UPDATE($query);
 		}
 		if($_POST["cat"]!=0){
 			$query=new query;
@@ -173,7 +154,7 @@ else if(isset($_POST["editbook"])){
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
-		if($_POST["year"]!=""){
+		if($_POST["year"]!=0){
 			$query=new query;
 			$query->table="booklist";
 			$query->value=array("year",$_POST["year"]);
@@ -187,13 +168,20 @@ else if(isset($_POST["editbook"])){
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
+		if($_POST["note"]!=""){
+			$query=new query;
+			$query->table="booklist";
+			$query->value=array("note",$_POST["note"]);
+			$query->where=array("id",$id);
+			$row=UPDATE($query);
+		}
 	}
 	$query=new query;
 	$query->table="booklist";
 	$query->where=array("id",$_POST["id"]);
 	$row=fetchone(SELECT($query));
 	insertlog($login["id"],0,"managebook",true,"edit book:".$_POST["id"]);
-	$msgbox->add("success","已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid));
+	$msgbox->add("success","已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid)." 註記=".$_POST["note"]);
 }
 $query=new query;
 $query->table="account";
@@ -328,6 +316,11 @@ if($ok){
 				<span class="input-group-addon glyphicon glyphicon-user"></span>
 			</div>
 			<div class="input-group">
+				<span class="input-group-addon">註記</span>
+				<input class="form-control" name="note" type="text">
+				<span class="input-group-addon glyphicon glyphicon-pencil"></span>
+			</div>
+			<div class="input-group">
 				<span class="input-group-addon">數量</span>
 				<input class="form-control" name="number" type="number" value="1">
 				<span class="input-group-addon glyphicon glyphicon-th-list"></span>
@@ -351,7 +344,7 @@ if($ok){
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon">書名/ISBN</span>
-				<input class="form-control" name="name" type="text" placeholder="逗點分隔新增多本">
+				<input class="form-control" name="name" type="text">
 				<span class="input-group-addon glyphicon glyphicon-font"></span>
 			</div>
 			<div class="input-group">
@@ -375,13 +368,13 @@ if($ok){
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon">來源</span>
-				<input class="form-control" name="source" type="text" value="不明">
+				<input class="form-control" name="source" type="text">
 				<span class="input-group-addon glyphicon glyphicon-user"></span>
 			</div>
 			<div class="input-group">
-				<span class="input-group-addon">數量</span>
-				<input class="form-control" name="number" type="number" value="1">
-				<span class="input-group-addon glyphicon glyphicon-th-list"></span>
+				<span class="input-group-addon">註記</span>
+				<input class="form-control" name="note" type="text">
+				<span class="input-group-addon glyphicon glyphicon-pencil"></span>
 			</div>
 			<div class="input-group">
 				<button name="input" type="submit" class="btn btn-success">
@@ -428,7 +421,7 @@ if($ok){
 					echo $acct->nickname;
 				}
 				?></td>
-				<td><?php echo ($book["aval"]==0?"隱藏":""); ?></td>
+				<td><?php echo ($book["aval"]==0?"隱藏":"")." ".$book["note"]; ?></td>
 				<td>
 					<?php
 					if($book["aval"]){
