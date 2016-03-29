@@ -41,18 +41,22 @@ foreach($row as $temp){
 	if (!isset($booklist[$temp["name"]])) {
 		$booklist[$temp["name"]] = array(
 			"id"	=> array(),
-			"count"	=> 0,
 			"ISBN"	=> "",
 			"cat"	=> 0,
-			"aval"	=> 0
+			"count"	=> array(
+				"aval" => 0,
+				"lend" => 0,
+				"total" => 0
+			)
 		);
 	}
 	if (!isset($_GET["lend"]) || $_GET["lend"] == "all" || ($_GET["lend"] == 1 && $temp["lend"] != 0) || ($_GET["lend"] == 0 && $temp["lend"] == 0))
 		$booklist[$temp["name"]]["id"][]=$temp["id"];
-	$booklist[$temp["name"]]["count"]++;
+	$booklist[$temp["name"]]["count"]["total"]++;
 	$booklist[$temp["name"]]["ISBN"] = $temp["ISBN"];
 	$booklist[$temp["name"]]["cat"] = $temp["cat"];
-	if($temp["lend"] == 0)$booklist[$temp["name"]]["aval"]++;
+	if($temp["lend"] == 0) $booklist[$temp["name"]]["count"]["aval"]++;
+	else $booklist[$temp["name"]]["count"]["lend"]++;
 }
 if (count($booklist)==0)
 	$msgbox->add("warning","查無任何結果");
@@ -121,6 +125,10 @@ if (count($booklist)==0)
 				</tr>
 			<?php
 			foreach($booklist as $name => $book){
+				if (isset($_GET["lend"])) {
+					if ($_GET["lend"]=="0" && $book["count"]["aval"]==0) continue;
+					else if ($_GET["lend"]=="1" && $book["count"]["lend"]==0) continue;
+				}
 			?>
 				<tr>
 					<td><?php echo $cate[$book["cat"]]; ?></td>
@@ -135,7 +143,7 @@ if (count($booklist)==0)
 					?>
 					</td>
 					<td><?php echo $name; ?></td>
-					<td><?php echo $book["aval"]." / ".($book["count"]-$book["aval"])." / ".$book["count"]; ?></td>
+					<td><?php echo $book["count"]["aval"]." / ".$book["count"]["lend"]." / ".$book["count"]["total"]; ?></td>
 					<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
 				</tr>
 			<?php
