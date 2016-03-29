@@ -43,8 +43,10 @@ if ($ok) {
 	$query->where=array("lend",$editid);
 	$borrowlist=SELECT($query);
 
-	if (count($borrowlist)==0)
-		$msgbox->add("waring","沒有借閱");
+	if (count($borrowlist)==0){
+		$msgbox->add("warning","沒有借閱");
+		$ok=false;
+	}
 }
 ?>
 </head>
