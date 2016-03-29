@@ -56,7 +56,7 @@ if ($ok) {
 		<form method="post">
 			<div class="input-group">
 				<span class="input-group-addon">書本ID</span>
-				<input class="form-control" name="bookid" type="number" min="1" required>
+				<input class="form-control" name="bookid" type="number" min="1" required <?php echo (isset($_GET["id"])?"value=\"".$_GET["id"]."\"":"");?> >
 				<span class="input-group-addon glyphicon glyphicon-book"></span>
 			</div>
 			<div class="input-group">
