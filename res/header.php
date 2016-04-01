@@ -51,14 +51,11 @@
 					<?php
 					if($login["login"]===false){
 					?>
-						
 						<li><a href="<?php echo $login["url"]; ?>">登入</a></li>
 					<?php
-					}
-					else{
-						?><a href="<?php echo $login["url"]; ?>"><?php echo "<li>目前登入: ".$login["nickname"];
+					}else{
 					?>
-						&nbsp;&nbsp;登出</a></li>
+						<li><a href="<?php echo $login["url"]; ?>"><?php echo "目前登入: ".$login["nickname"]; ?>&nbsp;&nbsp;登出</a></li>
 					<?php
 					}
 					?>
