@@ -64,7 +64,7 @@ if($ok){
 		</tr>
 		<tr>
 			<td>年份</td>
-			<td><?php echo $bookinfo["year"]; ?></td>
+			<td><?php echo ($bookinfo["year"]==0?"":$bookinfo["year"]); ?></td>
 		</tr>
 		<tr>
 			<td>來源</td>
@@ -76,7 +76,11 @@ if($ok){
 		</tr>
 		<tr>
 			<td>ISBN</td>
-			<td><a href="https://zh.wikipedia.org/wiki/Special:网络书源/<?php echo $bookinfo["ISBN"]; ?>" target="_blank"><?php echo $bookinfo["ISBN"]; ?></a></td>
+			<td><?php
+				if ($bookinfo["ISBN"]!=0) {
+					?><a href="https://zh.wikipedia.org/wiki/Special:网络书源/<?php echo $bookinfo["ISBN"]; ?>" target="_blank"><?php echo $bookinfo["ISBN"]; ?></a><?php
+				}
+			?></td>
 		</tr>
 		<tr>
 			<td>借出</td>
@@ -93,7 +97,7 @@ if($ok){
 			<td>圖片</td>
 			<td>
 			<?php
-			if($bookinfo["ISBN"]!=""){
+			if($bookinfo["ISBN"]!=0){
 				$link=file_get_contents("http://search.books.com.tw/exep/prod_search.php?key=".$bookinfo["ISBN"]);
 				if($link==false)echo "連接http://search.books.com.tw/exep/prod_search.php?key=".$bookinfo["ISBN"]."失敗";
 				$start=strpos($link,"data-original")+15;
