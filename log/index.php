@@ -45,14 +45,17 @@ if($ok){
 		</div>
 		<div class="table-responsive">
 		<table class="table table-hover table-condensed">
+		<thead>
 		<tr>
-			<td>operate</td>
-			<td>affect</td>
-			<td>type</td>
-			<td>result</td>
-			<td>action</td>
-			<td>time</td>
+			<th>operate</th>
+			<th>affect</th>
+			<th>type</th>
+			<th>result</th>
+			<th>action</th>
+			<th>time</th>
 		</tr>
+		</thead>
+		<tbody>
 		<?php
 		$page=0;
 		if(is_numeric($_GET["page"]))$page=$_GET["page"];
@@ -74,6 +77,7 @@ if($ok){
 		<?php
 		}
 		?>
+		</tbody>
 		</table>
 		</div>
 	</div>
