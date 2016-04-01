@@ -99,39 +99,21 @@ else if(isset($_POST["addbook"])){
 			$query->table="booklist";
 			$row=fetchone(SELECT($query));
 			$newid=$row["MAX(id)"]+1;
-			$isbn=json_decode(file_get_contents("https://www.googleapis.com/books/v1/volumes?q=isbn:".$name),true);
 			for($i=0;$i<$_POST["number"];$i++){
-				if($isbn["totalItems"]==1){
-					$query=new query;
-					$query->table="booklist";
-					$query->value=array(
-						array("id",$newid),
-						array("name",$isbn["items"][0]["volumeInfo"]["title"]),
-						array("cat",$_POST["cat"]),
-						array("year",$isbn["items"][0]["volumeInfo"]["publishedDate"]),
-						array("source",$_POST["source"]),
-						array("note",$_POST["note"]),
-						array("ISBN",$name)
-					);
-					INSERT($query);
-					insertlog($login["id"],0,"managebook",true,"add book:".$newid);
-					$msgbox->add("success","已增加圖書 ID=".$newid." 書名=".$isbn["items"][0]["volumeInfo"]["title"]." 分類=".$cate[$_POST["cat"]]." 來源=".$_POST["source"]." ISBN=".$name);
-				}
-				else {
-					$query=new query;
-					$query->table="booklist";
-					$query->value=array(
-						array("id",$newid),
-						array("name",$name),
-						array("cat",$_POST["cat"]),
-						array("year",$_POST["year"]),
-						array("source",$_POST["source"]),
-						array("note",$_POST["note"])
-					);
-					INSERT($query);
-					insertlog($login["id"],0,"managebook",true,"add book:".$newid);
-					$msgbox->add("success","已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$_POST["year"]." 來源=".$_POST["source"]." 註記=".$_POST["note"]);#
-				}
+				$query=new query;
+				$query->table="booklist";
+				$query->value=array(
+					array("id",$newid),
+					array("name",$name),
+					array("ISBN",$_POST["ISBN"]),
+					array("cat",$_POST["cat"]),
+					array("year",$_POST["year"]),
+					array("source",$_POST["source"]),
+					array("note",$_POST["note"])
+				);
+				INSERT($query);
+				insertlog($login["id"],0,"managebook",true,"add book:".$newid);
+				$msgbox->add("success","已增加圖書 ID=".$newid." 書名=".$name." 分類=".$cate[$_POST["cat"]]." 年份=".$_POST["year"]." 來源=".$_POST["source"]." 註記=".$_POST["note"]);#
 				$newid++;
 			}
 		}
@@ -147,6 +129,13 @@ else if(isset($_POST["editbook"])){
 			$query->where=array("id",$id);
 			UPDATE($query);
 		}
+		if($_POST["ISBN"]!=""){
+			$query=new query;
+			$query->table="booklist";
+			$query->value=array("ISBN",$_POST["ISBN"]);
+			$query->where=array("id",$id);
+			UPDATE($query);
+		}
 		if($_POST["cat"]!=0){
 			$query=new query;
 			$query->table="booklist";
@@ -154,7 +143,7 @@ else if(isset($_POST["editbook"])){
 			$query->where=array("id",$id);
 			$row=UPDATE($query);
 		}
-		if($_POST["year"]!=0){
+		if($_POST["year"]!=""){
 			$query=new query;
 			$query->table="booklist";
 			$query->value=array("year",$_POST["year"]);
@@ -288,8 +277,13 @@ if($ok){
 			<input name="addbook" type="hidden" value="true">
 			<h3>新增</h3>
 			<div class="input-group">
-				<span class="input-group-addon">書名/ISBN</span>
-				<input class="form-control" name="name" type="text" placeholder="逗點分隔新增多本">
+				<span class="input-group-addon">書名</span>
+				<input class="form-control" name="name" type="text">
+				<span class="input-group-addon glyphicon glyphicon-font"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">ISBN</span>
+				<input class="form-control" name="ISBN" type="number" value="0">
 				<span class="input-group-addon glyphicon glyphicon-font"></span>
 			</div>
 			<div class="input-group">
@@ -343,7 +337,12 @@ if($ok){
 				<span class="input-group-addon glyphicon glyphicon-tags"></span>
 			</div>
 			<div class="input-group">
-				<span class="input-group-addon">書名/ISBN</span>
+				<span class="input-group-addon">ISBN</span>
+				<input class="form-control" name="ISBN" type="number">
+				<span class="input-group-addon glyphicon glyphicon-font"></span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">書名</span>
 				<input class="form-control" name="name" type="text">
 				<span class="input-group-addon glyphicon glyphicon-font"></span>
 			</div>
@@ -363,7 +362,7 @@ if($ok){
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon">年份</span>
-				<input class="form-control" name="year" type="number" value="0">
+				<input class="form-control" name="year" type="number">
 				<span class="input-group-addon glyphicon glyphicon-calendar"></span>
 			</div>
 			<div class="input-group">
