@@ -67,11 +67,14 @@ if($ok){
 		</div>
 		<div class="table-responsive">
 		<table class="table table-hover table-condensed">
+		<thead>
 		<tr>
 			<th>ID</th>
 			<th>姓名</th>
 			<th>更改</th>
 		</tr>
+		</thead>
+		<tbody>
 		<?php
 		$query=new query;
 		$query->table="powerlist";
@@ -87,6 +90,7 @@ if($ok){
 			<?php
 		}
 		?>
+		</tbody>
 		</table>
 		<h3>增加管理員</h3>
 		<form method="post">

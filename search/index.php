@@ -116,13 +116,21 @@ if (count($booklist)==0)
 			if(count($booklist)>0){
 			?>
 			<table class="table table-hover table-condensed">
+			<thead>
 				<tr>
-					<th>分類</th>
-					<th>ID</th>
-					<th>書名</th>
-					<th>數量<br>館內/借出/合計</th>
-					<th>ISBN</th>
+					<th rowspan="2">分類</th>
+					<th rowspan="2">ID</th>
+					<th rowspan="2">書名</th>
+					<th colspan="3">數量</th>
+					<th rowspan="2">ISBN</th>
 				</tr>
+				<tr>
+					<th>館內</th>
+					<th>借出</th>
+					<th>合計</th>
+				</tr>
+			</thead>
+			<tbody>
 			<?php
 			foreach($booklist as $name => $book){
 				if (isset($_GET["lend"])) {
@@ -143,12 +151,15 @@ if (count($booklist)==0)
 					?>
 					</td>
 					<td><?php echo $name; ?></td>
-					<td><?php echo $book["count"]["aval"]." / ".$book["count"]["lend"]." / ".$book["count"]["total"]; ?></td>
+					<td><?php echo $book["count"]["aval"]; ?></td>
+					<td><?php echo $book["count"]["lend"]; ?></td>
+					<td><?php echo $book["count"]["total"]; ?></td>
 					<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
 				</tr>
 			<?php
 			}
 			?>
+			</tbody>
 			</table>
 		<?php
 		}

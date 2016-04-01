@@ -249,11 +249,14 @@ if($ok){
 		</div>
 		<div class="table-responsive">
 		<table class="table table-hover table-condensed">
+		<thead>
 		<tr>
 			<th>ID</th>
 			<th>名稱</th>
 			<th>管理</th>
 		</tr>
+		</thead>
+		<tbody>
 		<?php
 			foreach($cate as $i => $temp){
 		?>
@@ -265,6 +268,7 @@ if($ok){
 		<?php
 			}
 		?>
+		</tbody>
 		</table>
 		</div>
 	</div>
@@ -395,6 +399,7 @@ if($ok){
 		</div>
 		<div class="table-responsive">
 		<table class="table table-hover table-condensed">
+		<thead>
 		<tr>
 			<th>分類</th>
 			<th>ID</th>
@@ -403,6 +408,8 @@ if($ok){
 			<th>資訊</th>
 			<th>管理</th>
 		</tr>
+		</thead>
+		<tbody>
 		<?php
 		$query=new query;
 		$query->table="booklist";
@@ -435,6 +442,7 @@ if($ok){
 			<?php
 		}
 		?>
+		</tbody>
 		</table>
 		</div>
 	</div>

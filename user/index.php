@@ -63,11 +63,14 @@ if($ok){
 		?>
 		<div class="table-responsive">
 			<table class="table table-hover table-condensed">
+			<thead>
 				<tr>
 					<th>分類</th>
 					<th>ID</th>
 					<th>書名</th>
 				</tr>
+			</thead>
+			<tbody>
 				<?php
 				foreach($borrowlist as $book){
 				?>
@@ -79,6 +82,7 @@ if($ok){
 				<?php
 				}
 				?>
+			</tbody>
 			</table>
 		</div>
 		<?php
