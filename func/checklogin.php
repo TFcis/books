@@ -1,6 +1,4 @@
 <?php
-include_once(__DIR__."/../config/config.php");
-include_once($config["path"]["sql"]);
 function checklogin(){
 	global $msgbox;
 	include_once("login-php-sdk/Login.php");

@@ -1,6 +1,6 @@
 <?php
 include(__DIR__."/../config/config.php");
-include_once($config["path"]["sql"]);
+include_once(__DIR__."/../func/SQL-function/sql.php");
 include_once(__DIR__."/../func/log.php");
 include_once(__DIR__."/../func/msgbox.php");
 $msgbox=new msgbox;
