@@ -9,4 +9,8 @@ $config["path"]["sql"] = "../func/sql.php";
 # site
 $config["site"]["url"] = "YOUR_URL";
 
+# debug
+$config["debug"]["login"] = false;
+$config["debug"]["admin"] = false;
+
 @include_once('config.php');
