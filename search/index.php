@@ -62,7 +62,7 @@ if (count($booklist)==0)
 	$msgbox->add("warning","查無任何結果");
 ?>
 </head>
-<body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
+<body style="text-align:center;">
 <?php include(__DIR__."/../res/header.php"); ?>
 <div class="row">
 	<div class="col-lg-3">
@@ -164,6 +164,7 @@ if (count($booklist)==0)
 		<?php
 		}
 		?>
+		</div>
 	</div>
 </div>
 <?php include(__DIR__."/../res/footer.php"); ?>

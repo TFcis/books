@@ -49,7 +49,7 @@ if($login["login"]===false){
 }
 ?>
 </head>
-<body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
+<body style="text-align:center;">
 <?php
 include_once("../res/header.php");
 if($ok){

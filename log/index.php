@@ -21,7 +21,7 @@ if (!isset($_GET["page"])||!is_numeric($_GET["page"])) {
 }
 ?>
 </head>
-<body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
+<body style="text-align:center;">
 <?php
 include_once("../res/header.php");
 if($ok){
@@ -31,13 +31,13 @@ if($ok){
 	<div class="col-lg-6"><h2>Log</h2>
 		<div class="row">
 		<div class="col-lg-2">
-		<form action="" method="get">
+		<form method="get">
 			<input name="page" type="hidden" value="<?php echo ($_GET["page"]-1); ?>">
 			<button type="submit" class="btn btn-success" <?php echo ($_GET["page"]==0?"style='display:none;'":""); ?>>上一頁</button>
 		</form>
 		</div>
 		<div class="col-lg-2">
-		<form action="" method="get">
+		<form method="get">
 			<input name="page" type="hidden" value="<?php echo ($_GET["page"]+1); ?>">
 			<button type="submit" class="btn btn-success">下一頁</button>
 		</form>

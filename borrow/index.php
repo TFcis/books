@@ -41,11 +41,8 @@ if($login["login"]===false){
 	}
 }
 ?>
-<head>
-<meta http-equiv="Content-Type" charset="UTF-8" name="viewport" content="width=device-width,user-scalable=yes">
-<title>借書-TFcisBooks</title>
 </head>
-<body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
+<body style="text-align:center;">
 <?php
 include(__DIR__."/../res/header.php");
 if ($ok) {

@@ -12,7 +12,7 @@ $meta->output();
 <title>PRINT-TFcisBooks</title>
 <link rel="icon" href="../res/icon.ico" type="image/x-icon">
 </head>
-<body Marginwidth="-1" Marginheight="-1" Topmargin="0" Leftmargin="0">
+<body style="text-align:center;">
 <?php
 include_once("../res/header.php");
 ?>
