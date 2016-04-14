@@ -4,7 +4,7 @@
 # If you want to change, make "config.php" in the same directory and put the configurations you want to change in it.
 
 # site
-$config["site"]["url"] = "YOUR_URL";
+$config["site"]["url"] = "http://books.tfcis.org/";
 
 # debug
 $config["debug"]["login"] = false;
