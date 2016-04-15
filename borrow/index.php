@@ -42,7 +42,7 @@ if($login["login"]===false){
 }
 ?>
 </head>
-<body style="text-align:center;">
+<body>
 <?php
 include(__DIR__."/../res/header.php");
 if ($ok) {

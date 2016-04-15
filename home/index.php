@@ -7,7 +7,7 @@ $meta->output();
 $msgbox->add("success","Welcome!");
 ?>
 </head>
-<body style="text-align:center;">
+<body>
 <?php include(__DIR__."/../res/header.php"); ?>
 <?php @include(__DIR__."/information.php"); ?>
 <?php include(__DIR__."/../res/footer.php"); ?>

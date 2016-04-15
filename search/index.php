@@ -62,7 +62,7 @@ if (count($booklist)==0)
 	$msgbox->add("warning","查無任何結果");
 ?>
 </head>
-<body style="text-align:center;">
+<body>
 <?php include(__DIR__."/../res/header.php"); ?>
 <div class="row">
 	<div class="col-lg-3">
@@ -122,7 +122,6 @@ if (count($booklist)==0)
 					<th rowspan="2">ID</th>
 					<th rowspan="2">書名</th>
 					<th colspan="3">數量</th>
-					<th rowspan="2">ISBN</th>
 				</tr>
 				<tr>
 					<th>館內</th>
@@ -154,7 +153,6 @@ if (count($booklist)==0)
 					<td><?php echo $book["count"]["aval"]; ?></td>
 					<td><?php echo $book["count"]["lend"]; ?></td>
 					<td><?php echo $book["count"]["total"]; ?></td>
-					<td><a href="https://books.google.com.tw/books?vid=<?php echo $book["ISBN"]; ?>" target="_blank"><?php echo $book["ISBN"]; ?></a></td>
 				</tr>
 			<?php
 			}

@@ -21,7 +21,7 @@ if (!isset($_GET["page"])||!is_numeric($_GET["page"])) {
 }
 ?>
 </head>
-<body style="text-align:center;">
+<body>
 <?php
 include_once("../res/header.php");
 if($ok){

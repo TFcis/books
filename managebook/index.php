@@ -180,7 +180,7 @@ foreach($row as $temp){
 }
 ?>
 </head>
-<body style="text-align:center;">
+<body>
 <?php
 include_once("../res/header.php");
 if($ok){
