@@ -37,7 +37,7 @@ if($login["login"]===false){
 		$query->table="category";
 		$query->value=array(
 			array("id",$_POST["id"]),
-			array("name",$_POST["name"]) 
+			array("name",$_POST["name"])
 		);
 		INSERT($query);
 		$msgbox->add("success","已增加分類 ID=".$_POST["id"]." 名稱=".$_POST["name"]);
@@ -172,12 +172,6 @@ else if(isset($_POST["editbook"])){
 	insertlog($login["id"],0,"managebook",true,"edit book:".$_POST["id"]);
 	$msgbox->add("success","已修改圖書 ID=".$_POST["id"]." 書名=".$row["name"]." 分類=".$cate[$row["cat"]]." 年份=".$row["year"]." 來源=".$row["source"]." ISBN=".$row["ISBN"]." 數量=".count($editid)." 註記=".$_POST["note"]);
 }
-$query=new query;
-$query->table="account";
-$row=SELECT($query);
-foreach($row as $temp){
-	$acct[$temp["id"]]=$temp["name"];
-}
 ?>
 </head>
 <body>
@@ -205,7 +199,7 @@ if($ok){
 			<div class="input-group">
 				<button name="input" type="submit" class="btn btn-success">
 					<span class="glyphicon glyphicon glyphicon-plus"></span>
-					新增 
+					新增
 				</button>
 			</div>
 		</form>
@@ -235,7 +229,7 @@ if($ok){
 			<div class="input-group">
 				<button name="input" type="submit" class="btn btn-success">
 					<span class="glyphicon glyphicon glyphicon-pencil"></span>
-					修改 
+					修改
 				</button>
 			</div>
 		</form>
@@ -382,7 +376,7 @@ if($ok){
 			<div class="input-group">
 				<button name="input" type="submit" class="btn btn-success">
 					<span class="glyphicon glyphicon glyphicon-pencil"></span>
-					修改 
+					修改
 				</button>
 			</div>
 		</form>
@@ -421,7 +415,7 @@ if($ok){
 				<td><?php echo $cate[$book["cat"]]; ?></td>
 				<td><a href="../bookinfo/?id=<?php echo $book["id"]; ?>"><?php echo $book["id"]; ?></a></td>
 				<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
-				<td><?php 
+				<td><?php
 				if($book["lend"]!=0){
 					$acct=login_system::getinfobyid($book["lend"]);
 					echo $acct->nickname;
