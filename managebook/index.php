@@ -417,8 +417,12 @@ if($ok){
 				<td><?php echo htmlspecialchars($book["name"],ENT_QUOTES); ?></td>
 				<td><?php
 				if($book["lend"]!=0){
-					$acct=login_system::getinfobyid($book["lend"]);
-					echo $acct->nickname;
+					try {
+						$acct=login_system::getinfobyid($book["lend"]);
+					} catch (Exception $e) {
+						$acct=null;
+					}
+					echo $acct ? htmlspecialchars($acct->nickname,ENT_QUOTES) : "UID ".$book["lend"];
 				}
 				?></td>
 				<td><?php echo ($book["aval"]==0?"隱藏":"")." ".$book["note"]; ?></td>

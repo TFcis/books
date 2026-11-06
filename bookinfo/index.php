@@ -86,8 +86,12 @@ if($ok){
 			<td>借出</td>
 			<td><?php 
 				if($bookinfo["lend"]!=0){
-					$acct=login_system::getinfobyid($bookinfo["lend"]);
-					echo $acct->nickname;
+					try {
+						$acct=login_system::getinfobyid($bookinfo["lend"]);
+					} catch (Exception $e) {
+						$acct=null;
+					}
+					echo $acct ? htmlspecialchars($acct->nickname,ENT_QUOTES) : "UID ".$bookinfo["lend"];
 				} else {
 					echo "在館內";
 				}
